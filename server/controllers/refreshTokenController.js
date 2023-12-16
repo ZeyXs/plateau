@@ -10,20 +10,21 @@ const handleRefreshToken = async (req, res) => {
 
     const foundUser = await User.findOne({ refreshToken: refreshToken });
     if (!foundUser) return res.sendStatus(401); // Unauthorized
+    const userData = foundUser.toJSON()
 
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
-            if (err || foundUser.username !== decoded.username)
+            if (err || userData.username !== decoded.username)
                 return res.sendStatus(403);
-            const roles = Object.values(foundUser.roles);
+            const roles = Object.values(userData.roles);
             const accessToken = jwt.sign(
                 { UserInfo: { username: decoded.username, roles: roles } },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '1m' },
             );
-            res.json({ accessToken });
+            res.json({ roles, accessToken });
         },
     );
 };
