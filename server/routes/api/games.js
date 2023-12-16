@@ -3,12 +3,12 @@ const router = express.Router();
 
 const gamesController = require('../../controllers/api/gamesController');
 const verifyRoles = require('../../middleware/verifyRoles');
-const rolesList = require('../../config/rolesList');
+const ROLES_LIST = require('../../config/rolesList');
 
 router
     .route('/')
     .get(gamesController.getAllGames)
-    .post(verifyRoles(Object(rolesList.Admin), gamesController.createNewGame));
+    .post(verifyRoles(ROLES_LIST.User), gamesController.createNewGame);
 
 router.route('/:id').get(gamesController.getGame);
 

@@ -5,7 +5,6 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const corsOptions = require('./config/corsOptions');
-const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
 
 const app = express();
