@@ -7,7 +7,7 @@ const ROLES_LIST = require('../../config/rolesList');
 
 router
     .route('/')
-    .get(gamesController.getAllGames)
+    .get(verifyRoles(ROLES_LIST.User), gamesController.getAllGames)
     .post(verifyRoles(ROLES_LIST.User), gamesController.createNewGame);
 
 router.route('/:id').get(gamesController.getGame);
