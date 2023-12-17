@@ -1,5 +1,5 @@
-import { useNavigate, Link } from "react-router-dom";
-import useLogout from "../hooks/useLogout";
+import { useNavigate } from 'react-router-dom';
+import useLogout from '../../hooks/useLogout';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -13,15 +13,14 @@ const Home = () => {
     return (
         <section>
             <h1>Home</h1>
-            <br/>
+            <br />
             <p>You are logged in!</p>
-            <br/>
+            <br />
             <div className="flexGrow">
                 <button onClick={signOut}>Sign Out</button>
             </div>
         </section>
     );
-
-}
+};
 
 export default Home;
