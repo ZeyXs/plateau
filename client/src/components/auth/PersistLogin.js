@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import useRefreshToken from '../../hooks/useRefreshToken';
-import useAuth from '../../hooks/useAuth';
+import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import useRefreshToken from "../../hooks/useRefreshToken";
+import useAuth from "../../hooks/useAuth";
 
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ const PersistLogin = () => {
         };
 
         // Vérification de l'existence de l'accessToken et regénération de celui-ci si celui-ci est manquant
-        !auth?.accessToken && persist
+        auth?.accessToken && persist
             ? verifyRefreshToken()
             : setIsLoading(false);
     }, []);
@@ -30,7 +30,7 @@ const PersistLogin = () => {
     //     console.log(`aT: ${JSON.stringify(auth?.accessToken)}`);
     // }, [isLoading]);
 
-    return <>{!persist ? <Outlet /> : isLoading ? '' : <Outlet />}</>;
+    return <>{!persist ? <Outlet /> : isLoading ? "" : <Outlet />}</>;
 };
 
 export default PersistLogin;
