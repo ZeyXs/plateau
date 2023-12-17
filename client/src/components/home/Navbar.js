@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import { FaPlay, FaUser, FaUserPlus } from 'react-icons/fa6';
-import { LuLogIn } from 'react-icons/lu';
-import { GiPokerHand } from 'react-icons/gi';
-import Popup from '../general/Popup';
+import { useState } from "react";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import { FaPlay, FaUser, FaUserPlus } from "react-icons/fa6";
+import { LuLogIn } from "react-icons/lu";
+import { GiPokerHand } from "react-icons/gi";
+import Modal from "../utils/Modal";
 
 const Navbar = () => {
     const [nav, setNav] = useState(true);
@@ -31,7 +31,8 @@ const Navbar = () => {
                     </li>
                     <li className="p-3">
                         <button
-                            className={`bg-[#984ed4] w-[140px] rounded-3xl my-4 mx-auto py-2`}>
+                            className={`bg-[#984ed4] w-[140px] rounded-3xl my-4 mx-auto py-2`}
+                        >
                             <div className="flex justify-center items-center">
                                 <FaPlay size={13} />
                                 <span className="font-bold px-[5px]">
@@ -51,9 +52,10 @@ const Navbar = () => {
                 <div
                     className={
                         !nav
-                            ? 'fixed left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500'
-                            : 'fixed left-[-100%]'
-                    }>
+                            ? "fixed left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500"
+                            : "fixed left-[-100%]"
+                    }
+                >
                     <h1 className="w-full text-3xl font-bold text-[#984ed4] m-4">
                         Plateau
                     </h1>
@@ -65,10 +67,11 @@ const Navbar = () => {
                     </ul>
                 </div>
             </div>
-            <Popup title="Connexion requise">
+            <Modal title="Connexion requise">
                 <div className="flex flex-col m-4 mx-8">
                     <button
-                        className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}>
+                        className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}
+                    >
                         <div className="flex justify-center items-center">
                             <FaUser size={13} />
                             <span className="font-bold px-[5px]">
@@ -80,7 +83,8 @@ const Navbar = () => {
                         ou
                     </div>
                     <button
-                        className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}>
+                        className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}
+                    >
                         <div className="flex justify-center items-center">
                             <FaUserPlus size={16} />
                             <span className="font-bold px-[5px]">
@@ -89,7 +93,7 @@ const Navbar = () => {
                         </div>
                     </button>
                 </div>
-            </Popup>
+            </Modal>
         </div>
     );
 };

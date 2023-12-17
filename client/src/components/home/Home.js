@@ -1,5 +1,6 @@
-import Hero from './Hero';
-import Navbar from './Navbar';
+import { useState } from "react";
+import Hero from "./Hero";
+import Navbar from "./Navbar";
 
 const Home = () => {
     return (

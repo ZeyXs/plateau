@@ -1,21 +1,20 @@
-import axios from  '../api/axios';
-import useAuth from './useAuth';
+import axios from "../api/axios";
+import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
     const { setAuth } = useAuth();
 
     const refresh = async () => {
-
-        const response = await axios.get('/refresh', {
-            withCredentials: true // permet d'envoyer également le cookie httpOnly (jwt)
+        const response = await axios.get("/refresh", {
+            withCredentials: true, // permet d'envoyer également le cookie httpOnly (jwt)
         });
 
-        setAuth(prev => {
-            console.log(`aT useRefreshToken : ${response.data.accessToken}`)
+        setAuth((prev) => {
+            console.log(`aT useRefreshToken : ${response.data.accessToken}`);
             return {
                 ...prev,
                 roles: response.data.roles,
-                accessToken: response.data.accessToken
+                accessToken: response.data.accessToken,
             };
         });
         // Renvoie le nouveau accessToken

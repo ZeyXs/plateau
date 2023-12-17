@@ -3,7 +3,8 @@ const Box = ({ title, icon, offset, children }) => {
     return (
         <div className="flex flex-col">
             <p
-                className={`flex -mb-6 z-10 mx-auto w-[260px] h-10 bg-[#39324f] justify-center items-center rounded-3xl shadow-lg`}>
+                className={`flex -mb-6 z-10 mx-auto w-[260px] h-10 bg-[#39324f] justify-center items-center rounded-3xl shadow-lg`}
+            >
                 {icon}
                 <span className={`font-bold text-[20px] px-${offset}`}>
                     {title}

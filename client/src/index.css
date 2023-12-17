@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,24 +11,16 @@ body {
         rgba(28, 27, 45, 1) 15%,
         rgba(8, 7, 14, 1) 100%
     );
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
-.header-line {
-    display: flex;
-    flex-direction: row;
-}
-
-.header-line :before,
-.header-line:after {
-    content: '';
-    flex: 1 1;
-    border-bottom: 1px solid;
-    margin: auto;
-}
-.header-line:before {
-    margin-right: 10px;
-}
-.header-line:after {
-    margin-left: 10px;
+.offscreen {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
 }
