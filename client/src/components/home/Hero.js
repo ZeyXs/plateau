@@ -1,9 +1,18 @@
 import { GiPerspectiveDiceSixFacesThree } from "react-icons/gi";
-import Box from "../utils/Box";
 import { FaList } from "react-icons/fa6";
 import { MdAddBox } from "react-icons/md";
 
+import Box from "../utils/Box";
+import useAuth from "../../hooks/useAuth";
+import useLogout from "../../hooks/useLogout";
+
 const Hero = () => {
+    const { auth } = useAuth();
+    const logout = useLogout();
+    const signOut = async () => {
+        await logout();
+    };
+
     return (
         <div className="text-white">
             <div className="mt-[-96px] w-full h-screen mx-auto text-center flex flex-col justify-center">
@@ -28,7 +37,21 @@ const Hero = () => {
                             icon={<FaList size={20} />}
                             offset="2"
                         >
-                            <div className="px-[200px] py-[160px]"></div>
+                            <div className="px-[200px] py-[160px]">
+                                {auth?.accessToken ? (
+                                    <p>
+                                        Tu es login !
+                                        <button
+                                            className="underline px-2"
+                                            onClick={signOut}
+                                        >
+                                            Se déconnecter
+                                        </button>
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
                         </Box>
                         <Box
                             title="Rejoindre une partie"

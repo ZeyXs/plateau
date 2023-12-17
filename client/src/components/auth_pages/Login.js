@@ -8,10 +8,9 @@ import { IoIosWarning } from "react-icons/io";
 import axios from "../../api/axios";
 
 const Login = () => {
-    const { setAuth } = useAuth();
-
     const navigate = useNavigate();
     const location = useLocation();
+    const { auth, setAuth } = useAuth();
     // Sauvegarde d'où le client vient
     const from = location.state?.from?.pathname || "/";
 
@@ -28,6 +27,7 @@ const Login = () => {
 
     // Au load de la page, se focus sur le champ de saisie nom utilisateur
     useEffect(() => {
+        console.log(auth?.accessToken);
         userRef.current.focus();
     }, []);
 
@@ -143,7 +143,8 @@ const Login = () => {
 
                 <button
                     type="submit"
-                    className="text-white bg-gradient-to-r from-yellow-500 to-yellow-300 h-10 rounded-3xl mx-auto w-full"
+                    className="text-white bg-gradient-to-r from-yellow-500 to-yellow-300 disabled:from-gray-600 disabled:to-gray-400 h-10 rounded-3xl mx-auto w-full"
+                    disabled={auth?.accessToken}
                 >
                     <div className="flex justify-center items-center">
                         <span className="font-bold px-[5px]">Se connecter</span>

@@ -1,6 +1,6 @@
 import { AiOutlineClose } from "react-icons/ai";
 
-const Popup = ({ title, visible, children }) => {
+const Popup = ({ title, visible, onClose, children }) => {
     if (!visible) return null;
     else
         return (
@@ -10,6 +10,7 @@ const Popup = ({ title, visible, children }) => {
                         <h3 className="font-semibold text-gray-200">{title}</h3>
                         <button
                             type="button"
+                            onClick={onClose}
                             className="text-gray-400 bg-transparent hover:bg-[#2b2b43] hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                             data-modal-hide="default-modal"
                         >

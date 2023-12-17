@@ -20,7 +20,8 @@ const PersistLogin = () => {
         };
 
         // Vérification de l'existence de l'accessToken et regénération de celui-ci si celui-ci est manquant
-        auth?.accessToken && persist
+        console.log(auth?.accessToken);
+        !auth?.accessToken && persist
             ? verifyRefreshToken()
             : setIsLoading(false);
     }, []);

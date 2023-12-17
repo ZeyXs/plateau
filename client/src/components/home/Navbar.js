@@ -3,13 +3,20 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaPlay, FaUser, FaUserPlus } from "react-icons/fa6";
 import { LuLogIn } from "react-icons/lu";
 import { GiPokerHand } from "react-icons/gi";
+import { useLogout } from "react-router-dom";
+
 import Modal from "../utils/Modal";
 
 const Navbar = () => {
     const [nav, setNav] = useState(true);
+    const [modal, setModal] = useState(false);
 
     const handleNav = () => {
         setNav(!nav);
+    };
+
+    const handleModal = () => {
+        setModal(!modal);
     };
 
     return (
@@ -31,6 +38,7 @@ const Navbar = () => {
                     </li>
                     <li className="p-3">
                         <button
+                            onClick={handleModal}
                             className={`bg-[#984ed4] w-[140px] rounded-3xl my-4 mx-auto py-2`}
                         >
                             <div className="flex justify-center items-center">
@@ -67,9 +75,14 @@ const Navbar = () => {
                     </ul>
                 </div>
             </div>
-            <Modal title="Connexion requise">
+            <Modal
+                title="Connexion requise"
+                visible={modal}
+                onClose={handleModal}
+            >
                 <div className="flex flex-col m-4 mx-8">
-                    <button
+                    <a
+                        href="/login"
                         className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}
                     >
                         <div className="flex justify-center items-center">
@@ -78,11 +91,12 @@ const Navbar = () => {
                                 Se connecter
                             </span>
                         </div>
-                    </button>
+                    </a>
                     <div className="text-gray-200 justify-center mx-auto">
                         ou
                     </div>
-                    <button
+                    <a
+                        href="/register"
                         className={`text-white bg-[#984ed4] w-[180px] rounded-3xl my-4 mx-auto py-2`}
                     >
                         <div className="flex justify-center items-center">
@@ -91,7 +105,7 @@ const Navbar = () => {
                                 S'inscrire
                             </span>
                         </div>
-                    </button>
+                    </a>
                 </div>
             </Modal>
         </div>
