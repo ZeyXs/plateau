@@ -5,6 +5,8 @@ import { MdAddBox } from "react-icons/md";
 import Box from "../utils/Box";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import CreateGame from "./CreateGame";
+import GameList from "./GameList";
 
 const Hero = () => {
     const { auth } = useAuth();
@@ -27,7 +29,9 @@ const Hero = () => {
                                 />
                             }
                         >
-                            <div className="px-40 py-[240px]"></div>
+                            <div className="px-20 py-[100px]">
+                                <CreateGame />
+                            </div>
                         </Box>
                         <div className="height-[220px] border-l-[3px] border-gray-400 opacity-25"></div>
                     </div>

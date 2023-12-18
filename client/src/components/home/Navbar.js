@@ -3,7 +3,6 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaPlay, FaUser, FaUserPlus } from "react-icons/fa6";
 import { LuLogIn } from "react-icons/lu";
 import { GiPokerHand } from "react-icons/gi";
-import { useLogout } from "react-router-dom";
 
 import Modal from "../utils/Modal";
 
