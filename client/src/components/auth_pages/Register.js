@@ -2,7 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { IoIosWarning } from "react-icons/io";
 import axios from "../../api/axios";
 import { GiPokerHand } from "react-icons/gi";
-import { FaLock, FaUser } from "react-icons/fa";
+import { FaInfo, FaLock, FaUser } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import Popup from "../utils/Popup";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -12,7 +13,6 @@ const Register = () => {
     // Variables de focus
     const userRef = useRef();
     const errRef = useRef();
-
     // Variables champ nom utilisateur
     const [user, setUser] = useState("");
     const [validName, setValidName] = useState(false);
@@ -30,7 +30,7 @@ const Register = () => {
 
     // Variables erreur / succès
     const [errMsg, setErrMsg] = useState("");
-    const { setSuccess } = useState(false);
+    const [validMsg, setValidMsg] = useState("");
 
     // Au load de la page, se focus sur le champ de saisie nom utilisateur
     useEffect(() => {
@@ -73,13 +73,13 @@ const Register = () => {
                     withCredentials: true,
                 }
             );
-            console.log(response?.accessToken);
-            setSuccess(true);
             // Nettoyer les champs de saisie
             setUser("");
             setPwd("");
             setMatchPwd("");
+            setValidMsg("Inscription realisée avec succès ! Vous pouvez désormais vous connecter.")
         } catch (err) {
+            console.log(err);
             if (!err?.response)
                 setErrMsg("Pas de réponse du serveur. Réessayez plus tard.");
             else if (err.response?.status === 409)
@@ -109,6 +109,26 @@ const Register = () => {
                     ""
                 )}
                 {errMsg}
+            </p>
+
+            {/* Affichage message de validation du register */}
+            <p
+                ref={errRef}
+                className={
+                    validMsg
+                        ? "flex flex-row items-center bg-green-500 text-white p-2 rounded-xl mb-5"
+                        : "offscreen"
+                }
+                aria-live="assertive"
+            >
+                {validMsg ? (
+                    <span className="px-[3px]">
+                        <FaInfoCircle size={20} />
+                    </span>
+                ) : (
+                    ""
+                )}
+                {validMsg}
             </p>
 
             <a
@@ -206,11 +226,11 @@ const Register = () => {
                         id="password"
                         onChange={(e) => setPwd(e.target.value)}
                         value={pwd}
-                        required
                         aria-invalid={validPwd ? "false" : "true"}
                         aria-describedby="pwdnote"
                         onFocus={() => setPwdFocus(true)}
                         onBlur={() => setPwdFocus(false)}
+                        required
                     />
                 </div>
 
