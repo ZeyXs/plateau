@@ -1,24 +1,27 @@
 // Importation des différentes "pages"
-import Register from "./components/auth_pages/Register";
-import Login from "./components/auth_pages/Login";
-import Unauthorized from "./components/auth/Unauthorized";
-import Missing from "./components/Missing";
-import Game from "./components/Game";
-import Debug from "./components/auth/Debug";
-import Home from "./components/home/Home";
+import Register from './components/Register';
+import Login from './components/Login';
+import Unauthorized from './components/auth/Unauthorized';
+import Missing from './components/Missing';
+import Game from './components/Game';
+import Debug from './components/auth/Debug';
+import Home from './components/home/Home';
 
-import RequireAuth from "./components/auth/RequireAuth";
-import PersistLogin from "./components/auth/PersistLogin";
+import RequireAuth from './components/auth/RequireAuth';
+import PersistLogin from './components/auth/PersistLogin';
 
 // Importations utilitaires
-import { Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import "./index.css";
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import './index.css';
+import GameValidity from './components/GameValidity';
 
 const ROLES = {
     User: 2001,
     Admin: 5150,
 };
+
+const SOCKET_URI = process.env.REACT_APP_SERVER_URI;
 
 function App() {
     return (
@@ -33,15 +36,14 @@ function App() {
                 <Route element={<PersistLogin />}>
                     <Route path="/" element={<Home />} />
                     <Route
-                        element={<RequireAuth allowedRoles={[ROLES.User]} />}
-                    >
+                        element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                         <Route path="debug" element={<Debug />} />
                     </Route>
 
-                    <Route
-                        element={<RequireAuth allowedRoles={[ROLES.Admin]} />}
-                    >
-                        <Route path="game/:code" element={<Game />} />
+                    <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+                        <Route element={<GameValidity />}>
+                            <Route path="game/:code" element={<Game />} />
+                        </Route>
                     </Route>
                 </Route>
 

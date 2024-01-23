@@ -1,11 +1,11 @@
 import { useRef, useState, useEffect } from "react";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import { GiPokerHand } from "react-icons/gi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaLock, FaUser } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 
-import axios from "../../api/axios";
+import axios from "../api/axios";
 
 const Login = () => {
     const navigate = useNavigate();

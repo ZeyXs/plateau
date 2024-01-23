@@ -98,7 +98,7 @@ const createNewGame = async (req, res) => {
             creatorId: creatorId,
             gameState: "IN_LOBBY",
             deck: [],
-            players: playerList
+            players: {}
         });
         const newGame = await game.save();
         res.status(201).json({"message": "Partie créée avec succès !", "code": newGame.code});

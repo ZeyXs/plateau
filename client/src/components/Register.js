@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import { IoIosWarning } from "react-icons/io";
-import axios from "../../api/axios";
+import axios from "../api/axios";
 import { GiPokerHand } from "react-icons/gi";
 import { FaInfo, FaLock, FaUser } from "react-icons/fa";
 import { FaInfoCircle } from "react-icons/fa";
-import Popup from "../utils/Popup";
+import Popup from "./utils/Popup";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;

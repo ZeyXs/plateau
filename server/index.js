@@ -12,6 +12,10 @@ const app = express();
 const db = process.env.DATABASE_URI;
 const PORT = process.env.PORT || 4000;
 
+// Initialisation de Socket.io
+var http = require('http').Server(app);
+const io = require('socket.io')(http)
+
 // Connection à la base de données
 connectDB(db);
 
