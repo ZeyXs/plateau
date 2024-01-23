@@ -48,9 +48,9 @@ const Login = () => {
                     withCredentials: true,
                 }
             );
-            const accessToken = response?.data?.accessToken;
+            //const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ user, roles, accessToken });
+            setAuth({ user, roles });
             setUser("");
             setPwd("");
             // Redirection vers la page

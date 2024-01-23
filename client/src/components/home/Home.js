@@ -4,11 +4,6 @@ import Navbar from "./Navbar";
 import useAuth from "../../hooks/useAuth";
 
 const Home = () => {
-
-    const { auth } = useAuth();
-    console.log(`[Home.js] ${auth.accessToken}`);
-    console.log(`[Home.js] ${auth.roles}`);
-
     return (
         <div>
             <Navbar />

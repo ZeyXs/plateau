@@ -101,8 +101,8 @@ const CreateGame = () => {
                     value={gameType}
                     required
                 >
-                    {GAME_LIST.map((gameT) => (
-                        <option id={gameT.toLowerCase()}>{gameT}</option>
+                    {GAME_LIST.map((gameT, i) => (
+                        <option key={i}>{gameT}</option>
                     ))}
                 </select>
 
