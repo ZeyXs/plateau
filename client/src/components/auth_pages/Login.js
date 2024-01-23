@@ -27,7 +27,8 @@ const Login = () => {
 
     // Au load de la page, se focus sur le champ de saisie nom utilisateur
     useEffect(() => {
-        console.log(auth?.accessToken);
+        console.log(`[Login.js] ${auth?.accessToken}`);
+        console.log(`[Login.js] ${auth?.username}`);
         userRef.current.focus();
     }, []);
 
@@ -49,7 +50,7 @@ const Login = () => {
             );
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ user, pwd, roles, accessToken });
+            setAuth({ user, roles, accessToken });
             setUser("");
             setPwd("");
             // Redirection vers la page
