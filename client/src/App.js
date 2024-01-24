@@ -11,7 +11,7 @@ import RequireAuth from './components/auth/RequireAuth';
 import PersistLogin from './components/auth/PersistLogin';
 
 // Importations utilitaires
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import './index.css';
 import GameValidity from './components/GameValidity';
@@ -21,9 +21,10 @@ const ROLES = {
     Admin: 5150,
 };
 
-const SOCKET_URI = process.env.REACT_APP_SERVER_URI;
-
 function App() {
+
+    const location = useLocation();
+
     return (
         <Routes>
             <Route path="/" element={<Layout />}>
@@ -39,12 +40,13 @@ function App() {
                         element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                         <Route path="debug" element={<Debug />} />
                     </Route>
-
+                    
                     <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                         <Route element={<GameValidity />}>
                             <Route path="game/:code" element={<Game />} />
                         </Route>
                     </Route>
+                    <Route path="game/" element={<Navigate to="/" state={{ from: location }} />}></Route>
                 </Route>
 
                 {/* route inexistante */}

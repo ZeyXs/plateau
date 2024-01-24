@@ -12,9 +12,6 @@ const app = express();
 const db = process.env.DATABASE_URI;
 const PORT = process.env.PORT || 4000;
 
-// Initialisation de Socket.io
-var http = require('http').Server(app);
-const io = require('socket.io')(http)
 
 // Connection à la base de données
 connectDB(db);
@@ -26,6 +23,29 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Initialisation de Socket.io
+var http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+    },
+});
+
+
+io.on('connection', (socket) => {
+    socket.on('join', (room) => {
+        socket.join(room);
+        console.log(`🔥 ${socket.id} user just connected!`);
+    })
+
+    socket.on('disconnect', () => {
+      console.log('A user disconnected');
+    });
+});
 
 // Middleware anonyme pour afficher quelques données sur la requête (utile pour le debug)
 app.use((req, res, next) => {
@@ -42,6 +62,6 @@ app.use('/logout', require('./routes/logout'));
 // - Api
 app.use('/api/game', require('./routes/api/game'));
 
-const server = app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

@@ -4,16 +4,19 @@ import App from './App';
 import { AuthProvider } from './context/AuthProvider';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ErrorProvider } from './context/ErrorProvider';
+import { SocketProvider } from './context/SocketProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter>
-        <AuthProvider>
-            <ErrorProvider>
-                <Routes>
-                    <Route path="/*" element={<App />} />
-                </Routes>
-            </ErrorProvider>
-        </AuthProvider>
-    </BrowserRouter>,
+    <AuthProvider>
+        <BrowserRouter>
+            <SocketProvider>
+                <ErrorProvider>
+                    <Routes>
+                        <Route path="/*" element={<App />} />
+                    </Routes>
+                </ErrorProvider>
+            </SocketProvider>
+        </BrowserRouter>
+    </AuthProvider>,
 );

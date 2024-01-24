@@ -2,7 +2,7 @@ import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 
 const useAuth = () => {
-    // Retourne les valeurs contenues dans le contexte "AuthContext"
+    const { auth } = useContext(AuthContext);
     return useContext(AuthContext);
 };
 
