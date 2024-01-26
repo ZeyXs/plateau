@@ -1,19 +1,24 @@
-const sockets = (http) => {
-    const io = require('socket.io')(http, {
-        cors: {
-            origin: "http://localhost:3000"
-        }
-    });
-    
-    //Add this before the app.get() block
-    io.on('connection', (socket) => {
-        console.log(`⚡: ${socket.id} user just connected!`);
-        socket.on('disconnect', () => {
-          console.log('🔥: A user disconnected');
+const sockets = io => {
+    io.on('connection', socket => {
+        socket.on('join', code => {
+            socket.join(code);
+
+            console.log(`🔥 ${socket.id} connected to ${code}`);
+            console.log(socket.rooms);
+        });
+
+        socket.on('disconnecting', () => {
+            for (const code of socket.rooms) {
+                if (code !== socket.id) {
+                    console.log(`🔥 ${socket.id} disconnected from ${code}`);
+                }
+            }
         });
     });
 
     return io;
-}
+};
+
+const getRooms = () => {};
 
 module.exports = sockets;

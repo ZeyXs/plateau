@@ -27,6 +27,7 @@ app.use(cookieParser());
 // Initialisation de Socket.io
 var http = require('http');
 const { Server } = require('socket.io');
+const sockets = require('./socket');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -35,17 +36,7 @@ const io = new Server(server, {
     },
 });
 
-
-io.on('connection', (socket) => {
-    socket.on('join', (room) => {
-        socket.join(room);
-        console.log(`🔥 ${socket.id} user just connected!`);
-    })
-
-    socket.on('disconnect', () => {
-      console.log('A user disconnected');
-    });
-});
+sockets(io);
 
 // Middleware anonyme pour afficher quelques données sur la requête (utile pour le debug)
 app.use((req, res, next) => {

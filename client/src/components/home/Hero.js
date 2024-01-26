@@ -6,11 +6,11 @@ import Box from "../utils/Box";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import CreateGame from "./CreateGame";
-import GameList from "./GameList";
 
 const Hero = () => {
     const { auth } = useAuth();
     const logout = useLogout();
+    
     const signOut = async () => {
         await logout();
     };

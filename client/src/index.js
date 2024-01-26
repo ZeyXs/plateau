@@ -8,15 +8,15 @@ import { SocketProvider } from './context/SocketProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <AuthProvider>
-        <BrowserRouter>
-            <SocketProvider>
-                <ErrorProvider>
+    <BrowserRouter>
+        <SocketProvider>
+            <ErrorProvider>
+                <AuthProvider>
                     <Routes>
                         <Route path="/*" element={<App />} />
                     </Routes>
-                </ErrorProvider>
-            </SocketProvider>
-        </BrowserRouter>
-    </AuthProvider>,
+                </AuthProvider>
+            </ErrorProvider>
+        </SocketProvider>
+    </BrowserRouter>,
 );
