@@ -71,25 +71,37 @@ const getUserData = async (req, res) => {
     }
 };
 
+const getPlayers = async (req, res) => {
+    try {
+        const game = await Game.findOne({ code: req.params.code });
+        if (!game) return res.status(404).json({ message: 'Game not found.' });
+        let result = {};
+        for(const playerId of game.players.keys()) {
+            const user = await User.findOne({ _id: playerId});
+            result[user.username] = user.profilePicture; 
+        }
+        res.json(result);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
+
+
 // __________ POST TYPE FUNCTIONS __________
 
 const createNewGame = async (req, res) => {
-    
     try {
-
         const { title, size, gameType } = req.body;
-
         if(!title || !size || !gameType) {
             return res
             .status(400)
             .json({ message: 'Title, size and gameType are required' });
         }
-
         const creatorId = await getUserId(req.username);
-        const playerList = {[creatorId]: {active: false, hand: [], timeLeft: -1}};
-
+        const playerList = {};
+        //const playerList = {[creatorId]: {active: false, hand: [], timeLeft: -1}};
         const newGameCode = await generateGameCode();
-
         const game = new Game({
             title: title,
             size: size,
@@ -98,7 +110,7 @@ const createNewGame = async (req, res) => {
             creatorId: creatorId,
             gameState: "IN_LOBBY",
             deck: [],
-            players: {}
+            players: playerList
         });
         const newGame = await game.save();
         res.status(201).json({"message": "Partie créée avec succès !", "code": newGame.code});
@@ -107,4 +119,4 @@ const createNewGame = async (req, res) => {
     }
 };
 
-module.exports = { getAllGames, getGame, getUserData, createNewGame };
+module.exports = { getAllGames, getGame, getUserData, getPlayers, createNewGame };

@@ -9,7 +9,8 @@ router.route('/')
     .get(gameController.getAllGames)
     .post(verifyRoles(ROLES_LIST.User), gameController.createNewGame);
 
-router.route('/:code/:username').get(gameController.getUserData);
+router.route('/:code/players').get(gameController.getPlayers);
+router.route('/:code/players/:username').get(gameController.getUserData);
 router.route('/:code').get(gameController.getGame);
 
 module.exports = router;

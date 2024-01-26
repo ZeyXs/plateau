@@ -19,6 +19,8 @@ const UserSchema = new Schema({
         type: String,
         required: false,
     },
+    profilePicture: { type: String },
+    stats: { type: Map }
 });
 
 module.exports = mongoose.model('users', UserSchema);

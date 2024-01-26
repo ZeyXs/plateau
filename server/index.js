@@ -12,7 +12,6 @@ const app = express();
 const db = process.env.DATABASE_URI;
 const PORT = process.env.PORT || 4000;
 
-
 // Connection à la base de données
 connectDB(db);
 
@@ -52,6 +51,8 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 // - Api
 app.use('/api/game', require('./routes/api/game'));
+app.use('/api/user', require('./routes/api/users'));
+
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

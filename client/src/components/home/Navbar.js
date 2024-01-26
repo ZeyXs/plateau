@@ -5,6 +5,7 @@ import { LuLogIn } from "react-icons/lu";
 import { GiPokerHand } from "react-icons/gi";
 
 import Modal from "../utils/Modal";
+import SearchBar from "../SearchBar";
 
 const Navbar = () => {
     const [nav, setNav] = useState(true);
@@ -25,6 +26,9 @@ const Navbar = () => {
                     <GiPokerHand size={80} color="#984ed4" />
                     <span className="px-4">Plateau</span>
                 </h1>
+                <div>
+                    <SearchBar />
+                </div>
                 <ul className="hidden md:flex items-center h-24">
                     <li className="p-4">
                         <a href="/">Accueil</a>
@@ -70,7 +74,6 @@ const Navbar = () => {
                         <li className="p-4 border-b border-gray-600">
                             Accueil
                         </li>
-                        <li className="p-4">À propos</li>
                     </ul>
                 </div>
             </div>

@@ -1,10 +1,9 @@
 const sockets = io => {
     io.on('connection', socket => {
+
         socket.on('join', code => {
             socket.join(code);
-
             console.log(`🔥 ${socket.id} connected to ${code}`);
-            console.log(socket.rooms);
         });
 
         socket.on('disconnecting', () => {
@@ -18,7 +17,5 @@ const sockets = io => {
 
     return io;
 };
-
-const getRooms = () => {};
 
 module.exports = sockets;

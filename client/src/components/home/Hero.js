@@ -6,6 +6,8 @@ import Box from "../utils/Box";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import CreateGame from "./CreateGame";
+import GameList from "./GameList";
+import Rejoin from "./Rejoin";
 
 const Hero = () => {
     const { auth } = useAuth();
@@ -31,6 +33,7 @@ const Hero = () => {
                         >
                             <div className="px-20 py-[100px]">
                                 <CreateGame />
+                                <Rejoin />
                             </div>
                         </Box>
                         <div className="height-[220px] border-l-[3px] border-gray-400 opacity-25"></div>
@@ -41,6 +44,7 @@ const Hero = () => {
                             icon={<FaList size={20} />}
                             offset="2"
                         >
+                            <GameList />
                             <div className="px-[200px] py-[160px]">
                                 {auth?.accessToken ? (
                                     <p>

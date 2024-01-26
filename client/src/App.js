@@ -6,6 +6,7 @@ import Missing from './components/Missing';
 import Game from './components/Game';
 import Debug from './components/auth/Debug';
 import Home from './components/home/Home';
+import User from './components/User';
 
 import RequireAuth from './components/auth/RequireAuth';
 import PersistLogin from './components/auth/PersistLogin';
@@ -32,6 +33,7 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="unauthorized" element={<Unauthorized />} />
+                <Route path="user/:username" element={<User />}/>
 
                 {/* routes protégées */}
                 <Route element={<PersistLogin />}>

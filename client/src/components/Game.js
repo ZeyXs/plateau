@@ -31,7 +31,7 @@ const Game = () => {
         return () => {
             socket.emit('leave', code);
         };
-    }, [socket, code]);
+    }, [socket]);
 
     return (
         <div className="flex flex-col text-white">

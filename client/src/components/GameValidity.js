@@ -22,7 +22,7 @@ const GameValidity = () => {
             let errorFlags = [];
 
             try {
-                console.log(`Code de la partie : ${code}`);
+                //console.log(`Code de la partie : ${code}`);
                 const response = await axios.get(`/api/game/${code}`);
                 gameData = response.data;
             } catch(err) {
@@ -41,7 +41,7 @@ const GameValidity = () => {
                 }
 
                 try {
-                    const response = await axios.get(`/api/game/${code}/${auth.user}`);
+                    const response = await axios.get(`/api/game/${code}/players/${auth.user}`);
                     playerData = response.data;
                 } catch(err) {
                     // Serveur offline
@@ -51,15 +51,20 @@ const GameValidity = () => {
                     
                 } finally {
 
-                    if(!errorFlags.includes("!PAC_FLAG")) errorFlags.push("PAC_FLAG");
-                    else {
-                        let filtered = errorFlags.filter((flag) => flag != "!PAC_FLAG");
-                        errorFlags = filtered;
-                    }
+                    const playerTryingToReconnect = gameData?.gameState == "IN_GAME" && playerData && !playerData.isActive;
+                    //console.log(playerTryingToReconnect);
+                    //if(playerTryingToReconnect) errorFlags.push("!PAC_FLAG");
 
                     console.log(errorFlags);
 
-                    if(errorFlags.length != 0) {
+                    if(!errorFlags.includes("!PAC_FLAG")) errorFlags.unshift("PAC_FLAG");
+                    else {
+                        let filtered = errorFlags.filter((flag) => (flag != "!PAC_FLAG"));
+                        errorFlags = filtered;
+                    }
+                    
+
+                    if(errorFlags.length != 0 && !playerTryingToReconnect) {
                         let mainError = errorFlags[0];
                         switch(mainError) {
                             case "SD_FLAG":
@@ -103,7 +108,7 @@ const GameValidity = () => {
     return (
         
         isLoading ? <h1>Chargement en cours...</h1> :
-        (!validEntry ? <Navigate to="/" state={{ from: location }} replace /> : <Outlet/>)
+        (!validEntry ? <Navigate to="/home" state={{ from: location }} replace /> : <Outlet/>)
 
     );
 
