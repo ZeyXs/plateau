@@ -7,7 +7,6 @@ import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import CreateGame from "./CreateGame";
 import GameList from "./GameList";
-import Rejoin from "./Rejoin";
 
 const Hero = () => {
     const { auth } = useAuth();
@@ -33,19 +32,19 @@ const Hero = () => {
                         >
                             <div className="px-20 py-[100px]">
                                 <CreateGame />
-                                <Rejoin />
                             </div>
                         </Box>
                         <div className="height-[220px] border-l-[3px] border-gray-400 opacity-25"></div>
                     </div>
-                    <div className="flex flex-col justify-between">
+                    <div className="flex flex-col justify-between w-[460px]">
                         <Box
                             title="Liste des parties"
                             icon={<FaList size={20} />}
                             offset="2"
                         >
+                            <div className="flex-initial h-72 overflow-auto">
                             <GameList />
-                            <div className="px-[200px] py-[160px]">
+                            {/*<div className="px-[200px] py-[160px]">
                                 {auth?.accessToken ? (
                                     <p>
                                         Tu es login !
@@ -59,6 +58,7 @@ const Hero = () => {
                                 ) : (
                                     ""
                                 )}
+                            </div>*/}
                             </div>
                         </Box>
                         <Box

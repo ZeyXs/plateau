@@ -1,6 +1,6 @@
 import { FaInfoCircle } from "react-icons/fa";
 
-const Popup = ({ children, className }) => {
+const Popup = ({ children }) => {
     return (
         <div className="flex flex-col bg-[#0e0e14] bg-opacity-[98%] rounded-lg w-64 px-3 py-2 text-sm">
             <FaInfoCircle size={15} />

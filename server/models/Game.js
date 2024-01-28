@@ -9,7 +9,9 @@ const GameSchema = new Schema({
     creatorId: { type: String, required: true},
     gameState: { type: String },
     deck: { type: Array },
-    players: { type: Map }
+    players: { type: Map },
+    chat: { type: Array, of: String }
 });
+
 
 module.exports = mongoose.model('game', GameSchema);

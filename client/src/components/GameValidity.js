@@ -108,7 +108,7 @@ const GameValidity = () => {
     return (
         
         isLoading ? <h1>Chargement en cours...</h1> :
-        (!validEntry ? <Navigate to="/home" state={{ from: location }} replace /> : <Outlet/>)
+        (!validEntry ? <Navigate to="/" state={{ from: location }} replace /> : <Outlet/>)
 
     );
 

@@ -26,7 +26,6 @@ app.use(cookieParser());
 // Initialisation de Socket.io
 var http = require('http');
 const { Server } = require('socket.io');
-const sockets = require('./socket');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -35,6 +34,7 @@ const io = new Server(server, {
     },
 });
 
+const sockets = require('./socket');
 sockets(io);
 
 // Middleware anonyme pour afficher quelques données sur la requête (utile pour le debug)

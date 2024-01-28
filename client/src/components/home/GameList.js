@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from '../../api/axios';
 
+const gameImg = {
+    "Bataille": "https://media.istockphoto.com/id/1219076346/vector/playing-cards-flat.jpg?s=170667a&w=0&k=20&c=TcWdRZkaXQOmni5_-DRNPpAmc46-XLYqzvZvcVtOSgA=",
+    "SixQuiPrend": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsemyHkoEfs5lGFn5wMFX-TcPHGXniysKxvQ&usqp=CAU",
+};
+
 const GameList = () => {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +43,7 @@ const GameList = () => {
         }
         fetchGameData();
         
+        console.log()
     }, []);
 
     //useEffect(() => {
@@ -49,33 +55,53 @@ const GameList = () => {
 
         isLoading ? <h1>Chargement en cours...</h1> :
         !gameList ? <p>Impossible d'accéder à la liste des parties en cours (API_CURRENTLY_UNAVAILABLE)</p> :
-        <>
-            <section id="gamelist">
-                {gameList.map((game) => (
-                    game.gameState == "IN_LOBBY" ?
-                    <div>
-                        <a style={{textDecoration: 'none'}} href={'/game/'+game.code}>
-                            <p>
-                                <b>{game.title}</b><br/>
-                                <i>{game.gameType}</i>
-                            </p>
-                            <hr/>
-                            <p>{Object.keys(game.players).length}/{game.size}</p>
-                            {Object.entries(playerList.get(game.code)).map((player) => (
-                                <img src={player[1]} title={player[0]} width='30' height='30'/>
-                            ))}
-                        </a>
-                    <br/>
-                    </div>
-                    : <></>
-                ))}
-            </section>
-        </>
-
-
-
+        <div className="flex flex-col p-2 mt-2 space-y-3">
+            {gameList.map((game, i) => (
+                game.gameState == "IN_LOBBY" ? (
+                    <a key={i} href={'/game/'+game.code} className="flex w-full bg-[#231f31] h-20 rounded-lg outline-gray-400 outline outline-0 hover:outline-2 truncate">
+                        <img src={gameImg[game.gameType]} className="flex-initial w-28 object-cover rounded-l-lg" />
+                        <div className="flex flex-col ml-2 justify-evenly w-full">
+                            <span className="font-bold whitespace-nowrap text-left">{game.title}</span>
+                            <div className="flex flex-row justify-between items-center">
+                                <div className="flex -space-x-2 rtl:space-x-reverse">
+                                    {Object.entries(playerList.get(game.code)).map((player, j) => (
+                                        <img key={j} title={player[0]} className="w-7 h-7 border-[1px] border-white rounded-full" src={player[1]} />
+                                    ))}
+                                </div>
+                                <div className="bg-[#1a1724] mr-3 rounded-xl px-4 py-1">
+                                    {Object.keys(game.players).length}/{game.size}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                ) : <></>
+            ))}
+        </div>
     );
 
 }
+
+/*
+<section id="gamelist">
+                    {gameList.map((game) => (
+                        game.gameState == "IN_LOBBY" ?
+                        <div>
+                            <a style={{textDecoration: 'none'}} href={'/game/'+game.code}>
+                                <p>
+                                    <b>{game.title}</b><br/>
+                                    <i>{game.gameType}</i>
+                                </p>
+                                <hr/>
+                                <p>{Object.keys(game.players).length}/{game.size}</p>
+                                {Object.entries(playerList.get(game.code)).map((player) => (
+                                    <img src={player[1]} title={player[0]} width='30' height='30'/>
+                                ))}
+                            </a>
+                        <br/>
+                        </div>
+                        : <></>
+                    ))}
+                </section>
+                */
 
 export default GameList;
