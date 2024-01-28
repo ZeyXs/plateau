@@ -9,12 +9,15 @@ import SearchBar from '../SearchBar';
 import useAuth from '../../hooks/useAuth';
 import axios from '../../api/axios';
 import useLogout from '../../hooks/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const { auth } = useAuth();
     const [nav, setNav] = useState(true);
     const [modal, setModal] = useState(false);
     const [profilePicture, setProfilePicture] = useState('');
+    const navigate = useNavigate();
+    const logout = useLogout();
     
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +32,10 @@ const Navbar = () => {
         fetchData();
     }, []);
     
-    const handdleLogout = useLogout();
+    const handleLogout = () => {
+        logout();
+        navigate("/", { replace: true });
+    }
 
     const handleNav = () => {
         setNav(!nav);
@@ -56,7 +62,7 @@ const Navbar = () => {
                     {auth?.accessToken ? (
                         <div className="flex justify-between whitespace-nowrap items-center">
                             <li className="p-4">
-                                <a href="/login" onClick={handdleLogout} className="flex items-center">
+                                <a onClick={handleLogout} className="flex items-center cursor-pointer">
                                     <LuLogOut size={18} />
                                     <span className="px-2">Déconnexion</span>
                                 </a>

@@ -1,6 +1,7 @@
-import { FaCircleInfo } from 'react-icons/fa6';
+import { FaCheck, FaCircleInfo, FaCross } from 'react-icons/fa6';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa';
 
 const Rejoin = () => {
     const codeToRejoin = localStorage.getItem('brutallyLeft') || '';
@@ -32,8 +33,8 @@ const Rejoin = () => {
                     Souhaitez-vous rejoindre la dernière partie que vous avez
                     quittée ?
                 </div>
-                <button onClick={acceptReconnect}>Oui</button>
-                <button onClick={refuseReconnect}>Non</button>
+                <button className="mx-2 bg-violet-400 hover:bg-violet-500 p-2 rounded-lg" onClick={acceptReconnect}><FaCheck size={15} /></button>
+                <button className="bg-violet-400 hover:bg-violet-500 p-2 rounded-lg" onClick={refuseReconnect}><FaTimes size={15} /></button>
             </div>
         </div>
     );

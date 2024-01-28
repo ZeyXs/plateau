@@ -16,7 +16,7 @@ const GameList = () => {
         let games;
         const fetchGameData = async () => {
             try {
-                const response = await axios.get(`/api/game`);
+                const response = await axios.get(`/api/game/`);
                 games = response?.data;
             } catch(err) {
                 console.log("[GameList.js] Warning: Failed to fetch game list from API.")
@@ -45,11 +45,6 @@ const GameList = () => {
         
         console.log()
     }, []);
-
-    //useEffect(() => {
-    //    console.log(gameList); // Néanmoins là, la requête axios est finie, car on print gameList dès lors qu'elle est modifiée (d'où le useEffect)
-    //}, [gameList]);
-
 
     return (
 
@@ -80,28 +75,5 @@ const GameList = () => {
     );
 
 }
-
-/*
-<section id="gamelist">
-                    {gameList.map((game) => (
-                        game.gameState == "IN_LOBBY" ?
-                        <div>
-                            <a style={{textDecoration: 'none'}} href={'/game/'+game.code}>
-                                <p>
-                                    <b>{game.title}</b><br/>
-                                    <i>{game.gameType}</i>
-                                </p>
-                                <hr/>
-                                <p>{Object.keys(game.players).length}/{game.size}</p>
-                                {Object.entries(playerList.get(game.code)).map((player) => (
-                                    <img src={player[1]} title={player[0]} width='30' height='30'/>
-                                ))}
-                            </a>
-                        <br/>
-                        </div>
-                        : <></>
-                    ))}
-                </section>
-                */
 
 export default GameList;

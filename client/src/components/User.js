@@ -37,24 +37,25 @@ const User = () => {
         isLoading ? <p>Chargement en cours...</p> :
         isServerDown ? <p>Failed to fetch user data from API. (API_UNAVAILABLE)</p> :
         (Object.keys(userData).length == 0) ? <p>Désolé, nous n'avons pas trouvé d'utilisateur nommé {username}.</p> :
-            <div>
-                <h1>{userData.username}</h1>
-                <h4>Id: <i>{userData._id}</i></h4>
-                <img src={userData.profilePicture} width="100" height="100"/>
-                <hr/>
-                <ul>
-                {Object.entries(userData.stats).map((game) => (
-                    <li>
-                        <h3><u>{game[0]}</u></h3>
-                        <ul style={{"paddingLeft": "30px"}}>
-                            {Object.entries(game[1]).map((stats) => (
-                                <li><b>{stats[0]}</b> : {stats[1]}</li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-                </ul>
-
+            <div className="text-white h-[100vh] text-center flex flex-col space-y-5">
+                <div className="my-auto">
+                    <h1>{userData.username}</h1>
+                    <h4>Id: <i>{userData._id}</i></h4>
+                    <img src={userData.profilePicture} width="100" height="100" className="mx-auto"/>
+                    <hr/>
+                    <ul>
+                    {Object.entries(userData.stats).map((game) => (
+                        <li>
+                            <h3><u>{game[0]}</u></h3>
+                            <ul style={{"paddingLeft": "30px"}}>
+                                {Object.entries(game[1]).map((stats) => (
+                                    <li><b>{stats[0]}</b> : {stats[1]}</li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                    </ul>
+                </div>
 
             </div>
     );

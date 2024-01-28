@@ -173,7 +173,7 @@ const sockets = io => {
             // Génération d'une instance (si nécessaire)
             if(!Object.keys(roomToGame).includes(room)) {
                 // appel du constructeur
-                // + ajouter l'instance à roomToGame 
+                // + ajouter l'instance à roomToGame
             } else {
                 // Ajout du joueur dans l'attribut des joueurs
                 // /!\ Attention au cas où le joueur est déjà présent dans la partie
@@ -280,7 +280,7 @@ const sockets = io => {
         Returns: null
         */
         socket.on('disconnecting', () => {
-            console.log("[NOTIF] disconnecting recieved");
+            console.log("[NOTIF] disconnecting received");
             //socket.emit('server.approvedDisconnection');
         });
     });

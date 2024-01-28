@@ -34,6 +34,20 @@ const getUser = async (req, res) => {
     }
 };
 
+const getUserFromId = async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const user = await User.findOne({ _id: req.params.id });
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        if(HIDE_PLAYERS_PASSWORD)  user.password = undefined;
+        if(HIDE_PLAYERS_ROLES) user.roles = undefined;
+        if(HIDE_PLAYERS_REFRESH_TOKEN) user.refreshToken = undefined;
+        res.json(user);
+    } catch (err) {
+        res.status(500).send(err.message);
+    } 
+}
+
 // POST
 /*
 const createNewUser = async (req, res) => {
@@ -50,4 +64,4 @@ const createNewUser = async (req, res) => {
 };
 */
 
-module.exports = { getAllUsers, getUser/*, createNewUser*/ };
+module.exports = { getAllUsers, getUser, getUserFromId/*, createNewUser*/ };

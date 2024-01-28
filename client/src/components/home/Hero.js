@@ -1,17 +1,17 @@
-import { GiPerspectiveDiceSixFacesThree } from "react-icons/gi";
-import { FaList } from "react-icons/fa6";
-import { MdAddBox } from "react-icons/md";
+import { GiPerspectiveDiceSixFacesThree } from 'react-icons/gi';
+import { FaList } from 'react-icons/fa6';
+import { MdAddBox } from 'react-icons/md';
 
-import Box from "../utils/Box";
-import useAuth from "../../hooks/useAuth";
-import useLogout from "../../hooks/useLogout";
-import CreateGame from "./CreateGame";
-import GameList from "./GameList";
+import Box from '../utils/Box';
+import useAuth from '../../hooks/useAuth';
+import useLogout from '../../hooks/useLogout';
+import CreateGame from './CreateGame';
+import GameList from './GameList';
 
 const Hero = () => {
     const { auth } = useAuth();
     const logout = useLogout();
-    
+
     const signOut = async () => {
         await logout();
     };
@@ -28,8 +28,7 @@ const Hero = () => {
                                     size={29}
                                     color="#fff"
                                 />
-                            }
-                        >
+                            }>
                             <div className="px-20 py-[100px]">
                                 <CreateGame />
                             </div>
@@ -40,31 +39,14 @@ const Hero = () => {
                         <Box
                             title="Liste des parties"
                             icon={<FaList size={20} />}
-                            offset="2"
-                        >
+                            offset="2">
                             <div className="flex-initial h-72 overflow-auto">
-                            <GameList />
-                            {/*<div className="px-[200px] py-[160px]">
-                                {auth?.accessToken ? (
-                                    <p>
-                                        Tu es login !
-                                        <button
-                                            className="underline px-2"
-                                            onClick={signOut}
-                                        >
-                                            Se déconnecter
-                                        </button>
-                                    </p>
-                                ) : (
-                                    ""
-                                )}
-                            </div>*/}
+                                <GameList />
                             </div>
                         </Box>
                         <Box
                             title="Rejoindre une partie"
-                            icon={<MdAddBox size={23} />}
-                        >
+                            icon={<MdAddBox size={23} />}>
                             <div className="flex flex-row space-x-4 justify-center items-center">
                                 <input
                                     type="text"
@@ -74,8 +56,7 @@ const Hero = () => {
                                     required
                                 />
                                 <button
-                                    className={`text-white bg-gradient-to-r from-yellow-500 to-yellow-300 w-[120px] h-10 rounded-3xl my-4 mx-auto`}
-                                >
+                                    className={`text-white bg-gradient-to-r from-yellow-500 to-yellow-300 w-[120px] h-10 rounded-3xl my-4 mx-auto`}>
                                     <div className="flex justify-center items-center">
                                         <span className="font-bold px-[5px]">
                                             Jouer !

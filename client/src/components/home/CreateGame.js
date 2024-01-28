@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const GAME_LIST = ["Bataille"];
 
 const CreateGame = () => {
     const { auth } = useAuth();
     const navigate = useNavigate();
-
+    const axiosPrivate = useAxiosPrivate();
+    
     // Variables champs de saisie
     const [gameTitle, setGameTitle] = useState("");
     const [gameType, setGameType] = useState("Bataille");
@@ -30,19 +32,13 @@ const CreateGame = () => {
             );
         else {
             try {
-                const response = await axios.post(
+                const response = await axiosPrivate.post(
                     "/api/game",
                     JSON.stringify({
                         title: gameTitle,
                         size: gameSize,
                         gameType: gameType,
-                    }),
-                    {
-                        headers: {
-                            Authorization: `Bearer ${auth.accessToken}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
+                    })
                 );
                 setGameTitle("");
                 setGameType("Bataille");

@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
-  const socket = io('http://localhost:4000');
+  const { socket } = require('../socket');
 
   return (
     <SocketContext.Provider value={socket}>
