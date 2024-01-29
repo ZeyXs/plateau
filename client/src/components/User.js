@@ -34,9 +34,9 @@ const User = () => {
 
     return (
 
-        isLoading ? <p>Chargement en cours...</p> :
-        isServerDown ? <p>Failed to fetch user data from API. (API_UNAVAILABLE)</p> :
-        (Object.keys(userData).length == 0) ? <p>Désolé, nous n'avons pas trouvé d'utilisateur nommé {username}.</p> :
+        isLoading ? <p className="text-white">Chargement en cours...</p> :
+        isServerDown ? <p className="text-white">Failed to fetch user data from API. (API_UNAVAILABLE)</p> :
+        (Object.keys(userData).length == 0) ?  <p className="text-white" >Désolé, nous n'avons pas trouvé d'utilisateur nommé {username}.</p> :
             <div className="text-white h-[100vh] text-center flex flex-col space-y-5">
                 <div className="my-auto">
                     <h1>{userData.username}</h1>
