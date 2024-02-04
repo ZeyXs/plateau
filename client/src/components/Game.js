@@ -52,7 +52,6 @@ const Game = () => {
 
     useEffect(() => {    
         const cleanup = () => {
-            localStorage.setItem('brutallyLeft', code);
             handleLeave();
         };
         
@@ -98,11 +97,11 @@ const Game = () => {
         /*
         _____ Message: 'server.addToLocalStorage' _____
         In params: { code }
+        */
         socket.on('server.addToLocalStorage', (data) => {
             console.log("Recieved 'server.leaveSuccess'");
             localStorage.setItem("brutallyLeft", data.code);
         });
-        */
 
         /*
         _____ Message: 'server.approvedDisconnection' _____
@@ -147,7 +146,7 @@ const Game = () => {
                         Code de la partie : <b>{code}</b>
                     </p>
                 </div>
-                <p className="px-3 py-1 rounded-xl bg-slate-600">
+                <p className="px-3 py-1  rounded-xl bg-slate-600">
                     {playerNumber} {playerNumber > 1 ? "joueurs" : "joueur"}
                 </p>
                 <p className="text-lg">{gameTitle}</p>
