@@ -148,7 +148,7 @@ const Game = () => {
                     </p>
                 </div>
                 <p className="px-3 py-1 rounded-xl bg-slate-600">
-                    {playerNumber}
+                    {playerNumber} {playerNumber > 1 ? "joueurs" : "joueur"}
                 </p>
                 <p className="text-lg">{gameTitle}</p>
             </div>

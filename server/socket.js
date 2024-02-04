@@ -274,6 +274,7 @@ const sockets = io => {
                 socket.emit('server.leaveSuccess');
                 const newMessage = `👤 ${username} left the game.`
                 io.to(code).emit('server.updateChat', { message: newMessage });
+                io.to(code).emit('server.updatePlayerNumber', { playerNumber: Object.keys(gameData.players.toJSON()).length-1 });
                 addMessage(code, newMessage);
 
                 // Ajouter le retrait du joueur dans l'instance concernée
