@@ -50,7 +50,8 @@ app.use('/auth', require('./routes/auth'));
 app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 // - Api
-app.use('/api/game', require('./routes/api/game'));
+const gameRoutes = require('./routes/api/game')(io);
+app.use('/api/game', gameRoutes);
 app.use('/api/user', require('./routes/api/users'));
 
 

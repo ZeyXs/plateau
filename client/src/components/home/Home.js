@@ -2,7 +2,6 @@ import Hero from './Hero';
 import Navbar from './Navbar';
 import useGlobalErr from '../../hooks/useGlobalErr';
 import { FaCircleInfo } from "react-icons/fa6";
-import CSSTransition from "react-transition-group/CSSTransition"
 import Rejoin from './Rejoin';
 
 

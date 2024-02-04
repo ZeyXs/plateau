@@ -3,10 +3,13 @@ import useAuth from "../../hooks/useAuth";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useSocket from "../../hooks/useSocket";
 
 const GAME_LIST = ["Bataille"];
 
 const CreateGame = () => {
+
+    const socket = useSocket();
     const { auth } = useAuth();
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
@@ -45,9 +48,9 @@ const CreateGame = () => {
                 setGameSize(2);
                 const gameCode = response.data.code;
                 navigate(`/game/${gameCode}`, { replace: true });
+                //socket.emit("client.refreshGameList");
             } catch (err) {
                 console.log(err);
-
                 if (!err?.response) setErrMessage("Pas de réponse du serveur");
                 else if (err.response?.status === 400)
                     setErrMessage(
