@@ -99,7 +99,6 @@ const Game = () => {
         In params: { code }
         */
         socket.on('server.addToLocalStorage', (data) => {
-            console.log("Recieved 'server.leaveSuccess'");
             localStorage.setItem("brutallyLeft", data.code);
         });
 

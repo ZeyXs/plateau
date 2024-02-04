@@ -152,16 +152,6 @@ const sockets = io => {
 
         /*
         _____ Message: 'client.join' _____
-        In params: null
-        Returns: null
-        
-        socket.on('client.refreshGameList', () => {
-            socket.broadcast.emit("server.refreshGameList");
-        });
-        */
-
-        /*
-        _____ Message: 'client.join' _____
         In params: { code, username }
         Returns:
             [UNIQUE EMIT] - 'server.joinSuccess' -> { gameTitle, gameType, gameState, chat }
@@ -258,13 +248,14 @@ const sockets = io => {
                 delete roomToGame[code];
                 io.to(code).emit('server.leaveSuccess');
                 deleteGame(code);
-                io.emit('server.refreshGameList');
+                socket.broadcast.emit('server.refreshGameList');
             }
             
             else {
                 // Si le joueur quitte le lobby
                 if(gameData.gameState == "IN_LOBBY") await removePlayerFromGame(code, username);
 
+                
                 // Si le joueur quitte in-game
                 else {
                     await disconnectPlayerFromGame(code, username);
