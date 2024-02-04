@@ -1,19 +1,19 @@
 import { GiPerspectiveDiceSixFacesThree } from 'react-icons/gi';
 import { FaList } from 'react-icons/fa6';
 import { MdAddBox } from 'react-icons/md';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '../utils/Box';
-import useAuth from '../../hooks/useAuth';
-import useLogout from '../../hooks/useLogout';
 import CreateGame from './CreateGame';
 import GameList from './GameList';
 
 const Hero = () => {
-    const { auth } = useAuth();
-    const logout = useLogout();
+    const navigate = useNavigate();
+    const [codeToJoin, setCodeToJoin] = useState("");
 
-    const signOut = async () => {
-        await logout();
+    const handleNavigate = () => {
+        navigate(`/game/${codeToJoin}`, { replace: true });
     };
 
     return (
@@ -52,10 +52,14 @@ const Hero = () => {
                                     type="text"
                                     id="code"
                                     className="bg-gray-200 text-gray-900 text-sm rounded-3xl block w-[200px] h-10 p-2.5"
-                                    placeholder="ZAPJ..."
+                                    placeholder="XXXXX..."
+                                    maxLength={5}
+                                    onChange={(e) => setCodeToJoin(e.target.value)}
+                                    value={codeToJoin.toUpperCase()}
                                     required
                                 />
                                 <button
+                                    onClick={handleNavigate}
                                     className={`text-white bg-gradient-to-r from-yellow-500 to-yellow-300 w-[120px] h-10 rounded-3xl my-4 mx-auto`}>
                                     <div className="flex justify-center items-center">
                                         <span className="font-bold px-[5px]">
