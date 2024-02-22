@@ -1,28 +1,45 @@
-import { createContext, useState } from 'react';
+import { createContext, useState } from "react";
+import useSocket from "../hooks/useSocket";
 
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-    const [gameTitle, setGameTitle] = useState('');
-    const [gameType, setGameType] = useState('');
-    const [gameState, setGameState] = useState('');
+    const { socket } = useSocket();
+
+    const [gameTitle, setGameTitle] = useState("");
+    const [gameType, setGameType] = useState("");
+    const [gameState, setGameState] = useState("");
     const [chat, setChat] = useState([]);
     const [playerNumber, setPlayerNumber] = useState(0);
 
-    const socketEmit = (channel, code, body) => {
+    const socketEmit = (channel, code, data) => {
         const message = {
             headers: {
                 code: code,
                 gameType: gameType,
                 channel: channel,
             },
-            body: body,
+            body: data,
         };
         socket.emit(channel, message);
     };
 
     return (
-        <GameContext.Provider value={{ gameTitle, setGameTitle, gameType, setGameType, gameState, setGameState, chat, setChat, playerNumber, setPlayerNumber }}>
+        <GameContext.Provider
+            value={{
+                gameTitle,
+                setGameTitle,
+                gameType,
+                setGameType,
+                gameState,
+                setGameState,
+                chat,
+                setChat,
+                playerNumber,
+                setPlayerNumber,
+                socketEmit,
+            }}
+        >
             {children}
         </GameContext.Provider>
     );

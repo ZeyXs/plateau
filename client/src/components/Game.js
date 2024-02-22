@@ -23,8 +23,13 @@ const Game = () => {
         chat,
         setChat,
         playerNumber,
-        setPlayerNumber
+        setPlayerNumber,
+        socketEmit
     } = useContext(GameContext);
+
+    const emit = (channel, data) => {
+        socketEmit(channel, code, data);
+    }
 
     const [newMessage, setNewMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
