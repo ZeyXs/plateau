@@ -4,7 +4,6 @@ import useGlobalErr from '../../hooks/useGlobalErr';
 import { FaCircleInfo } from "react-icons/fa6";
 import Rejoin from './Rejoin';
 
-
 const Home = () => {
     const { globalErr } = useGlobalErr();
 

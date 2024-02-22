@@ -16,6 +16,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import './index.css';
 import GameValidity from './components/GameValidity';
+import { GameProvider } from './context/GameProvider';
 
 const ROLES = {
     User: 2001,
@@ -45,7 +46,7 @@ function App() {
                     
                     <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                         <Route element={<GameValidity />}>
-                            <Route path="game/:code" element={<Game />} />
+                            <Route path="game/:code" element={<GameProvider><Game /></GameProvider>} />
                         </Route>
                     </Route>
                     <Route path="game/" element={<Navigate to="/" state={{ from: location }} />}></Route>

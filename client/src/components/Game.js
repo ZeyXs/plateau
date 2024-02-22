@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaUnlockAlt } from 'react-icons/fa';
+import { IoMdSend } from "react-icons/io";
+
 import useSocket from '../hooks/useSocket';
 import useAuth from '../hooks/useAuth';
-import { IoMdSend } from "react-icons/io";
-import axios from '../api/axios';
-
+import GameContext from '../context/GameProvider';
 
 const Game = () => {
     const { auth } = useAuth();
@@ -13,11 +13,18 @@ const Game = () => {
     const { code } = useParams();
     const navigate = useNavigate();
 
-    const [gameTitle, setGameTitle] = useState('');
-    const [gameType, setGameType] = useState('');
-    const [gameState, setGameState] = useState('');
-    const [chat, setChat] = useState([]);
-    const [playerNumber, setPlayerNumber] = useState(0);
+    const {
+        gameTitle,
+        setGameTitle,
+        gameType,
+        setGameType,
+        gameState,
+        setGameState,
+        chat,
+        setChat,
+        playerNumber,
+        setPlayerNumber
+    } = useContext(GameContext);
 
     const [newMessage, setNewMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -157,9 +164,9 @@ const Game = () => {
                     {isLoading ? (
                         <p>Chargement en cours...</p>
                     ) : gameType == 'Bataille' ? (
-                        <p>Bataille{/* <Bataille/> */}</p>
+                        <p>Bataille{/*<Bataille/>*/}</p>
                     ) : gameType == 'SixQuiPrend' ? (
-                        <p>SixQuiPrend{/* <SixQuiPrend/> */}</p>
+                        <p>SixQuiPrend{/*<SixQuiPrend/>*/}</p>
                     ) : (
                         <p>Erreur</p>
                     )}
