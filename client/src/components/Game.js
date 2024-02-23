@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUnlockAlt } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 
@@ -7,6 +7,7 @@ import useSocket from "../hooks/useSocket";
 import useAuth from "../hooks/useAuth";
 import useGame from "../hooks/useGame";
 import Lobby from "./games/Lobby";
+import axios from "../api/axios";
 
 const Game = () => {
     const { auth } = useAuth();
@@ -60,6 +61,13 @@ const Game = () => {
         emit("client.leave", { code: code, username: auth.user });
     };
 
+    const updatePlayers = async () => {
+        await axios.get(`/api/game/${code}/players`).then((res) => {
+            console.log('[Game.js] res.data ', res.data);
+            setPlayers(res.data);
+        });
+    }
+
     useEffect(() => {
         const cleanup = () => {
             handleLeave();
@@ -73,17 +81,18 @@ const Game = () => {
     }, []);
 
     useEffect(() => {
+
         /*
         _____ Message: 'server.joinSuccess' _____
         In params: { gameTitle, gameType, gameState, chat }
         */
         socket.on("server.joinSuccess", (data) => {
-            console.log("Recieved 'server.joinSuccess'");
+            console.log("Received 'server.joinSuccess'");
             setGameTitle(data.gameTitle);
             setGameType(data.gameType);
             setGameState(data.gameState);
-            setPlayers(Object.keys(data.players));
             setChat(data.chat);
+            updatePlayers();
             setIsLoading(false);
         });
 
@@ -124,16 +133,6 @@ const Game = () => {
 
         emit("client.join", { code: code, username: auth.user });
     }, []);
-
-    /*
-    useEffect(() => {
-
-        return () => {
-            emit('leave', code);
-        };
-
-    }, [socket]);
-*/
 
     return (
         <div className="flex flex-col text-white">

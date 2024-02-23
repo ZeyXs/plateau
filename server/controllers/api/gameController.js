@@ -62,6 +62,22 @@ const getGameController = (io) => {
         }
     };
 
+    const getUserDataFromId = async (req, res) => {
+        try {
+            const game = await Game.findOne({ code: req.params.code });
+            if (!game)
+                return res.status(404).json({ message: "Game not found." });
+            if (HIDE_PLAYERS_HAND) hidePlayersHand(game);
+            const userId = req.params.id;
+            const userData = game.players.get(userId);
+            if (!userId || !userData)
+                return res.status(404).json({ message: "User not found." });
+            res.json(userData);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    }
+
     const getUserData = async (req, res) => {
         try {
             const game = await Game.findOne({ code: req.params.code });
@@ -133,6 +149,7 @@ const getGameController = (io) => {
     return {
         getAllGames,
         getGame,
+        getUserDataFromId,
         getUserData,
         getPlayers,
         createNewGame,

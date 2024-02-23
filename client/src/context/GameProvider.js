@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import useSocket from "../hooks/useSocket";
 import { useParams } from "react-router-dom";
+import axios from "../api/axios";
 
 const GameContext = createContext();
 
@@ -13,7 +14,7 @@ export const GameProvider = ({ children }) => {
     const [gameState, setGameState] = useState("");
     const [chat, setChat] = useState([]);
     const [playerNumber, setPlayerNumber] = useState(0);
-    const [players, setPlayers] = useState([]);
+    const [players, setPlayers] = useState({});
 
     const emit = (channel, data) => {
         const message = {

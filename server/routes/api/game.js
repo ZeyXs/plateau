@@ -13,6 +13,7 @@ module.exports = (io) => {
         .post(verifyRoles(ROLES_LIST.User), gameController.createNewGame);
 
     router.route('/:code/players').get(gameController.getPlayers);
+    router.route('/:code/players/id/:id').get(gameController.getUserDataFromId);
     router.route('/:code/players/:username').get(gameController.getUserData);
     router.route('/:code').get(gameController.getGame);
 
