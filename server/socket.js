@@ -43,7 +43,16 @@ const basicSocketHandler = (io, socket, data) => {
 };
 
 const batailleSocketHandler = (io, socket, data) => {
-    console.log("");
+    const headers = data.headers;
+    const code = headers.code;
+    const channel = headers.channel;
+    const gameInstance = roomToGame[code];
+    switch (channel) {
+        case "client.start":
+            break;
+        case "client.selectedCard":
+            break;
+    }
 };
 
 const sixQuiPrendSocketHandler = (io, socket, data) => {

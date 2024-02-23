@@ -1,19 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { FaUnlockAlt } from 'react-icons/fa';
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { FaUnlockAlt } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 
-import useSocket from '../hooks/useSocket';
-import useAuth from '../hooks/useAuth';
-import useGame from '../hooks/useGame';
+import useSocket from "../hooks/useSocket";
+import useAuth from "../hooks/useAuth";
+import useGame from "../hooks/useGame";
+import Lobby from "./games/Lobby";
 
 const Game = () => {
     const { auth } = useAuth();
     const socket = useSocket();
-    const { code } = useParams();
     const navigate = useNavigate();
 
     const {
+        code,
         gameTitle,
         setGameTitle,
         gameType,
@@ -24,55 +25,50 @@ const Game = () => {
         setChat,
         playerNumber,
         setPlayerNumber,
-        socketEmit
+        players,
+        setPlayers,
+        emit,
     } = useGame();
 
-    const emit = (channel, data) => {
-        socketEmit(channel, code, data);
-    }
-
-    const [newMessage, setNewMessage] = useState('');
+    const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     const handleSendMessage = () => {
         if (newMessage) {
-            emit('client.sendMessage', {
+            emit("client.sendMessage", {
                 code: code,
                 username: auth.user,
                 message: newMessage,
             });
-            setNewMessage('');
+            setNewMessage("");
         }
     };
 
     const handleKeyDownSendMessage = (e) => {
         setNewMessage(e.target.value);
-        if (newMessage && e.key === 'Enter') {
-            emit('client.sendMessage', {
+        if (newMessage && e.key === "Enter") {
+            emit("client.sendMessage", {
                 code: code,
                 username: auth.user,
                 message: newMessage,
             });
-            setNewMessage('');
+            setNewMessage("");
         }
     };
 
-
     const handleLeave = () => {
-        emit('client.leave', { code: code, username: auth.user });
+        emit("client.leave", { code: code, username: auth.user });
     };
 
-    useEffect(() => {   
-        console.log(socket);
-        
+    useEffect(() => {
         const cleanup = () => {
             handleLeave();
         };
-        
-        window.addEventListener('beforeunload', cleanup);
-    
+
+        window.addEventListener("beforeunload", cleanup);
+
         return () => {
-            window.removeEventListener('beforeunload', cleanup);
+            window.removeEventListener("beforeunload", cleanup);
         };
     }, []);
 
@@ -81,11 +77,12 @@ const Game = () => {
         _____ Message: 'server.joinSuccess' _____
         In params: { gameTitle, gameType, gameState, chat }
         */
-        socket.on('server.joinSuccess', data => {
+        socket.on("server.joinSuccess", (data) => {
             console.log("Recieved 'server.joinSuccess'");
             setGameTitle(data.gameTitle);
             setGameType(data.gameType);
             setGameState(data.gameState);
+            setPlayers(Object.keys(data.players));
             setChat(data.chat);
             setIsLoading(false);
         });
@@ -94,16 +91,16 @@ const Game = () => {
         _____ Message: 'server.updateChat' _____
         In params: { message }
         */
-        socket.on('server.updateChat', data => {
+        socket.on("server.updateChat", (data) => {
             console.log("Recieved 'server.updateChat'");
-            setChat(prev => [...prev, data.message]);
+            setChat((prev) => [...prev, data.message]);
         });
 
         /*
         _____ Message: 'server.updatePlayerNumber' _____
         In params: { playerNumber }
         */
-        socket.on('server.updatePlayerNumber', data => {
+        socket.on("server.updatePlayerNumber", (data) => {
             console.log("Recieved 'server.updatePlayerNumber'");
             setPlayerNumber(data.playerNumber);
         });
@@ -112,30 +109,20 @@ const Game = () => {
         _____ Message: 'server.addToLocalStorage' _____
         In params: { code }
         */
-        socket.on('server.addToLocalStorage', (data) => {
+        socket.on("server.addToLocalStorage", (data) => {
             localStorage.setItem("brutallyLeft", data.code);
         });
-
-        /*
-        _____ Message: 'server.approvedDisconnection' _____
-        In params: null
-        socket.on('server.approvedDisconnection', () => {
-            console.log("Recieved 'server.approvedDisconnection'");
-            alert("AAAAAAAAAAA");
-            emit('client.leave', { code: code, username: auth.user });
-        });
-        */
 
         /*
         _____ Message: 'server.leaveSuccess' _____
         In params: null
         */
-        socket.on('server.leaveSuccess', data => {
+        socket.on("server.leaveSuccess", (data) => {
             console.log("Recieved 'server.leaveSuccess'");
-            navigate('/', { replace: true });
+            navigate("/", { replace: true });
         });
 
-        emit('client.join', { code: code, username: auth.user });
+        emit("client.join", { code: code, username: auth.user });
     }, []);
 
     /*
@@ -167,12 +154,15 @@ const Game = () => {
             <div className="flex flex-2 flex-row flex-grow">
                 <div
                     className="flex-1 text-white text-3xl"
-                    style={{ height: 'calc(100vh - 60px)' }}>
+                    style={{ height: "calc(100vh - 60px)" }}
+                >
                     {isLoading ? (
                         <p>Chargement en cours...</p>
-                    ) : gameType == 'Bataille' ? (
+                    ) : gameState == "IN_LOBBY" ? (
+                        <Lobby />
+                    ) : gameType == "Bataille" ? (
                         <p>Bataille{/*<Bataille/>*/}</p>
-                    ) : gameType == 'SixQuiPrend' ? (
+                    ) : gameType == "SixQuiPrend" ? (
                         <p>SixQuiPrend{/*<SixQuiPrend/>*/}</p>
                     ) : (
                         <p>Erreur</p>
@@ -180,7 +170,8 @@ const Game = () => {
                 </div>
                 <div
                     className="flex-initial w-80 bg-[#27273c] overflow-auto flex flex-col"
-                    style={{ height: 'calc(100vh - 60px)' }}>
+                    style={{ height: "calc(100vh - 60px)" }}
+                >
                     <div className="flex-grow overflow-auto ">
                         {chat.map((msg, i) => (
                             <p key={i} className="text-gray-300">
@@ -193,11 +184,16 @@ const Game = () => {
                             className="text-sm py-4 w-full ps-1 border border-gray-300 rounded-t-md"
                             type="text"
                             placeholder="Taper votre message…"
-                            onChange={e => setNewMessage(e.target.value)}
+                            onChange={(e) => setNewMessage(e.target.value)}
                             value={newMessage}
                             onKeyDown={handleKeyDownSendMessage}
                         />
-                        <button onClick={handleSendMessage} className="bg-violet-500 text-white px-4 py-2 rounded-t-md focus:outline-none"><IoMdSend size={25}/></button>
+                        <button
+                            onClick={handleSendMessage}
+                            className="bg-violet-500 text-white px-4 py-2 rounded-t-md focus:outline-none"
+                        >
+                            <IoMdSend size={25} />
+                        </button>
                         {/*<button onClick={handleLeave} className="bg-red-500 text-white px-4 py-2">Quitter</button>*/}
                     </div>
                 </div>

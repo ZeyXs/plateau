@@ -1,18 +1,21 @@
 import { createContext, useState } from "react";
 import useSocket from "../hooks/useSocket";
+import { useParams } from "react-router-dom";
 
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
     const socket = useSocket();
+    const { code } = useParams();
 
     const [gameTitle, setGameTitle] = useState("");
     const [gameType, setGameType] = useState("");
     const [gameState, setGameState] = useState("");
     const [chat, setChat] = useState([]);
     const [playerNumber, setPlayerNumber] = useState(0);
+    const [players, setPlayers] = useState([]);
 
-    const socketEmit = (channel, code, data) => {
+    const emit = (channel, data) => {
         const message = {
             headers: {
                 code: code,
@@ -27,6 +30,7 @@ export const GameProvider = ({ children }) => {
     return (
         <GameContext.Provider
             value={{
+                code,
                 gameTitle,
                 setGameTitle,
                 gameType,
@@ -37,7 +41,9 @@ export const GameProvider = ({ children }) => {
                 setChat,
                 playerNumber,
                 setPlayerNumber,
-                socketEmit,
+                players,
+                setPlayers,
+                emit,
             }}
         >
             {children}

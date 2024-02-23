@@ -12,10 +12,9 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     console.log(`[NOTIF] ${username} joined ${code}`);
 
     // Génération d'une instance (si nécessaire)
-    if(gameInstance == undefined) { /* !Object.keys(roomToGame).includes(code) */
+    if(gameInstance == undefined) {
         let data = await getGameData(code);
-        console.log(data);
-        roomToGame[code] = await generateGameInstance(data); // appel du constructeur + ajouter l'instance à roomToGame
+        roomToGame[code] = await generateGameInstance(data);
         gameInstance = roomToGame[code];
     }
     await gameInstance.addPlayer(username);
@@ -25,6 +24,7 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
         gameTitle: gameInstance.getTitle(),
         gameType: gameInstance.getGameType(),
         gameState: gameInstance.getGameState(),
+        players: gameInstance.getPlayers(),
         chat: gameInstance.getChat()
     });
 
@@ -34,8 +34,6 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     io.to(code).emit('server.updateChat', { message: joiningMessage });
 
     // Envoi du nouveau nombre de joueurs
-    console.log(gameInstance.getPlayers());
-    console.log(Object.keys(gameInstance.getPlayers()).length);
     io.to(code).emit('server.updatePlayerNumber', { playerNumber: Object.keys(gameInstance.getPlayers()).length });
 
 }
