@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useSocket from "../../hooks/useSocket";
 
 const GAME_LIST = ["Bataille"];
 
 const CreateGame = () => {
 
-    const socket = useSocket();
     const { auth } = useAuth();
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();

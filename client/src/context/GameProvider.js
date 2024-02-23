@@ -4,7 +4,7 @@ import useSocket from "../hooks/useSocket";
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-    const { socket } = useSocket();
+    const socket = useSocket();
 
     const [gameTitle, setGameTitle] = useState("");
     const [gameType, setGameType] = useState("");
@@ -21,7 +21,7 @@ export const GameProvider = ({ children }) => {
             },
             body: data,
         };
-        socket.emit(channel, message);
+        socket.emit("client.message", message);
     };
 
     return (

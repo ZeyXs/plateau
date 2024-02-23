@@ -5,7 +5,7 @@ import { IoMdSend } from "react-icons/io";
 
 import useSocket from '../hooks/useSocket';
 import useAuth from '../hooks/useAuth';
-import GameContext from '../context/GameProvider';
+import useGame from '../hooks/useGame';
 
 const Game = () => {
     const { auth } = useAuth();
@@ -25,7 +25,7 @@ const Game = () => {
         playerNumber,
         setPlayerNumber,
         socketEmit
-    } = useContext(GameContext);
+    } = useGame();
 
     const emit = (channel, data) => {
         socketEmit(channel, code, data);
@@ -36,7 +36,7 @@ const Game = () => {
 
     const handleSendMessage = () => {
         if (newMessage) {
-            socket.emit('client.sendMessage', {
+            emit('client.sendMessage', {
                 code: code,
                 username: auth.user,
                 message: newMessage,
@@ -48,7 +48,7 @@ const Game = () => {
     const handleKeyDownSendMessage = (e) => {
         setNewMessage(e.target.value);
         if (newMessage && e.key === 'Enter') {
-            socket.emit('client.sendMessage', {
+            emit('client.sendMessage', {
                 code: code,
                 username: auth.user,
                 message: newMessage,
@@ -59,10 +59,12 @@ const Game = () => {
 
 
     const handleLeave = () => {
-        socket.emit('client.leave', { code: code, username: auth.user });
+        emit('client.leave', { code: code, username: auth.user });
     };
 
-    useEffect(() => {    
+    useEffect(() => {   
+        console.log(socket);
+        
         const cleanup = () => {
             handleLeave();
         };
@@ -120,7 +122,7 @@ const Game = () => {
         socket.on('server.approvedDisconnection', () => {
             console.log("Recieved 'server.approvedDisconnection'");
             alert("AAAAAAAAAAA");
-            socket.emit('client.leave', { code: code, username: auth.user });
+            emit('client.leave', { code: code, username: auth.user });
         });
         */
 
@@ -133,14 +135,14 @@ const Game = () => {
             navigate('/', { replace: true });
         });
 
-        socket.emit('client.join', { code: code, username: auth.user });
+        emit('client.join', { code: code, username: auth.user });
     }, []);
 
     /*
     useEffect(() => {
 
         return () => {
-            socket.emit('leave', code);
+            emit('leave', code);
         };
 
     }, [socket]);
