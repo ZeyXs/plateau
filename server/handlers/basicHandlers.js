@@ -51,6 +51,7 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     // Envoi du nouveau nombre de joueurs
     io.to(code).emit("server.updatePlayerNumber", {
         playerNumber: Object.keys(gameInstance.getPlayers()).length,
+        size: gameInstance.getSize(),
     });
 
     // Update de la liste des joueurs
@@ -81,6 +82,7 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
         // Envoi du nouveau nombre de joueurs
         io.to(code).emit("server.updatePlayerNumber", {
             playerNumber: Object.keys(gameInstance.getPlayers()).length,
+            size: gameInstance.getSize(),
         });
 
         // Update de la liste des joueurs

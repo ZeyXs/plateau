@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useGame from "../../hooks/useGame";
 import useSocket from "../../hooks/useSocket";
 
@@ -20,31 +20,63 @@ const Lobby = () => {
         setPlayerNumber,
         players,
         setPlayers,
+        size,
         emit,
     } = useGame();
 
-    const totalImages = Object.keys(players).length;
-    const angleIncrement = (2 * Math.PI) / totalImages;
-    const imageSize = 40;
-    
+    const [slots, setSlots] = useState([]);
+    const [radius, setRadius] = useState(0); // State to store the radius of the circle
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        handleResize();
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        const updatedSlots = Array.apply(null, Array(size));
+        (Object.keys(players)).map((player, i) => {
+            updatedSlots[i] = player;
+        })
+        setSlots(updatedSlots);
+    }, [size, players])
+
+
     useEffect(() => {
 
         socket.on("server.updatePlayers", (data) => {
-            console.log("Received 'server.updatePlayers'");
-            console.log('data.players :', data.players);
             setPlayers(data.players);
-            console.log('players :', players);
+            //appendPlayersToSlot(data.players);
         });
 
+        window.addEventListener("resize", handleResize);
+
+        //handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+
     }, [socket]);
+
+    const handleResize = () => {
+        console.log(window.innerWidth);
+        const containerSize = Math.min(window.innerWidth, window.innerHeight);
+        const newRadius = containerSize * 0.3;
+        setRadius(newRadius);
+    };
 
     return (
         <div className="flex justify-center items-center h-full w-full">
             <div className="relative flex justify-center items-center">
-                {(Object.keys(players)).map((player, index) => {
-                    
+                <p>{size}</p>
+                {slots.map((player, index) => {
+
+                    const angleIncrement = (2 * Math.PI) / size;
+                    const imageSize = 40;
                     const angle = index * angleIncrement;
-                    const radius = 220;
                     const x = Math.cos(angle) * radius - imageSize;
                     const y = Math.sin(angle) * radius - imageSize;
 
@@ -58,12 +90,12 @@ const Lobby = () => {
                             }}
                         >
                             <img
-                                src={players[player]}
+                                src={player !== undefined ? players[player] : "https://cdn.discordapp.com/avatars/1056667877899505695/dff0c3f5606eb3a6ab06405e31fff943?size=1024"}
                                 className="absolute rounded-full border-2 border-white object-cover"
                             />
-                            <span className="z-10 text-sm">
+                            {player !== undefined ? <span className="z-10 text-sm">
                                 {player}
-                            </span>
+                            </span> : ""}
                         </div>
                     );
                 })}

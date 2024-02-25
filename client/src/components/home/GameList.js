@@ -24,7 +24,6 @@ const GameList = () => {
             console.log("[GameList.js] Warning: Failed to fetch game list from API.")
             setGameList([]);
         } finally {
-            setGameList(games);
             if(games) for(let game of games) {
                 let players;
                 try {
@@ -40,6 +39,7 @@ const GameList = () => {
                     setPlayerList(map => new Map(map.set(game.code,players)));
                 }
             }
+            setGameList(games);
             setIsLoading(false);
         }
 
@@ -57,11 +57,7 @@ const GameList = () => {
     
         // Listen for the "server.refreshGameList" event and call handleRefreshGameList
         socket.on("server.refreshGameList", handleRefreshGameList);
-    
-        // Cleanup the event listener when the component unmounts
-        return () => {
-            socket.off("server.refreshGameList", handleRefreshGameList);
-        };
+
     }, [socket]);
 
     return (

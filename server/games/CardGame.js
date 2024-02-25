@@ -101,6 +101,10 @@ const CardGame = class {
         return this.creatorName;
     }
 
+    getSize() {
+        return this.size;
+    }
+
     async getPlayerId(username) {
         let result;
         try {

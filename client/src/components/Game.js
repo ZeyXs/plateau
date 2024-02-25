@@ -10,10 +10,9 @@ import Lobby from "./games/Lobby";
 import axios from "../api/axios";
 
 const Game = () => {
-    const { auth } = useAuth();
     const socket = useSocket();
     const navigate = useNavigate();
-
+    const { auth } = useAuth();
     const {
         code,
         gameTitle,
@@ -28,6 +27,8 @@ const Game = () => {
         setPlayerNumber,
         players,
         setPlayers,
+        size,
+        setSize,
         emit,
     } = useGame();
 
@@ -112,6 +113,7 @@ const Game = () => {
         socket.on("server.updatePlayerNumber", (data) => {
             console.log("Recieved 'server.updatePlayerNumber'");
             setPlayerNumber(data.playerNumber);
+            setSize(data.size);
         });
 
         /*
