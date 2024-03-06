@@ -29,9 +29,7 @@ const Hero = () => {
                                     color="#fff"
                                 />
                             }>
-                            <div className="px-20 py-[100px]">
-                                <CreateGame />
-                            </div>
+                            <CreateGame />
                         </Box>
                         <div className="height-[220px] border-l-[3px] border-gray-400 opacity-25"></div>
                     </div>

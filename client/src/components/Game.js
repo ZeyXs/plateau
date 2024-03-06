@@ -70,6 +70,8 @@ const Game = () => {
     }
 
     useEffect(() => {
+        console.log(auth.id)
+
         const cleanup = () => {
             handleLeave();
         };

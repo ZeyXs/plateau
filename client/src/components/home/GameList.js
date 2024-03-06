@@ -52,7 +52,9 @@ const GameList = () => {
 
     useEffect(() => {
         const handleRefreshGameList = () => {
-            fetchGameData();
+            setTimeout(() => {
+                fetchGameData();
+            }, 1000);
         };
     
         // Listen for the "server.refreshGameList" event and call handleRefreshGameList

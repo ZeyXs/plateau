@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import GameType from "./GameType";
 
 const GAME_LIST = ["Bataille"];
 
@@ -63,7 +64,7 @@ const CreateGame = () => {
     };
 
     return (
-        <div className="p-2 border border-red-600">
+        <div className="p-4 ">
             {/* Affichage message d'erreur */}
             <p
                 className={setErrMessage ? "errmessage" : "offscreen"}
@@ -72,18 +73,17 @@ const CreateGame = () => {
                 {errMessage}
             </p>
 
-            <form onSubmit={handleGameCreation} className="flex flex-col">
+            <form onSubmit={handleGameCreation} className="flex flex-col space-y-3">
                 {/* _____ Champ nom de la partie _____ */}
-                <label htmlFor="title">Nom de la partie :</label>
-                <br />
                 <input
                     type="text"
-                    className="text-black"
                     id="title"
-                    autoComplete="off"
+                    className="bg-gray-200 text-gray-900 text-sm rounded-3xl block w-full h-10 ps-4"
+                    placeholder="Nom de la partie"
                     onChange={(e) => setGameTitle(e.target.value)}
                     value={gameTitle}
                     maxLength="30"
+                    autoComplete="off"
                     required
                 />
 
@@ -101,6 +101,11 @@ const CreateGame = () => {
                         <option key={i}>{gameT}</option>
                     ))}
                 </select>
+                <div className="flex flex-row justify-between space-x-5">
+                    <GameType title="Bataille" bg="" />
+                    <GameType title="Bataille" bg="" />
+                    <GameType title="Bataille" bg="" />
+                </div>
 
                 {/* _____ Champ nombre de joueurs max _____ */}
                 <label htmlFor="game_size">Nombre de joueurs maximum :</label>

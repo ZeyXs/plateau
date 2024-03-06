@@ -11,6 +11,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { auth, setAuth } = useAuth();
+
     // Sauvegarde d'où le client vient
     const from = location.state?.from?.pathname || "/";
 
@@ -27,8 +28,6 @@ const Login = () => {
 
     // Au load de la page, se focus sur le champ de saisie nom utilisateur
     useEffect(() => {
-        console.log(`[Login.js] ${auth?.accessToken}`);
-        console.log(`[Login.js] ${auth?.username}`);
         userRef.current.focus();
     }, []);
 
@@ -48,9 +47,9 @@ const Login = () => {
                     withCredentials: true,
                 }
             );
-            //const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ user, roles });
+            const id = response?.data?.id;
+            setAuth({ user, id, roles });
             setUser("");
             setPwd("");
             // Redirection vers la page

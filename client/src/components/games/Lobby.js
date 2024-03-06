@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import useGame from "../../hooks/useGame";
-import useSocket from "../../hooks/useSocket";
+import { useEffect, useRef, useState } from 'react';
+import useGame from '../../hooks/useGame';
+import useSocket from '../../hooks/useSocket';
+import { ReactComponent as BatailleIcon } from '../../assets/bataille.svg';
+
 
 const Lobby = () => {
-
     const socket = useSocket();
 
     const {
@@ -28,37 +29,34 @@ const Lobby = () => {
     const [radius, setRadius] = useState(0); // State to store the radius of the circle
 
     useEffect(() => {
-        window.addEventListener("resize", handleResize);
+        window.addEventListener('resize', handleResize);
         handleResize();
         return () => {
-            window.removeEventListener("resize", handleResize);
+            window.removeEventListener('resize', handleResize);
         };
     }, []);
 
     useEffect(() => {
         const updatedSlots = Array.apply(null, Array(size));
-        (Object.keys(players)).map((player, i) => {
+        Object.keys(players).map((player, i) => {
             updatedSlots[i] = player;
-        })
+        });
         setSlots(updatedSlots);
-    }, [size, players])
-
+    }, [size, players]);
 
     useEffect(() => {
-
-        socket.on("server.updatePlayers", (data) => {
+        socket.on('server.updatePlayers', data => {
             setPlayers(data.players);
             //appendPlayersToSlot(data.players);
         });
 
-        window.addEventListener("resize", handleResize);
+        window.addEventListener('resize', handleResize);
 
         //handleResize();
 
         return () => {
-            window.removeEventListener("resize", handleResize);
+            window.removeEventListener('resize', handleResize);
         };
-
     }, [socket]);
 
     const handleResize = () => {
@@ -71,9 +69,9 @@ const Lobby = () => {
     return (
         <div className="flex justify-center items-center h-full w-full">
             <div className="relative flex justify-center items-center">
-                <p>{size}</p>
+                <BatailleIcon />
                 {slots.map((player, index) => {
-
+                    
                     const angleIncrement = (2 * Math.PI) / size;
                     const imageSize = 40;
                     const angle = index * angleIncrement;
@@ -87,15 +85,20 @@ const Lobby = () => {
                             style={{
                                 left: `calc(50% + ${x}px)`,
                                 top: `calc(50% + ${y}px)`,
-                            }}
-                        >
-                            <img
-                                src={player !== undefined ? players[player] : "https://cdn.discordapp.com/avatars/1056667877899505695/dff0c3f5606eb3a6ab06405e31fff943?size=1024"}
-                                className="absolute rounded-full border-2 border-white object-cover"
-                            />
-                            {player !== undefined ? <span className="z-10 text-sm">
-                                {player}
-                            </span> : ""}
+                            }}>
+                            {player !== undefined ? (
+                                <>
+                                    <img
+                                        src={players[player]}
+                                        className="absolute rounded-full border-2 border-white h-16 w-16 object-cover"
+                                    />
+                                    <span className="z-10 text-sm">
+                                        {player}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="absolute rounded-full border-2 border-gray-500 bg-black h-16 w-16"></span>
+                            )}
                         </div>
                     );
                 })}

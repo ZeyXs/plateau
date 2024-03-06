@@ -6,6 +6,12 @@ class Bataille extends CardGame {
         super(title, size, code, gameType, creatorId, creatorName, gameState, deck, players, chat);
     }
 
+    cardsToWinner(cards, round) {
+        for (let player in round) {
+          cards.push(round[player]);
+        }
+    };
+
 }
 
 module.exports = Bataille;

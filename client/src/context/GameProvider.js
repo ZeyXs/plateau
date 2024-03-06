@@ -1,13 +1,14 @@
 import { createContext, useState } from "react";
 import useSocket from "../hooks/useSocket";
 import { useParams } from "react-router-dom";
-import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
 
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
     const socket = useSocket();
     const { code } = useParams();
+    const { auth } = useAuth();
 
     const [gameTitle, setGameTitle] = useState("");
     const [gameType, setGameType] = useState("");
@@ -23,6 +24,8 @@ export const GameProvider = ({ children }) => {
                 code: code,
                 gameType: gameType,
                 channel: channel,
+                senderId: auth.id,
+                senderUsername: auth.user,
             },
             body: data,
         };

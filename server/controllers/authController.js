@@ -25,7 +25,7 @@ const handleLogin = async (req, res) => {
     if (match) {
         // Récupère les identifiants des différents rôles de l'utilisateur
         const roles = Object.values(foundUser?.roles.toJSON()).filter(Boolean);
-
+        const id = foundUser?._id.toJSON();
         // Création des JWTs
         const accessToken = jwt.sign(
             { UserInfo: { username: username, roles: roles } },
@@ -51,7 +51,7 @@ const handleLogin = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         }); // available for 1 day
         
-        res.json({ accessToken, roles });
+        res.json({ accessToken, id, roles });
     
     } else {
         // Mauvais password
