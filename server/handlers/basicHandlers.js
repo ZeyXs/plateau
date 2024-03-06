@@ -20,7 +20,8 @@ const updatePlayers = async (io, code, gameInstance) => {
 const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     const code = data.headers.code;
     const gameType = data.headers.gameType;
-    const username = data.body.username;
+    const userId = data.headers.senderId;
+    const username = data.headers.senderUsername;
 
     // Ajout du client à la room
     socket.join(code);
@@ -32,7 +33,7 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
         roomToGame[code] = await generateGameInstance(data);
         gameInstance = roomToGame[code];
     }
-    await gameInstance.addPlayer(username);
+    gameInstance.addPlayer(userId);
 
     // Renvoi des données relatives à la partie
     socket.emit("server.joinSuccess", {
@@ -60,8 +61,11 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
 
 const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
     const code = data.headers.code;
-    const username = data.body.username;
-    if (gameInstance.getCreatorName() == username) {
+    const userId = data.headers.senderId;
+    const username = data.headers.senderUsername;
+    console.log(userId,username)
+    if (gameInstance.getCreatorId() == userId) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAA");
         // Si le créateur quitte la partie, on la supprime :
         await gameInstance.destruct(); // Remarque: la méthode se chargera de la suppression dans la base de données
         delete roomToGame[code];
@@ -69,7 +73,7 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
         socket.broadcast.emit("server.refreshGameList");
     } else {
         // Si un joueur (outre le créateur) quitte la partie :
-        await gameInstance.removePlayer(username);
+        gameInstance.removePlayer(userId);
         if (gameInstance.gameState === "IN_GAME")
             socket.emit("server.addToLocalStorage", { code: code });
         socket.emit("server.leaveSuccess");
@@ -93,7 +97,7 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
 
 const onNewChatMessage = async (io, socket, data, gameInstance) => {
     const code = data.headers.code;
-    const username = data.body.username;
+    const username = data.headers.senderUsername;
     const message = data.body.message;
     const newMessage = `[${username}] ${message}`;
     gameInstance.addMessage(newMessage); // Remarque: la méthode ajoutera le message à son attribut 'chat'

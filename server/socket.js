@@ -30,6 +30,7 @@ const basicSocketHandler = (io, socket, data) => {
             onClientJoin(io, socket, data, gameInstance, roomToGame);
             break;
         case "client.leave":
+            console.log("ROUTER -> client.leave")
             onPlayerLeave(io, socket, data, gameInstance, roomToGame);
             break;
         case "client.sendMessage":
@@ -42,6 +43,7 @@ const basicSocketHandler = (io, socket, data) => {
     return handled;
 };
 
+// PAS ENCORE IMPLEMENTE
 const batailleSocketHandler = (io, socket, data) => {
     const headers = data.headers;
     const code = headers.code;
@@ -55,8 +57,18 @@ const batailleSocketHandler = (io, socket, data) => {
     }
 };
 
+// PAS ENCORE IMPLEMENTE
 const sixQuiPrendSocketHandler = (io, socket, data) => {
-    console.log("");
+    const headers = data.headers;
+    const code = headers.code;
+    const channel = headers.channel;
+    const gameInstance = roomToGame[code];
+    switch (channel) {
+        case "client.start":
+            break;
+        case "client.selectedCard":
+            break;
+    }
 };
 
 // _______________ SOCKET IO _______________

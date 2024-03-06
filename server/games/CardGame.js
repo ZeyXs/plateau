@@ -26,27 +26,28 @@ class CardGame {
         this.chat = chat;
     }
 
-    async addPlayer(username) {
-        const playerId = await this.getPlayerId(username);
-        if (!Object.keys(this.players).includes(playerId)) {
+    addPlayer(userId) {
+        console.log("Adding player: " + userId)
+        if (!Object.keys(this.players).includes(userId)) {
             // Cas d'un nouveau joueur
-            this.players[playerId] = {
+            this.players[userId] = {
                 isActive: true,
                 hand: [],
                 timeLeft: -1,
             };
         } else {
             // Le joueur se reconnecte dans la partie
-            this.players[playerId].isActive = true;
+            this.players[userId].isActive = true;
         }
-
+        console.log(this.players)
         this.updatePlayers();
     }
 
-    async removePlayer(username) {
-        const playerId = await this.getPlayerId(username);
-        if (this.gameState == "IN_LOBBY") delete this.players[playerId]
-        else this.players[playerId].isActive = false;
+    removePlayer(userId) {
+        console.log("Removing player: " + userId)
+        if (this.gameState == "IN_LOBBY") delete this.players[userId]
+        else this.players[userId].isActive = false;
+        console.log(this.players)
         this.updatePlayers();
     }
 
@@ -99,6 +100,10 @@ class CardGame {
 
     getCreatorName() {
         return this.creatorName;
+    }
+
+    getCreatorId() {
+        return this.creatorId;
     }
 
     getSize() {
