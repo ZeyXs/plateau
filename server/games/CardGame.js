@@ -1,7 +1,7 @@
 const Game = require("../models/Game");
 const User = require("../models/User");
 
-const CardGame = class {
+class CardGame {
     title;
     size;
     code;
@@ -9,11 +9,11 @@ const CardGame = class {
     creatorId;
     creatorName;
     gameState;
-    deck;
+    gameData;
     players;
     chat;
 
-    constructor(title, size, code, gameType, creatorId, creatorName, gameState, deck, players, chat) {
+    constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat) {
         this.title = title;
         this.size = size;
         this.code = code;
@@ -21,7 +21,7 @@ const CardGame = class {
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.gameState = gameState;
-        this.deck = deck;
+        this.gameData = gameData;
         this.players = players;
         this.chat = chat;
     }
@@ -66,7 +66,7 @@ const CardGame = class {
             gameType: this.gameType,
             creatorId: this.creatorId,
             gameState: this.gameState,
-            deck: this.deck,
+            gameData: this.gameData,
             players: this.players,
             chat: this.chat,
         });

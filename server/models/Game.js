@@ -8,7 +8,7 @@ const GameSchema = new Schema({
     gameType: { type: String, required: true },
     creatorId: { type: String, required: true},
     gameState: { type: String },
-    deck: { type: Array },
+    gameData: { type: Object },
     players: { type: Map },
     chat: { type: Array, of: String }
 });

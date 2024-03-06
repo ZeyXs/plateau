@@ -89,15 +89,15 @@ const generateGameInstance = async (gameDataFromDB) => {
     const creatorId = gameDataFromDB.creatorId;
     const creatorName = await getPlayerName(gameDataFromDB.creatorId);
     const gameState = gameDataFromDB.gameState;
-    const deck = gameDataFromDB.deck;
+    const gameData = gameDataFromDB.gameData;
     const players = gameDataFromDB.players.toJSON();
     const chat = gameDataFromDB.chat;
     switch(gameType) {
         case "Bataille":
-            result = new Bataille(title, size, code, gameType, creatorId, creatorName, gameState, deck, players, chat);
+            result = new Bataille(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
             break;
         case "SixQuiPrend":
-            result = new SixQuiPrend(title, size, code, gameType, creatorId, creatorName, gameState, deck, players, chat);
+            result = new SixQuiPrend(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
             break;
         default:
             result = null;
