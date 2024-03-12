@@ -63,6 +63,10 @@ const CreateGame = () => {
         }
     };
 
+    const handleGameType = (type) => {
+        setGameType(type);
+    }
+
     return (
         <div className="p-4 ">
             {/* Affichage message d'erreur */}
@@ -73,7 +77,7 @@ const CreateGame = () => {
                 {errMessage}
             </p>
 
-            <form onSubmit={handleGameCreation} className="flex flex-col space-y-3">
+            <form onSubmit={handleGameCreation} className="flex flex-col space-y-5">
                 {/* _____ Champ nom de la partie _____ */}
                 <input
                     type="text"
@@ -88,23 +92,10 @@ const CreateGame = () => {
                 />
 
                 {/* _____ Champ type de jeu _____ */}
-                <label htmlFor="game_type">Type de jeu :</label>
-                <br />
-                <select
-                    id="game_type"
-                    onChange={(e) => setGameType(e.target.value)}
-                    className="text-black"
-                    value={gameType}
-                    required
-                >
-                    {GAME_LIST.map((gameT, i) => (
-                        <option key={i}>{gameT}</option>
-                    ))}
-                </select>
-                <div className="flex flex-row justify-between space-x-5">
-                    <GameType title="Bataille" bg="" />
-                    <GameType title="Bataille" bg="" />
-                    <GameType title="Bataille" bg="" />
+                <div className="flex flex-row justify-between space-x-3">
+                    <GameType type="Bataille" title="Bataille" isSelected={gameType === "Bataille"} handleGameType={handleGameType} />
+                    <GameType type="SixQuiPrend" title="6 qui prend !" isSelected={gameType === "SixQuiPrend"} handleGameType={handleGameType} />
+                    <GameType type="MilleBornes" title="Mille bornes" isSelected={gameType === "MilleBornes"} handleGameType={handleGameType} />
                 </div>
 
                 {/* _____ Champ nombre de joueurs max _____ */}
@@ -121,6 +112,7 @@ const CreateGame = () => {
                     max="8"
                     required
                 />
+
 
                 <button type="submit">Créer la partie !</button>
             </form>

@@ -122,7 +122,6 @@ const getGameController = (io) => {
             }
             const creatorId = await getUserId(req.username);
             const playerList = {};
-            //const playerList = {[creatorId]: {active: false, hand: [], timeLeft: -1}};
             const newGameCode = await generateGameCode();
             const game = new Game({
                 title: title,
@@ -131,7 +130,7 @@ const getGameController = (io) => {
                 gameType: gameType,
                 creatorId: creatorId,
                 gameState: "IN_LOBBY",
-                deck: [],
+                gameData: {},
                 players: playerList,
                 chat: [],
             });

@@ -33,7 +33,7 @@ const Hero = () => {
                         </Box>
                         <div className="height-[220px] border-l-[3px] border-gray-400 opacity-25"></div>
                     </div>
-                    <div className="flex flex-col justify-between w-[460px]">
+                    <div className="flex flex-col justify-between w-[460px] space-y-3">
                         <Box
                             title="Liste des parties"
                             icon={<FaList size={20} />}

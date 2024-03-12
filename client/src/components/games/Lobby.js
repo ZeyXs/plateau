@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import useGame from '../../hooks/useGame';
 import useSocket from '../../hooks/useSocket';
 import { ReactComponent as BatailleIcon } from '../../assets/bataille.svg';
+import useAuth from '../../hooks/useAuth';
 
 
 const Lobby = () => {
@@ -24,6 +25,9 @@ const Lobby = () => {
         size,
         emit,
     } = useGame();
+
+    const { auth } = useAuth();
+    console.log(auth.user)
 
     const [slots, setSlots] = useState([]);
     const [radius, setRadius] = useState(0); // State to store the radius of the circle

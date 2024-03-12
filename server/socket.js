@@ -30,7 +30,6 @@ const basicSocketHandler = (io, socket, data) => {
             onClientJoin(io, socket, data, gameInstance, roomToGame);
             break;
         case "client.leave":
-            console.log("ROUTER -> client.leave")
             onPlayerLeave(io, socket, data, gameInstance, roomToGame);
             break;
         case "client.sendMessage":

@@ -49,6 +49,8 @@ app.use('/register', require('./routes/register'));
 app.use('/auth', require('./routes/auth'));
 app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
+// - Edit user data
+app.use('/user', require('./routes/user'));
 // - Api
 const gameRoutes = require('./routes/api/game')(io);
 app.use('/api/game', gameRoutes);

@@ -17,6 +17,7 @@ import Layout from './components/Layout';
 import './index.css';
 import GameValidity from './components/GameValidity';
 import { GameProvider } from './context/GameProvider';
+import Shop from './components/Shop';
 
 const ROLES = {
     User: 2001,
@@ -42,6 +43,7 @@ function App() {
                     <Route
                         element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                         <Route path="debug" element={<Debug />} />
+                        <Route path="shop" element={<Shop />}/>
                     </Route>
                     
                     <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
