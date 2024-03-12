@@ -147,13 +147,14 @@ const Shop = () => {
         errorWhileLoading ? <p>Failed to fetch shop data from API.</p> :
         <div className='text-white'>
             <p>Coins: {coins}</p>
+            {errorMsg ? <p className="text-red-400">{errorMsg}</p> : <></>}
             <ul>
-                {Object.entries(shop).map((catAndItemList) => (
-                    <li>
+                {Object.entries(shop).map((catAndItemList, i) => (
+                    <li key={i}>
                         <h3><u>{catAndItemList[0]}</u></h3>
                         {<ul style={{"paddingLeft": "30px"}}>
-                            {catAndItemList[1].map((item) => (
-                                <li>
+                            {catAndItemList[1].map((item, j) => (
+                                <li key={j}>
                                     <b>{item.name}</b> : {item.cost} coins
                                     {
                                         !item.cannotBeBoughtTwice ? // - Achat multiple
