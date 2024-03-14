@@ -25,3 +25,7 @@ body {
     position: absolute;
     width: 1px;
 }
+
+.my-node-enter-active {
+    opacity: 1 !important;
+}

@@ -17,6 +17,7 @@ export const GameProvider = ({ children }) => {
     const [playerNumber, setPlayerNumber] = useState(0);
     const [players, setPlayers] = useState({});
     const [size, setSize] = useState(0);
+    const [creatorId, setCreatorId] = useState("");
 
     const emit = (channel, data) => {
         const message = {
@@ -48,6 +49,8 @@ export const GameProvider = ({ children }) => {
                 setPlayerNumber,
                 players,
                 setPlayers,
+                creatorId,
+                setCreatorId,
                 size,
                 setSize,
                 emit,

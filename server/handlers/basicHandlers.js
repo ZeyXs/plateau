@@ -41,6 +41,7 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
         gameType: gameInstance.getGameType(),
         gameState: gameInstance.getGameState(),
         players: gameInstance.getPlayers(),
+        creatorId: gameInstance.getCreatorId(),
         chat: gameInstance.getChat(),
     });
 

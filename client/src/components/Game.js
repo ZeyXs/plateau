@@ -27,6 +27,8 @@ const Game = () => {
         setPlayerNumber,
         players,
         setPlayers,
+        creatorId,
+        setCreatorId,
         size,
         setSize,
         emit,
@@ -95,6 +97,7 @@ const Game = () => {
             setGameType(data.gameType);
             setGameState(data.gameState);
             setChat(data.chat);
+            setCreatorId(data.creatorId);
             updatePlayers();
             setIsLoading(false);
         });
