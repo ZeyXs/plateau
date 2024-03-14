@@ -34,28 +34,28 @@ const handleEditProfile = async (req, res) => {
 
 const handleBuy = async (req, res) => {
     try {
-        const { username, itemBought } = req.body;
-        if(!username || !itemBought) {
+        const { username, itemUUID } = req.body;
+        if(!username || !itemUUID) {
             return res
                 .status(400)
                 .json({ message: "Please specify your username and the item that you bought" })
         }
-        if(!BUYABLE_ITEMS[itemBought]) res.status(404).json({ message: ERROR_MSG.ITEM_NOT_FOUND });
+        if(!BUYABLE_ITEMS[itemUUID]) res.status(404).json({ message: ERROR_MSG.ITEM_NOT_FOUND });
         const filter = { username: username };
         const user = await User.findOne(filter);
         if(!user) return res.status(412).json({ message: ERROR_MSG.USER_NOT_FOUND });
-        const itemAlreadyBought = Object.keys(user.items.toJSON()).includes(itemBought);
-        if(BUYABLE_ITEMS[itemBought].cannotBeBoughtTwice && itemAlreadyBought) return res.status(409).json({ message: ERROR_MSG.ITEM_ALREADY_BOUGHT });
-        const coinsNeeded = BUYABLE_ITEMS[itemBought].cost;
+        const itemAlreadyBought = Object.keys(user.items.toJSON()).includes(itemUUID);
+        if(BUYABLE_ITEMS[itemUUID].cannotBeBoughtTwice && itemAlreadyBought) return res.status(409).json({ message: ERROR_MSG.ITEM_ALREADY_BOUGHT });
+        const coinsNeeded = BUYABLE_ITEMS[itemUUID].cost;
         if(user.coins < coinsNeeded) return res.status(402).json({ message: ERROR_MSG.NOT_ENOUGH_COINS });
         if(itemAlreadyBought) {
             await User.findOneAndUpdate(filter, {
-                $inc: { [`items.${itemBought}.amount`]: 1, coins: (-1)*coinsNeeded }
+                $inc: { [`items.${itemUUID}.amount`]: 1, coins: (-1)*coinsNeeded }
             });
         } else {
             const newItemObject = {amount: 1, equipped: false};
             await User.findOneAndUpdate(filter, {
-                $set: { [`items.${itemBought}`]: newItemObject },
+                $set: { [`items.${itemUUID}`]: newItemObject },
                 $inc: {coins: (-1)*coinsNeeded}
             });
         }
@@ -79,6 +79,7 @@ const handleEquip = async (req, res) => {
         const user = await User.findOne(filter);
         if(!user) return res.status(404).json({ message: ERROR_MSG.USER_NOT_FOUND });
         const userItems = user.items.toJSON();
+        console.log(userItems);
         if(userItems[itemUUID].equipped) return res.status(409).json({ message: ERROR_MSG.ITEM_ALREADY_EQUIPPED });
         const equipCategory = BUYABLE_ITEMS[itemUUID].category;
         for(let uuid of Object.keys(userItems)) if(BUYABLE_ITEMS[uuid].category == equipCategory) userItems[uuid].equipped = false;

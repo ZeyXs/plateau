@@ -82,7 +82,7 @@ const Shop = () => {
         try {
             console.log("sending")
             const response = await axiosPrivate.post(
-                "/user/buy", {username: auth.user, itemBought: uuid}
+                "/user/buy", {username: auth.user, itemUUID: uuid}
             );
             console.log(response)
         } catch(err) {
@@ -106,7 +106,7 @@ const Shop = () => {
         let errorWhileEquipping = false;
         try {
             const response = await axiosPrivate.post(
-                "/user/buy", {username: auth.user,itemBought: uuid}
+                "/user/equip", {username: auth.user,itemUUID: uuid}
             );
         } catch(err) {
             if(!err?.response) setErrorMsg(ERROR_MSG.SERVER_DOWN);
@@ -124,7 +124,7 @@ const Shop = () => {
         let errorWhileUnequipping = false;
         try {
             const response = await axiosPrivate.post(
-                "/user/buy", {username: auth.user,itemBought: uuid}
+                "/user/unequip", {username: auth.user,itemUUID: uuid}
             );
         } catch(err) {
             if(!err?.response) setErrorMsg(ERROR_MSG.SERVER_DOWN);
@@ -141,6 +141,11 @@ const Shop = () => {
     useEffect(() => {
         fetchShopItems();
     }, []);
+
+    useEffect(() => {
+        console.log(shop)
+    }, [shop])
+
 
     return (
         isLoading ? <p>Chargement en cours...</p> :

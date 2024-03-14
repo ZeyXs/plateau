@@ -70,6 +70,20 @@ const sixQuiPrendSocketHandler = (io, socket, data) => {
     }
 };
 
+// PAS ENCORE IMPLEMENTE
+const milleBornesSocketHandler = (io, socket, data) => {
+    const headers = data.headers;
+    const code = headers.code;
+    const channel = headers.channel;
+    const gameInstance = roomToGame[code];
+    switch (channel) {
+        case "client.start":
+            break;
+        case "client.selectedCard":
+            break;
+    }
+}
+
 // _______________ SOCKET IO _______________
 
 const sockets = (io) => {

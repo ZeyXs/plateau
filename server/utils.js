@@ -3,6 +3,7 @@ const User = require('./models/User');
 
 const Bataille = require('./games/Bataille');
 const SixQuiPrend = require('./games/SixQuiPrend');
+const MilleBornes = require('./games/MilleBornes');
 
 const initGameFetch = async () => {
     let result;
@@ -98,6 +99,9 @@ const generateGameInstance = async (gameDataFromDB) => {
             break;
         case "SixQuiPrend":
             result = new SixQuiPrend(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
+            break;
+        case "MilleBornes":
+            result = new MilleBornes(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
             break;
         default:
             result = null;

@@ -26,9 +26,6 @@ const Lobby = () => {
         emit,
     } = useGame();
 
-    const { auth } = useAuth();
-    console.log(auth.user)
-
     const [slots, setSlots] = useState([]);
     const [radius, setRadius] = useState(0); // State to store the radius of the circle
 
