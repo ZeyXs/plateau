@@ -3,7 +3,12 @@ const {
     onClientJoin,
     onNewChatMessage,
     onPlayerLeave,
+    onStartTimer,
 } = require("./handlers/basicHandlers");
+const {
+    onBatailleStart,
+    onReceiveHandshake,
+} = require("./handlers/batailleHandlers");
 
 // Variable stockant toutes les instances des parties (identifiées par leur code/room)
 var roomToGame = {};
@@ -35,6 +40,8 @@ const basicSocketHandler = (io, socket, data) => {
         case "client.sendMessage":
             onNewChatMessage(io, socket, data, gameInstance);
             break;
+        case "client.startTimer":
+            onStartTimer(socket, data);
         default:
             handled = false;
             break;
@@ -50,6 +57,11 @@ const batailleSocketHandler = (io, socket, data) => {
     const gameInstance = roomToGame[code];
     switch (channel) {
         case "client.start":
+            onBatailleStart(io, socket, data, gameInstance);
+            break;
+        case "client.receivedHandshake":
+            console.log("Confirm handshake from router")
+            onReceiveHandshake(io, socket, data, gameInstance);
             break;
         case "client.selectedCard":
             break;
@@ -94,7 +106,6 @@ const sockets = (io) => {
             if (!basicSocketHandler(io, socket, data)) {
                 switch (gameType) {
                     case "Bataille":
-                        console.log("-> Bataille Handler");
                         batailleSocketHandler(io, socket, data);
                         break;
                     case "SixQuiPrend":
@@ -107,7 +118,7 @@ const sockets = (io) => {
         });
 
         socket.on("disconnecting", () => {
-            console.log("[NOTIF] disconnecting received");
+            //console.log("[NOTIF] disconnecting received");
         });
     });
 

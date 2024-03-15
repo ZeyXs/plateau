@@ -26,11 +26,16 @@ const Lobby = () => {
         players,
         setPlayers,
         size,
+        setSize,
         emit,
     } = useGame();
 
     const [slots, setSlots] = useState([]);
     const [radius, setRadius] = useState(0);
+    const [timer, setTimer] = useState(null);
+    const [countdown, setCountdown] = useState(15);
+    const nodeRef = useRef(null);
+    const timerRef = useRef(null); // Utilisation d'une référence pour stocker l'ID du minuteur
 
     useEffect(() => {
         window.addEventListener('resize', handleResize);
@@ -49,36 +54,72 @@ const Lobby = () => {
     }, [size, players]);
 
     useEffect(() => {
+
         socket.on('server.updatePlayers', data => {
             setPlayers(data.players);
-            //appendPlayersToSlot(data.players);
+            clearInterval(timerRef.current);
+            setCountdown(15);
+            emit('client.startTimer', { players: data.players });
         });
 
-        window.addEventListener('resize', handleResize);
+        socket.on('server.startTimer', data => {
+            if (Object.keys(data.players).length === size) {
+                clearInterval(timerRef.current);
+                let timeout = setInterval(() => {
+                    setCountdown(prevCountdown => {
+                        if (prevCountdown === 1) {
+                            clearInterval(timerRef.current);
+                            handleStart();
+                        }
+                        return prevCountdown - 1;
+                    });
+                }, 1000);
+                timerRef.current = timeout;
+            }
+        });
 
-        //handleResize();
+        socket.on("server.requestHandshake", () => {
+            // On fait en sorte que chaque joueur soit dans l'état IN_GAME pour pouvoir correctement lancer la partie
+            setGameState("IN_GAME");
+            emit("client.receivedHandshake", {});
+        });
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [socket]);
+    }, [socket, size]);
 
     const handleResize = () => {
-        console.log(window.innerWidth);
         const containerSize = Math.min(window.innerWidth, window.innerHeight);
         const newRadius = containerSize * 0.3;
         setRadius(newRadius);
     };
 
+    const handleStart = () => {
+        if (creatorId === auth.id) {
+            emit('client.start', {});
+        }
+    }
+
     return (
         <>
             {Object.keys(players).length === size && (
-                <CSSTransition in={true} timeout={300} classNames="my-node" unmountOnExit>
-                    <div className="relative transition duration-300 ease-in-out">
-                        <div className="absolute top-8 h-10 w-full z-5 bg-green-500 flex justify-center items-center my-node-enter">
-                            {creatorId === auth.id && (
-                                <p className="text-lg">La partie va démarrer dans 5 secondes ! <span className="font-bold underline cursor-pointer">Lancer la partie !</span></p>
-                            )}
+                <CSSTransition
+                    nodeRef={nodeRef}
+                    in={true}
+                    timeout={300}
+                    classNames="alert"
+                    unmountOnExit>
+                    <div className="relative" ref={nodeRef}>
+                        <div className="absolute top-8 h-10 w-full z-5 bg-green-600 flex justify-center items-center">
+                            <p className="text-lg">
+                                La partie va démarrer dans {countdown} secondes
+                                !{' '}
+                                {creatorId === auth.id && (
+                                    <span
+                                        onClick={handleStart}
+                                        className="font-bold underline cursor-pointer">
+                                        Lancer la partie
+                                    </span>
+                                )}
+                            </p>
                         </div>
                     </div>
                 </CSSTransition>

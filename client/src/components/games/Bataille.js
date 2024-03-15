@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useGame from "../../hooks/useGame";
 import useSocket from "../../hooks/useSocket";
 
@@ -19,9 +20,17 @@ const Bataille = () => {
         socketEmit
     } = useGame();
 
+    useEffect(() => {
+
+        socket.on("server.startGame", (data) => {
+            console.log("Received 'client.start'");
+        });
+
+    }, [socket]);
 
     return (
         <>
+            <h1>Bataille</h1>
         </>
     )
 };

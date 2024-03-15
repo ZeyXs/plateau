@@ -68,7 +68,6 @@ const Shop = () => {
                             delete items[uuid].category;
                             result[itemCategory].push(items[uuid]);
                         }
-                        console.log(result);
                         setShop({...shop, ...result});
                     }
                 }
@@ -80,11 +79,9 @@ const Shop = () => {
     const handleBuy = async (uuid) => {
         let errorWhileBuying = false;
         try {
-            console.log("sending")
             const response = await axiosPrivate.post(
                 "/user/buy", {username: auth.user, itemUUID: uuid}
             );
-            console.log(response)
         } catch(err) {
             if(!err?.response) setErrorMsg(ERROR_MSG.SERVER_DOWN);
             else if(err.response?.status === 412) setErrorMsg(ERROR_MSG.USER_NOT_FOUND);
@@ -141,11 +138,6 @@ const Shop = () => {
     useEffect(() => {
         fetchShopItems();
     }, []);
-
-    useEffect(() => {
-        console.log(shop)
-    }, [shop])
-
 
     return (
         isLoading ? <p>Chargement en cours...</p> :

@@ -16,7 +16,6 @@ const GameList = () => {
 
     const fetchGameData = async () => {
         let games;
-        console.log("debut du fetch game data");
         try {
             const response = await axios.get(`/api/game/`);
             games = response?.data;
@@ -27,23 +26,18 @@ const GameList = () => {
             if(games) for(let game of games) {
                 let players;
                 try {
-                    console.log(`Fetching data from '/api/game/${game.code}/players'...`);
                     const response2 = await axios.get(`/api/game/${game.code}/players`);
                     players = response2?.data;
                 } catch(err) {
                     console.log("[GameList.js] Warning: Failed to fetch player list from API.")
                     players = null;
                 } finally {
-                    console.log(game.code);
-                    console.log(players);
                     setPlayerList(map => new Map(map.set(game.code,players)));
                 }
             }
             setGameList(games);
             setIsLoading(false);
         }
-
-        console.log("fin du fetch game data");
     };
 
     useEffect(() => {

@@ -14,7 +14,7 @@ const useLogout = () => {
         }
         
         setAuth({});
-        console.log(localStorage.removeItem("auth"));
+        localStorage.removeItem("auth");
     };
 
     return logout;

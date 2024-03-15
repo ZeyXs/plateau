@@ -22,7 +22,6 @@ const GameValidity = () => {
             let errorFlags = [];
 
             try {
-                //console.log(`Code de la partie : ${code}`);
                 const response = await axios.get(`/api/game/${code}`);
                 gameData = response.data;
             } catch(err) {
@@ -52,10 +51,7 @@ const GameValidity = () => {
                 } finally {
 
                     const playerTryingToReconnect = gameData?.gameState == "IN_GAME" && playerData && !playerData.isActive;
-                    //console.log(playerTryingToReconnect);
                     //if(playerTryingToReconnect) errorFlags.push("!PAC_FLAG");
-
-                    console.log(errorFlags);
 
                     if(!errorFlags.includes("!PAC_FLAG")) errorFlags.unshift("PAC_FLAG");
                     else {
@@ -91,8 +87,6 @@ const GameValidity = () => {
                         setValidEntry(false);
                     } else setValidEntry(true);
 
-                    console.log(`[GameValidity.js] ${validEntry}`);
-
                     setIsLoading(false);
 
                 }
@@ -104,7 +98,6 @@ const GameValidity = () => {
     }, []);
 
     
-    console.log(`[test debug en dehors useEffect] ${validEntry}`);
     return (
         
         isLoading ? <h1>Chargement en cours...</h1> :

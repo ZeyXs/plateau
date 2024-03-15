@@ -2,8 +2,8 @@ const Game = require("../models/Game");
 const User = require("../models/User");
 const { generateGameInstance, getGameData } = require("../utils");
 
-// REMARQUE: vu que la db n'est pas save() au moment de l'utilisation de cet fonction, 
-// il faut aller chercher manuellement les joueurs et leur pfp pour obtenir la même
+// REMARQUE: vu que la db n'est pas save() au moment de l'utilisation de cette fonction, 
+// il faut aller chercher manuellement les joueurs et leur PP pour obtenir la même
 // réponse que la route '/api/game/:code/players'.
 const updatePlayers = async (io, code, gameInstance) => {
     let players = {};
@@ -64,9 +64,7 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
     const code = data.headers.code;
     const userId = data.headers.senderId;
     const username = data.headers.senderUsername;
-    console.log(userId,username)
     if (gameInstance.getCreatorId() == userId) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAA");
         // Si le créateur quitte la partie, on la supprime :
         await gameInstance.destruct(); // Remarque: la méthode se chargera de la suppression dans la base de données
         delete roomToGame[code];
@@ -105,4 +103,10 @@ const onNewChatMessage = async (io, socket, data, gameInstance) => {
     io.to(code).emit("server.updateChat", { message: newMessage });
 };
 
-module.exports = { onClientJoin, onPlayerLeave, onNewChatMessage };
+const onStartTimer = (socket, data) => {
+    const code = data.headers.code;
+    const players = data.body.players;
+    socket.to(code).emit("server.startTimer", {players: players});
+}
+
+module.exports = { onClientJoin, onPlayerLeave, onNewChatMessage, onStartTimer};

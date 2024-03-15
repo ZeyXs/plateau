@@ -8,6 +8,7 @@ import useAuth from "../hooks/useAuth";
 import useGame from "../hooks/useGame";
 import Lobby from "./games/Lobby";
 import axios from "../api/axios";
+import Bataille from "./games/Bataille";
 
 const Game = () => {
     const socket = useSocket();
@@ -66,14 +67,11 @@ const Game = () => {
 
     const updatePlayers = async () => {
         await axios.get(`/api/game/${code}/players`).then((res) => {
-            console.log('[Game.js] res.data ', res.data);
             setPlayers(res.data);
         });
     }
 
     useEffect(() => {
-        console.log(auth.id)
-
         const cleanup = () => {
             handleLeave();
         };
@@ -92,7 +90,6 @@ const Game = () => {
         In params: { gameTitle, gameType, gameState, chat }
         */
         socket.on("server.joinSuccess", (data) => {
-            console.log("Received 'server.joinSuccess'");
             setGameTitle(data.gameTitle);
             setGameType(data.gameType);
             setGameState(data.gameState);
@@ -107,7 +104,6 @@ const Game = () => {
         In params: { message }
         */
         socket.on("server.updateChat", (data) => {
-            console.log("Recieved 'server.updateChat'");
             setChat((prev) => [...prev, data.message]);
         });
 
@@ -116,7 +112,6 @@ const Game = () => {
         In params: { playerNumber }
         */
         socket.on("server.updatePlayerNumber", (data) => {
-            console.log("Recieved 'server.updatePlayerNumber'");
             setPlayerNumber(data.playerNumber);
             setSize(data.size);
         });
@@ -134,7 +129,6 @@ const Game = () => {
         In params: null
         */
         socket.on("server.leaveSuccess", (data) => {
-            console.log("Recieved 'server.leaveSuccess'");
             navigate("/", { replace: true });
         });
 
@@ -145,7 +139,7 @@ const Game = () => {
         <div className="flex flex-col text-white">
             <div className="flex space-x-8 whitespace-nowrap h-[60px] items-center bg-[#14141e] shadow-lg z-50">
                 <div className="flex flex-row ml-5">
-                    <span className="mr-2">
+                    <span claasyncssName="mr-2">
                         <FaUnlockAlt size={23} color="orange" />
                     </span>
                     <p className="text-lg">
@@ -167,7 +161,7 @@ const Game = () => {
                     ) : gameState == "IN_LOBBY" ? (
                         <Lobby />
                     ) : gameType == "Bataille" ? (
-                        <p>Bataille{/*<Bataille/>*/}</p>
+                       <Bataille />
                     ) : gameType == "SixQuiPrend" ? (
                         <p>SixQuiPrend{/*<SixQuiPrend/>*/}</p>
                     ) : (

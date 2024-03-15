@@ -55,7 +55,6 @@ const CreateGame = () => {
                 navigate(`/game/${gameCode}`, { replace: true });
                 //socket.emit("client.refreshGameList");
             } catch (err) {
-                console.log(err);
                 if (!err?.response) setErrMessage("Pas de réponse du serveur");
                 else if (err.response?.status === 400)
                     setErrMessage(
