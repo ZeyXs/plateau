@@ -60,10 +60,10 @@ const batailleSocketHandler = (io, socket, data) => {
             onBatailleStart(io, socket, data, gameInstance);
             break;
         case "client.receivedHandshake":
-            console.log("Confirm handshake from router")
             onReceiveHandshake(io, socket, data, gameInstance);
             break;
         case "client.selectedCard":
+            // Implementer ici la gestion des cartes sélectionnées
             break;
     }
 };
