@@ -10,7 +10,8 @@ const GameSchema = new Schema({
     gameState: { type: String },
     gameData: { type: Object },
     players: { type: Map },
-    chat: { type: Array, of: String }
+    chat: { type: Array, of: String },
+    isPrivate: { type: Boolean, required: true }
 });
 
 

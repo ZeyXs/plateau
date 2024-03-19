@@ -114,11 +114,11 @@ const getGameController = (io) => {
 
     const createNewGame = async (req, res) => {
         try {
-            const { title, size, gameType } = req.body;
-            if (!title || !size || !gameType) {
+            const { title, size, gameType, isPrivate} = req.body;
+            if (!title || !size || !gameType || isPrivate === undefined) {
                 return res
                     .status(400)
-                    .json({ message: "Title, size and gameType are required" });
+                    .json({ message: "Title, size, isPrivate and gameType are required" });
             }
             const creatorId = await getUserId(req.username);
             const playerList = {};
@@ -133,6 +133,7 @@ const getGameController = (io) => {
                 gameData: {},
                 players: playerList,
                 chat: [],
+                isPrivate: isPrivate,
             });
             const newGame = await game.save();
             io.emit('server.refreshGameList');

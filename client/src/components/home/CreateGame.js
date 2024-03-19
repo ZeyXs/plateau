@@ -49,6 +49,7 @@ const CreateGame = () => {
                         title: gameTitle,
                         size: gameSize,
                         gameType: gameType,
+                        isPrivate: isPrivate,
                     }),
                 );
                 setGameTitle('');
