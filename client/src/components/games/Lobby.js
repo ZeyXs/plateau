@@ -47,14 +47,13 @@ const Lobby = () => {
 
     useEffect(() => {
         const updatedSlots = Array.apply(null, Array(size));
-        Object.keys(players).map((player, i) => {
-            updatedSlots[i] = player;
+        Object.keys(players).map((playerId, i) => {
+            updatedSlots[i] = playerId;
         });
         setSlots(updatedSlots);
-    }, [size, players]);
+    }, [players]);
 
     useEffect(() => {
-
         socket.on('server.updatePlayers', data => {
             setPlayers(data.players);
             clearInterval(timerRef.current);
@@ -78,12 +77,11 @@ const Lobby = () => {
             }
         });
 
-        socket.on("server.requestHandshake", () => {
+        socket.on('server.requestHandshake', () => {
             // On fait en sorte que chaque joueur soit dans l'état IN_GAME pour pouvoir correctement lancer la partie
-            setGameState("IN_GAME");
-            emit("client.receivedHandshake", {});
+            setGameState('IN_GAME');
+            emit('client.receivedHandshake', {});
         });
-
     }, [socket, size]);
 
     const handleResize = () => {
@@ -96,7 +94,7 @@ const Lobby = () => {
         if (creatorId === auth.id) {
             emit('client.start', {});
         }
-    }
+    };
 
     return (
         <>
@@ -127,7 +125,7 @@ const Lobby = () => {
             <div className="flex justify-center items-center h-full w-full">
                 <div className="relative flex justify-center items-center">
                     <BatailleIcon />
-                    {slots.map((player, index) => {
+                    {slots.map((playerId, index) => {
                         const angleIncrement = (2 * Math.PI) / size;
                         const imageSize = 40;
                         const angle = index * angleIncrement;
@@ -142,14 +140,21 @@ const Lobby = () => {
                                     left: `calc(50% + ${x}px)`,
                                     top: `calc(50% + ${y}px)`,
                                 }}>
-                                {player !== undefined ? (
+                                {playerId !== undefined ? (
                                     <>
-                                        <img
-                                            src={players[player]}
-                                            className="absolute rounded-full border-2 border-white h-16 w-16 object-cover"
-                                        />
+                                        {players[playerId]?.profilePicture ? (
+                                            <img
+                                                src={
+                                                    players[playerId]
+                                                        .profilePicture
+                                                }
+                                                className="absolute rounded-full border-2 border-white h-16 w-16 object-cover"
+                                            />
+                                        ) : (
+                                            <span className="absolute rounded-full border-2 border-gray-500 bg-black h-16 w-16"></span>
+                                        )}
                                         <span className="z-10 text-sm">
-                                            {player}
+                                            {players[playerId]?.username}
                                         </span>
                                     </>
                                 ) : (

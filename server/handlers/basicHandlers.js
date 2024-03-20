@@ -9,7 +9,10 @@ const updatePlayers = async (io, code, gameInstance) => {
     let players = {};
     for (playerId of Object.keys(gameInstance.getPlayers())) {
         await User.findOne({ _id: playerId }).then((data) => {
-            players[data.username] = data.profilePicture;
+            players[playerId] = {
+                username: data.username,
+                profilePicture: data.profilePicture
+            };
         });
     }
     io.to(code).emit("server.updatePlayers", {
@@ -35,12 +38,22 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     }
     gameInstance.addPlayer(userId);
 
+    let players = {};
+    for (playerId of Object.keys(gameInstance.getPlayers())) {
+        await User.findOne({ _id: playerId }).then((data) => {
+            players[playerId] = {
+                username: data.username,
+                profilePicture: data.profilePicture
+            };
+        });
+    }
+
     // Renvoi des données relatives à la partie
     socket.emit("server.joinSuccess", {
         gameTitle: gameInstance.getTitle(),
         gameType: gameInstance.getGameType(),
         gameState: gameInstance.getGameState(),
-        players: gameInstance.getPlayers(),
+        players: players,
         creatorId: gameInstance.getCreatorId(),
         chat: gameInstance.getChat(),
     });

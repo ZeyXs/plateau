@@ -7,7 +7,6 @@ import useSocket from "../hooks/useSocket";
 import useAuth from "../hooks/useAuth";
 import useGame from "../hooks/useGame";
 import Lobby from "./games/Lobby";
-import axios from "../api/axios";
 import Bataille from "./games/Bataille";
 
 const Game = () => {
@@ -65,12 +64,6 @@ const Game = () => {
         emit("client.leave", { code: code, username: auth.user });
     };
 
-    const updatePlayers = async () => {
-        await axios.get(`/api/game/${code}/players`).then((res) => {
-            setPlayers(res.data);
-        });
-    }
-
     useEffect(() => {
         const cleanup = () => {
             handleLeave();
@@ -95,7 +88,7 @@ const Game = () => {
             setGameState(data.gameState);
             setChat(data.chat);
             setCreatorId(data.creatorId);
-            updatePlayers();
+            setPlayers(data.players);
             setIsLoading(false);
         });
 
