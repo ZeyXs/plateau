@@ -76,8 +76,13 @@ const sixQuiPrendSocketHandler = (io, socket, data) => {
     const gameInstance = roomToGame[code];
     switch (channel) {
         case "client.start":
+            onSixQuiPrendStart(io,socket,data,gameInstance)
+            break;
+        case "client.receivedHandshake":
+            on6QPReceiveHandshake(io, socket, data, gameInstance);
             break;
         case "client.selectedCard":
+            // Implementer ici la gestion des cartes sélectionnées
             break;
     }
 };
