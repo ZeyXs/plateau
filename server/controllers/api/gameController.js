@@ -130,7 +130,7 @@ const getGameController = (io) => {
                 gameType: gameType,
                 creatorId: creatorId,
                 gameState: "IN_LOBBY",
-                gameData: {},
+                gameData: {"placeholderKey": -1},
                 players: playerList,
                 chat: [],
                 isPrivate: isPrivate,

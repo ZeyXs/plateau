@@ -12,7 +12,6 @@ class CardGame {
     gameData;
     players;
     chat;
-
     socketIds;
 
     constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat) {

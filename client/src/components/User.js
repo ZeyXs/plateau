@@ -140,6 +140,7 @@ const User = () => {
                                         </p>
                                     </div>
                                 </div>
+                                
                                 <p className="text-lg font-bold">
                                     Statistiques de jeux
                                 </p>
@@ -159,34 +160,6 @@ const User = () => {
                                     ))}
                                 </div>
                             </div>
-                            {/*<div className="bg-[#2d2840] rounded-r-3xl space-y-4 p-6">
-                                <p className="text-lg font-bold">
-                                    Éxperience et argent
-                                </p>
-                                <p className="text-sm text-gray-400">
-                                    Niveau actuel
-                                </p>
-                                <div class="relative bg-[#4e4663] rounded-full h-5 max-w-[500px]">
-                                    <div class="relative bottom-2.5 z-20 h-10 w-10 rounded-full bg-[#ffb82b] border-[2px] shadow-3xl text-white font-bold flex items-center justify-center">
-                                        5
-                                    </div>
-                                    <span class="absolute z-10 left-1/2 bottom-0 transform -translate-x-1/2 text-sm font-bold">
-                                        45/100
-                                    </span>
-                                    <div class="bg-[#ffca2b] h-5 rounded-full w-[45%] absolute top-1/2 transform -translate-y-1/2"></div>
-                                </div>
-
-                                <p className="text-sm text-gray-400">Argent</p>
-                                <div className="flex flex-row space-x-2 items-center">
-                                    <PiCoinsDuotone
-                                        size={30}
-                                        className="text-yellow-500"
-                                    />
-                                    <p className="text-xl font-bold">
-                                        {userData.coins}
-                                    </p>
-                                </div>
-                                </div>*/}
                         </div>
                     </div>
                 </div>

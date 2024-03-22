@@ -36,7 +36,7 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
         roomToGame[code] = await generateGameInstance(data);
         gameInstance = roomToGame[code];
     }
-    gameInstance.addPlayer(userId);
+    gameInstance.addPlayer(socket.id, userId);
 
     let players = {};
     for (playerId of Object.keys(gameInstance.getPlayers())) {
