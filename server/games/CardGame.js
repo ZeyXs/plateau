@@ -13,6 +13,8 @@ class CardGame {
     players;
     chat;
 
+    socketIds;
+
     constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat) {
         this.title = title;
         this.size = size;
@@ -24,10 +26,12 @@ class CardGame {
         this.gameData = gameData;
         this.players = players;
         this.chat = chat;
+        this.socketIds = {};        
     }
 
-    addPlayer(userId) {
-        console.log("Adding player: " + userId)
+    addPlayer(socketId, userId) {
+        console.log("Adding player: " + userId);
+        this.socketIds[userId] = socketId;
         if (!Object.keys(this.players).includes(userId)) {
             // Cas d'un nouveau joueur
             this.players[userId] = {
@@ -38,9 +42,14 @@ class CardGame {
         } else {
             // Le joueur se reconnecte dans la partie
             this.players[userId].isActive = true;
+            this.#rejoin(userId);
         }
         console.log(this.players)
         this.updatePlayers();
+    }
+
+    #rejoin(userId) {
+        // LA METHODE SERA ECRASEE PAR LES SOUS-CLASSES
     }
 
     removePlayer(userId) {

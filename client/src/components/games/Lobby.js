@@ -54,6 +54,7 @@ const Lobby = () => {
     }, [players]);
 
     useEffect(() => {
+        
         socket.on('server.updatePlayers', data => {
             setPlayers(data.players);
             clearInterval(timerRef.current);
