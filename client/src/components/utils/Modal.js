@@ -4,7 +4,7 @@ const Popup = ({ title, visible, onClose, children }) => {
     if (!visible) return null;
     else
         return (
-            <div className="flex fixed inset-0 bg-black bg-opacity-30 backdrop-blur-[2px] justify-center items-center z-20">
+            <div className="flex fixed inset-0 bg-black bg-opacity-30 backdrop-blur-[2px] justify-center items-center z-20 scale-125">
                 <div className="flex-col bg-[#1b1b2b] p-2 rounded-xl">
                     <div className="flex items-center justify-between space-x-4 p-2 border-b rounded-t border-gray-200">
                         <h3 className="font-semibold text-gray-200">{title}</h3>

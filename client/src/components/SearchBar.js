@@ -2,24 +2,26 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 
+
 const SearchBar = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState('');
 
     const handleSearch = () => {
-        if (user) navigate(`/user/${user}`, { replace: true });
+        // faire en sorte que lorsqu'il est déjà sur la page de l'utilisateur recherché, il raffraichisse quand même les données
+        navigate(`/user/${user}`, { replace: true });
     };
 
     return (
         <div>
             <label
-                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+                className="mb-2 text-sm font-medium sr-only text-white">
                 Search
             </label>
             <div className="relative">
                 <input
                     type="text"
-                    className="block w-full ps-5 px-28 text-sm py-[0.625rem] text-gray-900 rounded-3xl bg-[#4b4a5a] "
+                    className="block w-full ps-5 px-28 text-sm py-[0.625rem] rounded-3xl bg-[#4b4a5a] text-white"
                     placeholder="Rechercher un utilisateur..."
                     autoComplete="off"
                     onChange={e => setUser(e.target.value)}

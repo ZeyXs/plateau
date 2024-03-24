@@ -48,7 +48,7 @@ const Navbar = () => {
     return (
         <div>
             <div className="flex justify-between whitespace-nowrap items-center h-24 max-w-max space-x-32 mx-auto px-4 text-white">
-                <h1 className="flex text-3xl items-center font-extrabold text-white">
+                <h1 className="flex text-3xl items-center font-extrabold text-white cursor-pointer" onClick={() => navigate('/')}>
                     <GiPokerHand size={80} color="#984ed4" />
                     <span className="px-4">Plateau</span>
                 </h1>
@@ -57,7 +57,7 @@ const Navbar = () => {
                 </div>
                 <ul className="hidden md:flex items-center h-24">
                     <li className="p-4">
-                        <a href="/">Accueil</a>
+                        <a onClick={() => navigate('/shop')} className="cursor-pointer">Boutique</a>
                     </li>
                     {auth?.accessToken ? (
                         <div className="flex justify-between whitespace-nowrap items-center">
@@ -70,7 +70,7 @@ const Navbar = () => {
                             <li className="p-4">
                                 <div className="relative">
                                     <img
-                                        className="w-10 rounded-full"
+                                        className="w-10 h-10 rounded-full"
                                         src={profilePicture}
                                     />
                                     <span className="bottom-0 left-7 absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>

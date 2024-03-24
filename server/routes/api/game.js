@@ -4,10 +4,9 @@ const router = express.Router();
 const verifyRoles = require('../../middleware/verifyRoles');
 const ROLES_LIST = require('../../config/rolesList');
 
-// Accept the io parameter in the route file
 module.exports = (io) => {
-    const gameController = require('../../controllers/api/gameController')(io); // Pass io to get the controller
-
+    const gameController = require('../../controllers/api/gameController')(io); 
+    
     router.route('/')
         .get(gameController.getAllGames)
         .post(verifyRoles(ROLES_LIST.User), gameController.createNewGame);

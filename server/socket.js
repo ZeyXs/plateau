@@ -41,7 +41,7 @@ const basicSocketHandler = (io, socket, data) => {
             onNewChatMessage(io, socket, data, gameInstance);
             break;
         case "client.startTimer":
-            onStartTimer(socket, data);
+            onStartTimer(io, data);
         default:
             handled = false;
             break;

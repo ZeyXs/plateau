@@ -116,10 +116,10 @@ const onNewChatMessage = async (io, socket, data, gameInstance) => {
     io.to(code).emit("server.updateChat", { message: newMessage });
 };
 
-const onStartTimer = (socket, data) => {
+const onStartTimer = (io, data) => {
     const code = data.headers.code;
     const players = data.body.players;
-    socket.to(code).emit("server.startTimer", {players: players});
+    io.to(code).emit("server.startTimer", {players: players});
 }
 
 module.exports = { onClientJoin, onPlayerLeave, onNewChatMessage, onStartTimer};
