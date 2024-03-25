@@ -110,7 +110,7 @@ class MilleBornes extends CardGame {
                 malus: [],
                 score: 0,
                 needsGreenLight: true
-            }
+            };
         }
         this.gameState = "IN_GAME";
         this.#initDeck();

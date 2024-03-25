@@ -77,6 +77,10 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
     const code = data.headers.code;
     const userId = data.headers.senderId;
     const username = data.headers.senderUsername;
+    if (gameInstance == undefined) {
+        console.log("Partie fantôme bien ouej frérot 👻👻👻👻👻👻👻");
+        return;
+    }
     if (gameInstance.getCreatorId() == userId) {
         // Si le créateur quitte la partie, on la supprime :
         await gameInstance.destruct(); // Remarque: la méthode se chargera de la suppression dans la base de données

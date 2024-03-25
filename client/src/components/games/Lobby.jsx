@@ -79,6 +79,7 @@ const Lobby = () => {
         });
 
         socket.on('server.requestHandshake', () => {
+            console.log('Received "server.requestHandshake"');
             // On fait en sorte que chaque joueur soit dans l'état IN_GAME pour pouvoir correctement lancer la partie
             setGameState('IN_GAME');
             emit('client.receivedHandshake', {});

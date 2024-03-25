@@ -4,6 +4,8 @@ import useSocket from "../../hooks/useSocket";
 import useGame from "../../hooks/useGame";
 import { useNavigate } from "react-router-dom";
 
+import WaveFooter from '../../assets/wave-footer.svg';
+import Cards from "./Cards";
 
 const CARD_TYPES = {
     BOTTES: "BOTTES",
@@ -123,9 +125,6 @@ const MilleBornes = () => {
             setScoreboard(sScoreboard);
             setRounds(sRounds);
             setTrash(sTrash);
-
-            
-
             setSelectedCard(sHand[0].value);
             setSelectedPlayer(Object.keys(sPlayersData).filter(playerId => playerId != auth.id)[0]);
         });
@@ -188,7 +187,10 @@ const MilleBornes = () => {
     }, [socket]);
 
     return (
-        <div className="bg-white text-black">
+        <>
+        <Cards texture="FEU_VERT" />
+        <img src={WaveFooter} className="fixed -bottom-10 left-0 w-full -z-10 select-none" alt="WaveFooter"/>
+        {/*<div className="bg-white text-black">
             <div>
                 <p>Votre main :</p>
                 <select id='card_select' value={selectedCard} onChange={() => setSelectedCard(document.getElementById("card_select").value)}>
@@ -232,7 +234,8 @@ const MilleBornes = () => {
             <p>Défausse : {trash.length != 0 ? trash[trash.length-1].value : "vide"}</p>
             <p>Round: {rounds}</p>
         
-        </div>
+        </div>*/}
+        </>
     );
 };
 

@@ -7,11 +7,12 @@ const {
 } = require("./handlers/basicHandlers");
 const {
     onBatailleStart,
+    playerBatailleSelectedCard,
     onReceiveHandshake,
 } = require("./handlers/batailleHandlers");
 const { 
-    onGameStart, 
-    onPlayedCard 
+    onMBStart, 
+    onMBPlayedCard 
 } = require("./handlers/milleBornesHandlers");
 
 
@@ -54,21 +55,20 @@ const basicSocketHandler = (io, socket, data) => {
     return handled;
 };
 
-// PAS ENCORE IMPLEMENTE
 const batailleSocketHandler = (io, socket, data) => {
     const headers = data.headers;
     const code = headers.code;
     const channel = headers.channel;
     const gameInstance = roomToGame[code];
     switch (channel) {
-        case "client.start":
-            onBatailleStart(io, socket, data, gameInstance);
-            break;
         case "client.receivedHandshake":
             onReceiveHandshake(io, socket, data, gameInstance);
             break;
         case "client.selectedCard":
-            // Implementer ici la gestion des cartes sélectionnées
+            playerBatailleSelectedCard(io, socket, data, gameInstance)
+            break;
+        case "client.start":
+            onBatailleStart(io, socket, data, gameInstance)
             break;
     }
 };
@@ -92,7 +92,6 @@ const sixQuiPrendSocketHandler = (io, socket, data) => {
     }
 };
 
-// PAS ENCORE IMPLEMENTE
 const milleBornesSocketHandler = (io, socket, data) => {
     const headers = data.headers;
     const code = headers.code;
@@ -100,10 +99,10 @@ const milleBornesSocketHandler = (io, socket, data) => {
     const gameInstance = roomToGame[code];
     switch(channel) {
         case "client.start":
-            onGameStart(io, socket, data, gameInstance);
+            onMBStart(io, socket, data, gameInstance);
             break;
         case "client.playedCard":
-            onPlayedCard(io, socket, data, gameInstance);
+            onMBPlayedCard(io, socket, data, gameInstance);
             break;
     }
 }
