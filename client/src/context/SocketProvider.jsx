@@ -1,10 +1,9 @@
 import { createContext } from 'react';
+import { socket } from '../socket';
 
 const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
-  const { socket } = require('../socket');
-
   return (
     <SocketContext.Provider value={socket}>
       {children}

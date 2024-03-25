@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import useGame from '../../hooks/useGame';
 import useSocket from '../../hooks/useSocket';
-import { ReactComponent as BatailleIcon } from '../../assets/bataille.svg';
+import BatailleIcon from '../../assets/bataille.svg';
 import useAuth from '../../hooks/useAuth';
 import { CSSTransition } from 'react-transition-group';
 
@@ -125,7 +125,7 @@ const Lobby = () => {
             )}
             <div className="flex justify-center items-center h-full w-full">
                 <div className="relative flex justify-center items-center">
-                    <BatailleIcon />
+                    <img src={BatailleIcon} />
                     {slots.map((playerId, index) => {
                         const angleIncrement = (2 * Math.PI) / size;
                         const imageSize = 40;
