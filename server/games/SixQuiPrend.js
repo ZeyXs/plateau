@@ -2,8 +2,8 @@ const CardGame = require('./CardGame');
 
 class SixQuiPrend extends CardGame {
 
-    constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat) {
-        super(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
+    constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate) {
+        super(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate);
     }
     /*Créer des mains vides pour chaque joueur */
     createEmptyHand(dict, playerList){

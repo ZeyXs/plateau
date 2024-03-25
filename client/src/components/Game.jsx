@@ -8,6 +8,7 @@ import useAuth from "../hooks/useAuth";
 import useGame from "../hooks/useGame";
 import Lobby from "./games/Lobby";
 import Bataille from "./games/Bataille";
+import MilleBornes from "./games/MilleBornes";
 
 const Game = () => {
     const socket = useSocket();
@@ -157,6 +158,8 @@ const Game = () => {
                        <Bataille />
                     ) : gameType == "SixQuiPrend" ? (
                         <p>SixQuiPrend{/*<SixQuiPrend/>*/}</p>
+                    ) : gameType == "MilleBornes" ? (
+                        <MilleBornes/>
                     ) : (
                         <p>Erreur</p>
                     )}

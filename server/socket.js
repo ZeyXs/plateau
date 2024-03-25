@@ -9,6 +9,11 @@ const {
     onBatailleStart,
     onReceiveHandshake,
 } = require("./handlers/batailleHandlers");
+const { 
+    onGameStart, 
+    onPlayedCard 
+} = require("./handlers/milleBornesHandlers");
+
 
 // Variable stockant toutes les instances des parties (identifiées par leur code/room)
 var roomToGame = {};
@@ -93,10 +98,12 @@ const milleBornesSocketHandler = (io, socket, data) => {
     const code = headers.code;
     const channel = headers.channel;
     const gameInstance = roomToGame[code];
-    switch (channel) {
+    switch(channel) {
         case "client.start":
+            onGameStart(io, socket, data, gameInstance);
             break;
-        case "client.selectedCard":
+        case "client.playedCard":
+            onPlayedCard(io, socket, data, gameInstance);
             break;
     }
 }
@@ -116,6 +123,8 @@ const sockets = (io) => {
                     case "SixQuiPrend":
                         sixQuiPrendSocketHandler(io, socket, data);
                         break;
+                    case "MilleBornes":
+                        milleBornesSocketHandler(io, socket, data);
                     default:
                         break;
                 }

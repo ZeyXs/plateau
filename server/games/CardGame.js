@@ -12,9 +12,10 @@ class CardGame {
     gameData;
     players;
     chat;
+    isPrivate;
     socketIds;
 
-    constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat) {
+    constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate) {
         this.title = title;
         this.size = size;
         this.code = code;
@@ -25,10 +26,11 @@ class CardGame {
         this.gameData = gameData;
         this.players = players;
         this.chat = chat;
-        this.socketIds = {};        
+        this.isPrivate = isPrivate;
+        this.socketIds = {};  
     }
 
-    addPlayer(socketId, userId) {
+    addPlayer(io, socketId, userId) {
         console.log("Adding player: " + userId);
         this.socketIds[userId] = socketId;
         if (!Object.keys(this.players).includes(userId)) {
@@ -41,13 +43,13 @@ class CardGame {
         } else {
             // Le joueur se reconnecte dans la partie
             this.players[userId].isActive = true;
-            this.#rejoin(userId);
+            this.rejoin(io, userId);
         }
         console.log(this.players)
         this.updatePlayers();
     }
 
-    #rejoin(userId) {
+    rejoin(io, userId) {
         // LA METHODE SERA ECRASEE PAR LES SOUS-CLASSES
     }
 
@@ -67,7 +69,8 @@ class CardGame {
         await Game.findOneAndDelete({ code: this.code }); 
     }
 
-    save() {
+    async save() {
+        await this.destruct();
         const game = new Game({
             title: this.title,
             size: this.size,
@@ -78,8 +81,9 @@ class CardGame {
             gameData: this.gameData,
             players: this.players,
             chat: this.chat,
+            isPrivate: this.isPrivate
         });
-        game.save();
+        await game.save();
     }
 
     async updatePlayers() {

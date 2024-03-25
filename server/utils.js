@@ -93,15 +93,16 @@ const generateGameInstance = async (gameDataFromDB) => {
     const gameData = gameDataFromDB.gameData;
     const players = gameDataFromDB.players.toJSON();
     const chat = gameDataFromDB.chat;
+    const isPrivate = gameDataFromDB.isPrivate;
     switch(gameType) {
         case "Bataille":
-            result = new Bataille(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
+            result = new Bataille(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate);
             break;
         case "SixQuiPrend":
-            result = new SixQuiPrend(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
+            result = new SixQuiPrend(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate);
             break;
         case "MilleBornes":
-            result = new MilleBornes(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat);
+            result = new MilleBornes(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate);
             break;
         default:
             result = null;
