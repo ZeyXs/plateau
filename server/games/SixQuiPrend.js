@@ -37,7 +37,7 @@ class SixQuiPrend extends CardGame {
         console.log('Initializing SixQuiPrend......');
         for (let playerId of Object.keys(this.players)) {
             //Initialisation du score à 0.
-            this.players[playerId].score = 60;
+            this.players[playerId].score = 0;
         }
         this.#InitializeRound(io);
         this.gameState = "IN_GAME";

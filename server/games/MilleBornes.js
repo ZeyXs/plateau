@@ -83,7 +83,7 @@ class MilleBornes extends CardGame {
     // __________ Attribut(s) __________
 
     static CARDS_PER_PLAYER = 6;
-    static SCORE_TO_WIN = 300;
+    static SCORE_TO_WIN = 1000;
 
     // __________ Constructeur(s) __________
 
