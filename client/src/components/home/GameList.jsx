@@ -116,7 +116,7 @@ const GameList = () => {
                         </div>
                     </a>
                 ) : (
-                    <></>
+                    <div key={i} className="hidden"></div>
                 ),
             )}
         </div>

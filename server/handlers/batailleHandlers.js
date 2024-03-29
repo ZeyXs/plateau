@@ -7,13 +7,13 @@ const onReceiveHandshake = (io, socket, data, gameInstance) => {
     socket.emit('server.playerData', {
         infos: gameInstance.getPlayers()[userId],
     });*/
+    gameInstance.deal(io);
 };
 
 const onBatailleStart = async (io, socket, data, gameInstance) => {
     console.log("onGameStart")
     const code = data.headers.code;
     io.to(code).emit('server.requestHandshake');
-    setTimeout(() => gameInstance.deal(io), 100);
 };
 
 const playerBatailleSelectedCard = async (io, socket, data, gameInstance) => {

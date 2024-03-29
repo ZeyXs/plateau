@@ -1,5 +1,8 @@
 const MilleBornes = require("../games/MilleBornes");
 
+const onMBReceiveHandshake = (io, socket, data, gameInstance) => {
+}
+
 const onMBStart = (io, socket, data, gameInstance) => {
     const code = data.headers.code;
     io.to(code).emit("server.requestHandshake");
@@ -17,4 +20,4 @@ const onMBPlayedCard = (io, socket, data, gameInstance) => {
     }
 }
 
-module.exports = { onMBStart, onMBPlayedCard };
+module.exports = { onMBReceiveHandshake, onMBStart, onMBPlayedCard };

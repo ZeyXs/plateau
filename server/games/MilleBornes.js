@@ -107,9 +107,8 @@ class MilleBornes extends CardGame {
             this.players[playerId] = {
                 hand: [],
                 bonus: [],
-                malus: [],
+                malus: [CARD_VALUES.FEU_ROUGE],
                 score: 0,
-                needsGreenLight: true
             };
         }
         this.gameState = "IN_GAME";
@@ -239,11 +238,12 @@ class MilleBornes extends CardGame {
         //console.log(action === "USE");
         //console.log(cardType);
         let affectedPlayer = undefined;
+        let playerMalus = undefined;
         if(action === "USE") {
             switch(cardType) {
                 case CARD_TYPES.BOTTES:
                     this.players[attackerId].bonus.push(cardValue);
-                    let playerMalus = this.players[attackerId].malus;
+                    playerMalus = this.players[attackerId].malus;
                     for(let attaqueToRemove of BOTTES_PROTECTION[cardValue]) {
                         let indAttaque = playerMalus.indexOf(attaqueToRemove);
                         if(indAttaque != -1) playerMalus = playerMalus.splice(indAttaque, 1);
@@ -259,26 +259,23 @@ class MilleBornes extends CardGame {
                             break;
                         }
                     }
-                    if(!isImmuned && !this.players[targetId].malus.includes(cardValue) && !this.players[targetId].needsGreenLight) {
+                    if(!isImmuned && !this.players[targetId].malus.includes(cardValue)) {
                         this.players[targetId].malus.push(cardValue);
                         affectedPlayer = targetId;
                     }
                     break;
                 case CARD_TYPES.PARADES:
-                    if(this.players[attackerId].needsGreenLight) this.players[attackerId].needsGreenLight = false;
-                    else {
-                        let playerMalus = this.players[attackerId].malus;
-                        for(let i in playerMalus) {
-                            if(playerMalus[i] === PARADE_CLEAR[cardValue]) {
-                                playerMalus = playerMalus.splice(i, 1);
-                                break;
-                            }
+                    playerMalus = this.players[attackerId].malus;
+                    for(let i in playerMalus) {
+                        if(playerMalus[i] === PARADE_CLEAR[cardValue]) {
+                            playerMalus = playerMalus.splice(i, 1);
+                            break;
                         }
                     }
                     affectedPlayer = attackerId;
                     break;
                 case CARD_TYPES.BORNES:
-                    if((!this.players[attackerId].needsGreenLight) && !(this.players[attackerId].score + BORNES_TO_VALUE[cardValue] > MilleBornes.SCORE_TO_WIN)) {
+                    if(!(this.players[attackerId].score + BORNES_TO_VALUE[cardValue] > MilleBornes.SCORE_TO_WIN)) {
                         if(this.players[attackerId].malus.length > 0) {
                             if(this.players[attackerId].malus.includes(CARD_VALUES.LIMITE_DE_VITESSE)) if(BORNES_TO_VALUE[cardValue] > 50) this.players[attackerId].score += 50;
                         }
@@ -311,20 +308,12 @@ class MilleBornes extends CardGame {
         await this.save();
 
         // Envoi des résultats finaux aux différents clients
+        let result = await addXpTo(winnerId, 5);
         io.to(this.code).emit("server.gameEnded", {
             winner: winnerId,
-            finalScoreboard: this.gameData.finalScoreboard
+            finalScoreboard: this.gameData.finalScoreboard,
+            newLevel: result[0] ? result[1] : undefined,
         });
-        
-        // Ajout d'XP au gagnant (+ informer celui-ci si level-up)
-        let result = await addXpTo(winnerId, 5);
-        if(result[0]) {
-            const socketId = this.socketIds[winnerId];
-            const socket = io.sockets.sockets.get(socketId);
-            socket.emit("server.leveledUp", {
-                newLevel: result[1]
-            });
-        }
 
         // Modification des stats du joueur
         await addVictoryTo(winnerId, "milleBornes");
@@ -333,9 +322,6 @@ class MilleBornes extends CardGame {
         }
 
     }
-
-
-
 
     #drawCard(playerId) {
         if(this.gameData.deck.length == 0) {
@@ -426,7 +412,8 @@ class MilleBornes extends CardGame {
         const socketId = this.socketIds[playerId];
         const playerHand = this.players[playerId].hand;
         const socket = io.sockets.sockets.get(socketId);
-        //socket.emit('server.sendHand', playerHand);
+        console.log('server.sendHand', playerHand);
+        socket.emit('server.sendHand', playerHand);
     }
 
 

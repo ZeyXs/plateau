@@ -133,7 +133,7 @@ const Game = () => {
         <div className="flex flex-col text-white">
             <div className="flex space-x-8 whitespace-nowrap h-[60px] items-center bg-[#14141e] shadow-lg z-50">
                 <div className="flex flex-row ml-5">
-                    <span claasyncssName="mr-2">
+                    <span className="mr-2">
                         <FaUnlockAlt size={23} color="orange" />
                     </span>
                     <p className="text-lg">
@@ -165,7 +165,7 @@ const Game = () => {
                     )}
                 </div>
                 <div
-                    className="flex-initial w-80 bg-[#27273c] overflow-auto flex flex-col"
+                    className="flex-initial w-1/6 bg-[#27273c] overflow-auto flex flex-col"
                     style={{ height: "calc(100vh - 60px)" }}
                 >
                     <div className="flex-grow overflow-auto ">

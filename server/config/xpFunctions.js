@@ -11,6 +11,10 @@ const getLevelFromXP = (xp) => {
     return Math.floor(xpFormula(xp));
 }
 
+const getXPFromLevel = (level) => {
+    return Math.pow(5, Math.log(2*level));
+}
+
 const addXpTo = async (userId, xp) => {
     const user = await User.findOneAndUpdate({ _id: userId }, { $inc: { xp: xp } });
     const initialXP = user.xp; const initalLevel = getLevelFromXP(initialXP);
@@ -19,4 +23,4 @@ const addXpTo = async (userId, xp) => {
     return [false, initalLevel];
 }
 
-module.exports = { getLevelFromXP, addXpTo };
+module.exports = { getLevelFromXP, getXPFromLevel, addXpTo };

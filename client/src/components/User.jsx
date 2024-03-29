@@ -39,6 +39,7 @@ const User = () => {
     const [newUsername, setNewUsername] = useState("");
     const [newProfilePicture, setNewProfilePicture] = useState("");
     const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [widthExp, setWidthExp] = useState(0);
 
 	const handleLogout = () => {
         logout();
@@ -95,12 +96,19 @@ const User = () => {
 
         fetchUserData();
     }, []);
+
+    useEffect(() => {
+        if (userData !== undefined) {
+            setWidthExp(Math.floor(userData.previous*100/(userData.next+userData.previous)));
+        }
+    }, [userData]);
     
     useEffect(() => {
         if (newUsername.length > 0 && (newProfilePicture.match(/\.(jpeg|jpg|gif|png)$/) || newProfilePicture.length === 0)) setSubmitDisabled(false);
         else setSubmitDisabled(true);
     }, [newUsername, newProfilePicture]);
 
+    
 	return isLoading ? (
 		<p className="text-white h-[100vh]">Chargement en cours...</p>
 	) : isServerDown ? (
@@ -249,14 +257,14 @@ const User = () => {
                                         <p className="text-sm text-gray-400">
                                             Niveau actuel
                                         </p>
-                                        <div class="relative bg-[#4e4663] rounded-full h-5 max-w-[500px]">
+                                        <div className="relative bg-[#4e4663] rounded-full h-5 max-w-[500px]">
                                             <div class="relative bottom-2.5 z-20 h-10 w-10 rounded-full bg-[#ffb82b] border-[2px] shadow-3xl text-white font-bold flex items-center justify-center">
-                                                5
+                                                {userData.level}
                                             </div>
-                                            <span class="absolute z-10 left-1/2 bottom-0 transform -translate-x-1/2 text-sm font-bold">
-                                                45/100
+                                            <span className="absolute z-10 left-1/2 bottom-0 transform -translate-x-1/2 text-sm font-bold">
+                                                {userData.previous}/{userData.next+userData.previous}
                                             </span>
-                                            <div class="bg-[#ffca2b] h-5 rounded-full w-[45%] absolute top-1/2 transform -translate-y-1/2"></div>
+                                            <div className={`bg-[#ffca2b] h-5 rounded-full absolute top-1/2 transform -translate-y-1/2`} style={{ width: widthExp + "%" }}></div>
                                         </div>
 
                                         <p className="text-sm text-gray-400">

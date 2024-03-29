@@ -12,7 +12,8 @@ const {
 } = require("./handlers/batailleHandlers");
 const { 
     onMBStart, 
-    onMBPlayedCard 
+    onMBPlayedCard,
+    onMBReceiveHandshake,
 } = require("./handlers/milleBornesHandlers");
 
 
@@ -98,6 +99,9 @@ const milleBornesSocketHandler = (io, socket, data) => {
     const channel = headers.channel;
     const gameInstance = roomToGame[code];
     switch(channel) {
+        case "client.receivedHandshake":
+            onMBReceiveHandshake(io, socket, data, gameInstance);
+            break;
         case "client.start":
             onMBStart(io, socket, data, gameInstance);
             break;
