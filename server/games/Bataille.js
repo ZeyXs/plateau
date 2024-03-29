@@ -36,6 +36,7 @@ class Bataille extends CardGame {
     this.gameData["cardsToSendWinner"] = [];
     this.initRoundGameData(Object.keys(this.players));
     this.initTrashGameData();
+    this.gameState = "IN_GAME";
   }
 
   getRoundGameData() {

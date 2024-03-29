@@ -1,5 +1,6 @@
 const { addVictoryTo, addLossTo } = require('../config/statsFunctions');
 const CardGame = require('./CardGame');
+const { addXpTo } = require('../config/xpFunctions');
 
 class SixQuiPrend extends CardGame {
     constructor(
@@ -39,6 +40,7 @@ class SixQuiPrend extends CardGame {
             this.players[playerId].score = 60;
         }
         this.#InitializeRound(io);
+        this.gameState = "IN_GAME";
         //Ajouter MAJ BDD
     }
 
@@ -113,6 +115,9 @@ class SixQuiPrend extends CardGame {
         console.log('Sent hand to', playerId);
         const socketId = this.socketIds[playerId];
         const playerHand = this.players[playerId].hand;
+        playerHand.sort(function(a, b) {
+            return a - b;
+        });
         const socket = io.sockets.sockets.get(socketId);
         var res = socket.emit('server.sendHand', {
             hand: playerHand,
@@ -356,11 +361,13 @@ class SixQuiPrend extends CardGame {
             }
         }
     };
+
     rejoin(io, userId) {
         // Objectif: Renvoyer au client les données relatives au joueur et à la partie
         console.log('AAAAAAAAAAAAAAAAAAAAAA');
         setTimeout(() => this.#sendAllDataTo(io, userId), 200);
     }
+
     #sendAllDataTo(io, userId) {
         const socketId = this.socketIds[userId];
         const socket = io.sockets.sockets.get(socketId);
@@ -369,6 +376,9 @@ class SixQuiPrend extends CardGame {
 
         // Récupération de la main du joueur
         const hand = this.players[userId].hand;
+        hand.sort(function(a, b) {
+            return a - b;
+        });
         const lines = this.gameData.lines;
         const canPlay = this.players[userId].canPlay;
         // Données des joueurs (sans leur main)
@@ -398,13 +408,14 @@ class SixQuiPrend extends CardGame {
         await this.save();
 
         // Envoi des résultats finaux aux différents clients
+        const result = await addXpTo(winnerId, 5);
         io.to(this.code).emit('server.gameEnded', {
             winner: winnerId,
             finalScoreboard: this.gameData.finalScoreboard,
+            newLevel: result[0] ? result[1] : undefined,
         });
 
         // Ajout d'XP au gagnant (+ informer celui-ci si level-up)
-        //let result = await addXpTo(winnerId, 5);
         /*if(result[0]) {
         const socketId = this.socketIds[winnerId];
         const socket = io.sockets.sockets.get(socketId);
@@ -419,7 +430,7 @@ class SixQuiPrend extends CardGame {
         }
     }
 
-    playCard(io, playerId, card) {
+    playCard(io, playerId, card, code) {
         console.log(this.gameData.round, card);
         console.log(this.players[playerId]);
 
@@ -448,6 +459,8 @@ class SixQuiPrend extends CardGame {
             } else {
                 this.#gameRound(io, cards);
             }
+        } else {
+            io.to(code).emit("server.someonePlayed", { playerId: playerId })
         }
     }
 

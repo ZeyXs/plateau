@@ -361,9 +361,6 @@ class MilleBornes extends CardGame {
             nextPlayer: nextPlayer
         });
     }
-
-
-
     
 
     rejoin(io, userId) {

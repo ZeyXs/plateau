@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GiQueenCrown } from "react-icons/gi";
+
 import useAuth from '../../hooks/useAuth';
 import useSocket from '../../hooks/useSocket';
 import useGame from '../../hooks/useGame';
-import { useNavigate } from 'react-router-dom';
+
 import Cards from './Cards';
+import PlayerSelectLine from './PlayerSelectLine';
+import PlayerWinPopup from './PlayerWinPopup';
+
 
 const SixQuiPrend = () => {
+
     const navigate = useNavigate();
 
     // _____ Utilisation de contextes _____
@@ -33,8 +40,15 @@ const SixQuiPrend = () => {
     const [lines, setLines] = useState([]);
     const [playersData, setPlayersData] = useState({});
     const [canSelectLine, setCanSelectLine] = useState(false);
-    const [selectedLine, setSelectedLine] = useState('0');
     const [scoreboard, setScoreboard] = useState({});
+
+    const [showWinPopup, setShowWinPopup] = useState(false);
+    const [winner, setWinner] = useState("");
+    const [finalScoreboard, setFinalScoreboard] = useState({});
+    const [newLevel, setNewLevel] = useState();
+
+    const [currentBest, setCurrentBest] = useState();
+    const [playerPlayed, setPlayerPlayed] = useState([]);
 
     // Tout ce qui est en dessous est à modifier et à vérifier
 
@@ -55,6 +69,14 @@ const SixQuiPrend = () => {
         }
     };
 
+    const updateCurrentBest = (scoreboard) => {
+        const scoresAreZero = Object.values(scoreboard).every(score => score === 0);
+        if (!scoresAreZero) {
+            const bestPlayer = Object.keys(scoreboard).reduce((a, b) => scoreboard[a] > scoreboard[b] ? a : b);
+            setCurrentBest(bestPlayer);
+        }
+    };
+
     useEffect(() => {
         console.log('Prêt à recevoir des socket');
 
@@ -66,7 +88,12 @@ const SixQuiPrend = () => {
 
         socket.on('server.canPlayAgain', lines => {
             console.log('Receiving can play again signal...');
+            console.log(lines);
             setLines(lines);
+            if (!selectedCard) {
+                setSelectedCard(undefined);
+                setPlayButtonDisabled(true);
+            }
             setCanPlay(true);
         });
 
@@ -80,9 +107,9 @@ const SixQuiPrend = () => {
 
         socket.on('server.requestToBuyALine', data => {
             console.log('Server request to select a line to buy...');
-            let slines = data.lines;
-            setLines(slines);
-            setSelectedLine('0');
+            console.log(data);
+            const sLines = data.lines;
+            setLines(sLines);
             setCanSelectLine(true);
         });
 
@@ -90,7 +117,14 @@ const SixQuiPrend = () => {
             console.log('Scoreboard updated.');
             console.log(newScoreboard);
             setScoreboard(newScoreboard);
+            updateCurrentBest(newScoreboard);
         });
+
+        socket.on('server.someonePlayed', data => {
+            const playerId = data.playerId;
+            console.log(players[playerId].username + " played a card. Waiting for all players to play.");
+        });
+
         // A changer
         socket.on('server.sendGameData', data => {
             console.log('server.sendGameData');
@@ -105,7 +139,8 @@ const SixQuiPrend = () => {
             setLines(sLines);
             setPlayersData(sPlayersData);
             setScoreboard(sScoreboard);
-            console.log('selected card', selectedCard);
+
+            updateCurrentBest(sScoreboard);
         });
 
         socket.on('server.gameEnded', data => {
@@ -113,10 +148,11 @@ const SixQuiPrend = () => {
             console.log(data);
             const sWinner = data.winner;
             const sFinalScoreboard = data.finalScoreboard;
-            alert(
-                'Winner: ' + sWinner + '\n' + JSON.stringify(sFinalScoreboard),
-            );
-            navigate('/', { replace: true });
+            const sNewLevel = data.newLevel;
+            setWinner(sWinner);
+            setFinalScoreboard(sFinalScoreboard);
+            setNewLevel(sNewLevel);
+            setShowWinPopup(true);
         });
 
         return () => {
@@ -157,11 +193,12 @@ const SixQuiPrend = () => {
             });
         }
         setCanPlay(false);
+        setPlayButtonDisabled(true);
     };
 
-    const sendLine = () => {
+    const sendLine = (lineIndex) => {
         if (canSelectLine) {
-            emit('client.lineBought', { lineNumber: parseInt(selectedLine) });
+            emit('client.lineBought', { lineNumber: lineIndex });
             setCanSelectLine(false);
             console.log('Line selected send to server');
         }
@@ -171,7 +208,33 @@ const SixQuiPrend = () => {
     return (
         <>
             <div className="flex flex-col h-full overflow-hidden select-none">
-                <div className="relative flex-1 flex flex-row items-center justify-center">
+                {showWinPopup ? <PlayerWinPopup winner={winner} finalScoreboard={finalScoreboard} newLevel={newLevel} /> : ""}
+                <div className="relative flex-1 flex flex-row items-center justify-between">
+                    <div className="flex flex-col space-y-4 ml-8">
+                        {lines.map((line, i) => (
+                            <div key={i} onClick={() => sendLine(i)} className={`flex flex-row space-x-2 p-1 ${canSelectLine ? "border-2 cursor-pointer hover:border-amber-400 rounded-lg" : ""}`}>
+                                 {line.map((card, index) => (
+                                    <div key={index} className="w-[75px] h-[105px]">
+                                        <Cards type={`CARD_${card}`} width="[75px]" height="[105px]" />
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mr-5 flex flex-col items-start space-y-4 border-gray-400 border-4 rounded-xl p-4 scale-75">
+                        {Object.keys(players).map((player, i) => (
+                            <div key={i} className={`relative flex flex-col items-center justify-center space-y-2 border-4 border-[#eeeeee00] p-1 hover:border-yellow-500 hover:border-4 rounded-lg`}>
+                                {currentBest === player ? <span className="absolute rotate-[-37deg] bottom-[7.2rem] right-[3.8rem]" ><GiQueenCrown size={40} color="#ffca44" /></span> : ""} 
+                                <div className=" bg-gray-400 rounded-full flex items-center justify-center">
+                                    <img src={players[player].profilePicture} className="w-[70px] h-[70px] border-gray-300 border-2 rounded-full object-cover" />
+                                </div>
+                                <div className="flex flex-col bg-[#27273c] min-w-[100px] -space-x-1 rounded-lg text-center">
+                                    <span className="text-lg">{players[player].username}</span>
+                                    <span className="text-lg font-bold">{scoreboard[player]}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                     {/*<select
                         id="card_select"
                         value={selectedCard}
@@ -245,7 +308,7 @@ const SixQuiPrend = () => {
                         ))}
                     </div>
                     <div className="flex items-center">
-                        <button className="bg-[#7fb352] hover:bg-[#93cc60] disabled:bg-[#8e8e8e] p-2 px-3 rounded-lg text-2xl transition ease-in-out" disabled={playButtonDisabled} >Jouer</button>
+                        <button onClick={playCard} className="bg-[#7fb352] hover:bg-[#93cc60] disabled:bg-[#8e8e8e] p-2 px-3 rounded-lg text-2xl transition ease-in-out" disabled={playButtonDisabled} >Jouer</button>
                     </div>
                 </div>
             </div>

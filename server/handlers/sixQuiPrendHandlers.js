@@ -15,8 +15,9 @@ const onSQPReceiveHandshake = (io, socket, data, gameInstance) => {
 const onSQPPlayCard = (io, socket, data, gameInstance) => {
     const senderId = data.headers.senderId;
     const selectedCard = data.body.card;
+    const code = data.headers.code;
     console.log('A player has send a card');
-    gameInstance.playCard(io, senderId, selectedCard);
+    gameInstance.playCard(io, senderId, selectedCard, code);
 };
 
 const onBoughtALine = (io, socket, data, gameInstance) => {

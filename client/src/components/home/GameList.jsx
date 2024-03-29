@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import useSocket from '../../hooks/useSocket';
+import MilleBornesBg from '../../assets/millebornes.png';
+
 
 const gameImg = {
     Bataille:
         'https://media.istockphoto.com/id/1219076346/vector/playing-cards-flat.jpg?s=170667a&w=0&k=20&c=TcWdRZkaXQOmni5_-DRNPpAmc46-XLYqzvZvcVtOSgA=',
     SixQuiPrend:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsemyHkoEfs5lGFn5wMFX-TcPHGXniysKxvQ&usqp=CAU',
+    MilleBornes:
+        MilleBornesBg
 };
 
 const GameList = () => {
