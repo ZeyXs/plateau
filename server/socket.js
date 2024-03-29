@@ -15,6 +15,12 @@ const {
     onMBPlayedCard,
     onMBReceiveHandshake,
 } = require("./handlers/milleBornesHandlers");
+const {
+    onSixQuiPrendStart,
+    onSQPReceiveHandshake,
+    onSQPPlayCard,
+    onBoughtALine
+} = require("./handlers/sixQuiPrendHandlers");
 
 
 // Variable stockant toutes les instances des parties (identifiées par leur code/room)
@@ -85,10 +91,14 @@ const sixQuiPrendSocketHandler = (io, socket, data) => {
             onSixQuiPrendStart(io,socket,data,gameInstance)
             break;
         case "client.receivedHandshake":
-            on6QPReceiveHandshake(io, socket, data, gameInstance);
+            onSQPReceiveHandshake(io, socket, data, gameInstance);
             break;
-        case "client.selectedCard":
-            // Implementer ici la gestion des cartes sélectionnées
+        case "client.playedCard":
+            onSQPPlayCard(io,socket,data,gameInstance);
+            break;
+        case "client.lineBought":
+            console.log("client.lineBought");
+            onBoughtALine(io,socket,data,gameInstance);
             break;
     }
 };

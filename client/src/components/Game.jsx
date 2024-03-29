@@ -9,6 +9,7 @@ import useGame from "../hooks/useGame";
 import Lobby from "./games/Lobby";
 import Bataille from "./games/Bataille";
 import MilleBornes from "./games/MilleBornes";
+import SixQuiPrend from "./games/SixQuiPrend";
 
 const Game = () => {
     const socket = useSocket();
@@ -157,9 +158,9 @@ const Game = () => {
                     ) : gameType == "Bataille" ? (
                        <Bataille />
                     ) : gameType == "SixQuiPrend" ? (
-                        <p>SixQuiPrend{/*<SixQuiPrend/>*/}</p>
+                        <SixQuiPrend />
                     ) : gameType == "MilleBornes" ? (
-                        <MilleBornes/>
+                        <MilleBornes />
                     ) : (
                         <p>Erreur</p>
                     )}
