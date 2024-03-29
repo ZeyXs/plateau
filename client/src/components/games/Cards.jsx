@@ -1,68 +1,53 @@
-// Mille bornes
+import React, { useState, useEffect } from 'react';
 
-import KM25 from '../../assets/millebornes_min/25.svg';
-import KM50 from '../../assets/millebornes_min/50.svg';
-import KM75 from '../../assets/millebornes_min/75.svg';
-import KM100 from '../../assets/millebornes_min/100.svg';
-import KM200 from '../../assets/millebornes_min/200.svg';
-
-import FEU_ROUGE from '../../assets/millebornes_min/feu_rouge.svg';
-import PANNE_D_ESSENCE from '../../assets/millebornes_min/panne_essence.svg';
-import ACCIDENT from '../../assets/millebornes_min/accident.svg';
-import CREVAISON from '../../assets/millebornes_min/crevaison.svg';
-import LIMITATION_DE_VITESSE from '../../assets/millebornes_min/limitation_vitesse.svg';
-
-import FEU_VERT from '../../assets/millebornes_min/feu_vert.svg';
-import ESSENCE from '../../assets/millebornes_min/essence.svg';
-import REPARATIONS from '../../assets/millebornes_min/reparations.svg';
-import ROUE_DE_SECOURS from '../../assets/millebornes_min/roue_secours.svg';
-import FIN_DE_LIMITATION_DE_VITESSE from '../../assets/millebornes_min/fin_limitation_vitesse.svg';
-
-import VEHICULE_PRIORITAIRE from '../../assets/millebornes_min/vehicule_prioritaire.svg';
-import CITERNE_D_ESSENCE from '../../assets/millebornes_min/citerne_essence.svg';
-import INCREVABLE from '../../assets/millebornes_min/increvable.svg';
-import AS_DU_VOLANT from '../../assets/millebornes_min/as_volant.svg';
-
-import DOS_CARTE from '../../assets/millebornes_min/dos_carte.svg';
-
-const CARD_DESIGN = {
+const CARD_TO_FILENAME = {
     // Mille bornes
-    KM25: KM25,
-    KM50: KM50,
-    KM75: KM75,
-    KM100: KM100,
-    KM200: KM200,
+    KM25: "25",
+    KM50: "50",
+    KM75: "75",
+    KM100: "100",
+    KM200: "200",
 
-    FEU_ROUGE: FEU_ROUGE,
-    PANNE_D_ESSENCE: PANNE_D_ESSENCE,
-    ACCIDENT: ACCIDENT,
-    CREVAISON: CREVAISON,
-    LIMITE_DE_VITESSE: LIMITATION_DE_VITESSE,
+    FEU_ROUGE: "feu_rouge",
+    PANNE_D_ESSENCE: "panne_essence",
+    ACCIDENT: "accident",
+    CREVAISON: "crevaison",
+    LIMITE_DE_VITESSE: "limitation_vitesse",
 
-    FEU_VERT: FEU_VERT,
-    ESSENCE: ESSENCE,
-    REPARATION: REPARATIONS,
-    ROUE_DE_SECOURS: ROUE_DE_SECOURS,
-    FIN_DE_LIMITATION_DE_VITESSE: FIN_DE_LIMITATION_DE_VITESSE,
+    FEU_VERT: "feu_vert",
+    ESSENCE: "essence",
+    REPARATION: "reparations",
+    ROUE_DE_SECOURS: "roue_secours",
+    FIN_DE_LIMITATION_DE_VITESSE: "fin_limitation_vitesse",
 
-    VEHICULE_PRIORITAIRE: VEHICULE_PRIORITAIRE,
-    CITERNE_D_ESSENCE: CITERNE_D_ESSENCE,
-    INCREVABLE: INCREVABLE,
-    AS_DU_VOLANT: AS_DU_VOLANT,
+    VEHICULE_PRIORITAIRE: "vehicule_prioritaire",
+    CITERNE_D_ESSENCE: "citerne_essence",
+    INCREVABLE: "increvable",
+    AS_DU_VOLANT: "as_volant",
 
-    DOS_CARTE: DOS_CARTE,
+    DOS_CARTE: "dos_carte",
 };
 
 const Cards = ({ type, width, height, disabled }) => {
+    const [cardSrc, setCardSrc] = useState(null);
 
-    const getSixQuiPrendCard = (type) => {
-        const number = type.replace("CARD_", "");
-        return '../../assets/sixquiprend/' + number + '.svg';
-    }
+    useEffect(() => {
+        const fetchCard = async () => {
+            if (type.includes("CARD_")) {
+                const number = type.replace("CARD_", "");
+                const { default: svg } = await import(`../../assets/sixquiprend/${number}.svg`);
+                setCardSrc(svg);
+            } else {
+                const { default: svg } = await import(`../../assets/millebornes_min/${CARD_TO_FILENAME[type]}.svg`);
+                setCardSrc(svg);
+            }
+        };
+        fetchCard();
+    }, [type]);
 
     return (
         <div className={`w-${width} h-${height} z-10 rounded-lg scale-100 bg-black`}>
-            <img src={type.includes("CARD_") ? getSixQuiPrendCard(type) : CARD_DESIGN[type]} className={`rounded-lg object-cover ${disabled ? "opacity-35 transition ease-in-out" : ""}`} />
+            {cardSrc && <img src={cardSrc} className={`rounded-lg object-cover ${disabled ? "opacity-35 transition ease-in-out" : ""}`} />}
         </div>
     );
 };
