@@ -1,240 +1,306 @@
-const CardGame = require('./CardGame');
-const Pack = require('./utils/Pack');
+const CardGame = require("./CardGame");
+const Pack = require("./utils/Pack");
 
 class Bataille extends CardGame {
-    constructor(
-        title,
-        size,
-        code,
-        gameType,
-        creatorId,
-        creatorName,
-        gameState,
-        gameData,
-        players,
-        chat,
-        isPrivate,
+  constructor(
+    title,
+    size,
+    code,
+    gameType,
+    creatorId,
+    creatorName,
+    gameState,
+    gameData,
+    players,
+    chat,
+    isPrivate
+  ) {
+    super(
+      title,
+      size,
+      code,
+      gameType,
+      creatorId,
+      creatorName,
+      gameState,
+      gameData,
+      players,
+      chat,
+      isPrivate
+    );
+  }
+
+  start() {
+    this.gameData["round"] = {};
+    this.gameData["trash"] = {};
+    this.gameData["cardsToSendWinner"] = [];
+    this.initRoundGameData(Object.keys(this.players));
+    this.initTrashGameData();
+  }
+
+  getRoundGameData() {
+    return this.gameData["round"];
+  }
+
+  getTrashGameData() {
+    return this.gameData["trash"];
+  }
+
+  getCardsWinnerGameData() {
+    return this.gameData["cardsToSendWinner"];
+  }
+
+  setHandPlayer(player, hand) {
+    this.players[player].hand = hand;
+  }
+
+  setCardsWinnerGameData(cards) {
+    this.gameData["cardsToSendWinner"] = cards;
+  }
+
+  setRoundGameData(player, card) {
+    this.gameData["round"][player] = card;
+  }
+
+  setTrashGameData(player, cards) {
+    console.log(this.gameData["trash"][player]);
+    console.log(cards);
+    this.gameData["trash"][player] =
+      this.gameData["trash"][player].concat(cards);
+    /*io.to(this.code).emit("server.trash", {
+      playerTrash: player,
+      cardsTrash: cards,
+    });*/
+  }
+
+  initRoundGameData(listPlayers) {
+    //Initialise en fonction de listPlayers l'attribut "round"
+    //console.log(listPlayers);
+    this.gameData["round"] = {};
+    for (let player of listPlayers) {
+      this.gameData["round"][player] = [];
+    }
+    //console.log("je", this.gameData["round"]);
+  }
+
+  initTrashGameData() {
+    this.gameData["trash"] = {};
+    for (let player in this.players) {
+      this.gameData["trash"][player] = [];
+    }
+  }
+
+  noHandButTrash(player) {
+    for (player in this.players) {
+      //on regarder si un joueur à une défausse vide
+      if (
+        this.players[player].hand.length == 0 &&
+        this.getTrashGameData()[player].length > 0
+      ) {
+        this.trashToHand(player);
+      }
+    }
+  }
+
+  trashToHand(player) {
+    this.players[player].hand = this.players[player].hand.concat(
+      this.gameData["trash"][player]
+    );
+    this.gameData["trash"][player] = [];
+  }
+
+  deal(io) {
+    //Mélange les cartes et envoie à chaque joueurs ses cartes associées.
+    this.start();
+    let pack = new Pack();
+    pack.createPack();
+    pack.shufflePack();
+
+    let longueur = pack.package.length;
+    for (
+      let i = 0;
+      i < Math.floor(longueur / Object.keys(this.players).length);
+      i++
     ) {
-        super(
-            title,
-            size,
-            code,
-            gameType,
-            creatorId,
-            creatorName,
-            gameState,
-            gameData,
-            players,
-            chat,
-            isPrivate,
-        );
+      for (let player in this.players) {
+        let card = pack.package.pop();
+        this.players[player].hand.push(card);
+      }
+    }
+    for (let player in this.players) {
+      if (pack.package.length > 0) {
+        let card = pack.package.pop();
+        this.players[player].hand.push(card);
+      } else {
+        break;
+      }
     }
 
-    start() {
-        this.gameData['round'] = {};
-        this.gameData['cardsToSendWinner'] = [];
-		this.initRoundGameData(this.players);
-    }
+    // Récupération de la main du joueur
 
-    getRoundGameData() {
-        return this.gameData['round'];
-    }
+    for (let playerId in this.players) {
+      const socketId = this.socketIds[playerId];
+      const socket = io.sockets.sockets.get(socketId);
 
-    getCardsWinnerGameData() {
-        return this.gameData['cardsToSendWinner'];
+      console.log(
+        "[server.playerData] playerId: " + playerId + " socketId: " + socketId
+      );
+      socket.emit("server.playerData", {
+        infos: this.players[playerId],
+      });
     }
+  }
 
-    setCardsWinnerGameData(cards) {
-        this.gameData['cardsToSendWinner'] = cards;
+  stringToCard(str) {
+    //Les cartes du côté client en string sont transformées en objet
+    let values = {
+      Deux: 2,
+      Trois: 3,
+      Quatre: 4,
+      Cinq: 5,
+      Six: 6,
+      Sept: 7,
+      Huit: 8,
+      Neuf: 9,
+      Dix: 10,
+      Valet: 11,
+      Dame: 12,
+      Roi: 13,
+      As: 14,
+    };
+    str = str.split(" ");
+    return { value: values[str[0]], color: str[2] };
+  }
+
+  deleteCard(player, card) {
+    for (let i = 0; i < this.players[player].hand.length; i++) {
+      if (
+        this.players[player].hand[i]["value"] == card["value"] &&
+        this.players[player].hand[i]["color"] == card["color"]
+      ) {
+        this.players[player].hand.splice(i, 1);
+      }
     }
+  }
 
-    setRoundGameData(player, card) {
-        this.gameData['round'][player] = card;
+  cardsToWinner(cards, round) {
+    //Renvoie les cartes à donner au gagnant
+    for (let player in round) {
+      cards.push(round[player]);
     }
+  }
 
-    initRoundGameData(listPlayers) {
-        this.gameData['round'] = {};
-        for (let player in listPlayers) {
-            this.gameData['round'][player] = [];
+  roundWinner() {
+    //Renvoie les gagnants du round
+    let round_winner = [];
+    let value_max = 0;
+    let round = this.getRoundGameData();
+    for (let player in round) {
+      let currentCard = round[player]["value"];
+      if (currentCard > value_max) {
+        round_winner = [player];
+        value_max = currentCard;
+      } else {
+        if (currentCard == value_max) {
+          round_winner.push(player);
         }
+      }
     }
+    return round_winner;
+  }
 
-    createEmptyHand(players_list) {
-        let dict = {};
-        for (let id in players_list) {
-            dict[players_list[id]] = [];
-        }
-        return dict;
+  emptyListExists(array) {
+    //Renvoie true si une valeur est une liste est vide
+    for (let player in array) {
+      if (array[player].length == 0) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    deal(io) {
-		this.start();
-        let pack = new Pack();
-        pack.createPack();
-        pack.shufflePack();
-
-        let longueur = pack.package.length;
-        for (
-            let i = 0;
-            i < Math.floor(longueur / Object.keys(this.players).length);
-            i++
-        ) {
-            for (let player in this.players) {
-                let card = pack.package.pop();
-                this.players[player].hand.push(card);
-            }
-        }
-        for (let player in this.players) {
-            if (pack.package.length > 0) {
-                let card = pack.package.pop();
-                this.players[player].hand.push(card);
-            } else {
-                break;
-            }
-        }
-
-        
-
-        //console.log(socketId);
-
-
-        //console.log(socket);
-
-        // Récupération de la main du joueur
-		
-        for (let playerId in this.players) {
-			const socketId = this.socketIds[playerId];
-			const socket = io.sockets.sockets.get(socketId);
-			
-			console.log("[server.playerData] playerId: " + playerId + " socketId: " + socketId);
-			socket.emit('server.playerData', {
-                infos: this.players[playerId],
-            });
-        };
+  getListPlayersToReplay(winners) {
+    //Renvoie les joueurs qui doivent rejouer (en cas d'égalité)
+    let playersToReplay = [];
+    for (let player in this.players) {
+      if (winners.includes(player)) {
+        playersToReplay.push(player);
+      }
     }
+    return playersToReplay;
+  }
 
-    stringToCard(str) {
-        let values = {
-            As: 1,
-            Deux: 2,
-            Trois: 3,
-            Quatre: 4,
-            Cinq: 5,
-            Six: 6,
-            Sept: 7,
-            Huit: 8,
-            Neuf: 9,
-            Dix: 10,
-            Valet: 11,
-            Dame: 12,
-            Roi: 13,
-        };
-        str = str.split(' ');
-        return { value: values[str[0]], color: str[2] };
+  askHiddenCard(playersList, io) {
+    //Choisi une carte aléatoire pour chaque joueur concerné par une bataille
+    let players = this.players;
+    for (let player of playersList) {
+      let randomCard = [];
+      randomCard =
+        players[player].hand[
+          Math.floor(Math.random() * players[player].hand.length)
+        ];
+      this.setCardsWinnerGameData(
+        this.getCardsWinnerGameData().concat(randomCard)
+      );
+      this.deleteCard(player, randomCard);
+      io.to(this.code).emit("server.otherCardPlayed", {
+        user: player,
+        userCard: randomCard,
+      });
+      io.to(this.code).emit("server.equality", {
+        user: player,
+        userCards: this.players[player].hand,
+      });
     }
+  }
 
-    deleteCard(player, card) {
-        for (let i = 0; i < this.players[player].hand.length; i++) {
-            if (
-                this.players[player].hand[i]['value'] == card['value'] &&
-                this.players[player].hand[i]['color'] == card['color']
-            ) {
-                this.players[player].hand.splice(i, 1);
-            }
-        }
-    }
-
-    cardsToWinner(cards, round) {
-        for (let player in round) {
-            cards.push(round[player]);
-        }
-    }
-
-    roundWinner() {
-        let round_winner = [];
-        let value_max = 0;
-        let round = this.getRoundGameData();
-        for (let player in round) {
-            let currentCard = round[player]['value'];
-            if (currentCard > value_max) {
-                round_winner = [player];
-                value_max = currentCard;
-            } else {
-                if (currentCard == value_max) {
-                    round_winner.push(player);
-                }
-            }
-        }
-        return round_winner;
-    }
-
-    emptyTabExists(array) {
-        for (let player in array) {
-            if (array[player].length == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    getListPlayersToReplay(winners) {
-        let playersToReplay = {};
-        let players = this.getPlayers();
-        for (let player in players) {
-            if (winners.includes(player)) {
-                playersToReplay[player] = players[player];
-            }
-        }
-        return playersToReplay;
-    }
-
-    askHiddenCard(playersToken, io) {
-        let players = this.getPlayers();
-        for (let player in playersToken) {
-            const randomCard =
-                players[player].hand[
-                    Math.floor(Math.random() * players[player].hand.length)
-                ];
-            this.setCardsWinnerGameData(
-                this.getCardsWinnerGameData().concat(randomCard),
-            );
-
-            this.deleteCard(player, randomCard);
-            io.to(this.code).emit('server.otherCardPlayed', {
-                user: player,
-                userCard: randomCard,
-            });
-            io.to(this.code).emit('server.equality', {
-                user: player,
-                userRandomCard: randomCard,
-            });
-        }
-    }
-
-    getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] == value);
-    }
-
-    winnerGame(io) {
-        let winners = [];
-        for (let player in this.players) {
-            if (this.players[player].hand.length === 51) {
-                winners.push(player);
-                looseGame(winners, io);
-            }
-        }
-        io.to(this.code).emit('server.gameWinners', { gameWinners: winners });
-    }
-
-    looseGame(winners, io) {
+  winnerGame(io) {
+    for (let player in this.players) {
+      if (
+        this.players[player].hand.length +
+          this.gameData["trash"][player].length ==
+        52
+      ) {
+        let notLooser = this.hasLoosers([], io);
         let loosers = [];
         for (let player in this.players) {
-            if (!winners.includes(player)) {
-                loosers.push(player);
-            }
+          if (!notLooser.includes(player)) {
+            loosers.push(player);
+          }
         }
-        io.to(this.code).emit('server.gameLoosers', { gameLoosers: loosers });
+        io.to(this.code).emit("server.gameLeaderboard", {
+          gameWinner: player,
+          gameLoosers: loosers,
+        });
+      }
     }
+  }
+
+  hasLoosers(list, io) {
+    //Renvoie la liste des perdants s'il y en a, sinon list.
+    let loosers = [];
+    for (let player in this.players) {
+      if (
+        this.players[player].hand.length == 0 &&
+        this.gameData["trash"][player].length == 0
+      ) {
+        loosers.push(player);
+      }
+    }
+
+    if (loosers.length > 0) {
+      io.to(this.code).emit("server.gameLoosers", { gameLoosers: loosers });
+      let notLoosers = [];
+      for (player in this.players) {
+        if (!loosers.includes(player)) {
+          notLoosers.push(player);
+        }
+      }
+      return notLoosers;
+    } else {
+      return list;
+    }
+  }
 }
 
 module.exports = Bataille;

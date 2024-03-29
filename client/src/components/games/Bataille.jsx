@@ -4,7 +4,7 @@ import useSocket from '../../hooks/useSocket';
 import { useState, useEffect } from 'react';
 
 const Bataille = () => {
-	const { auth } = useAuth();
+    const { auth } = useAuth();
     const socket = useSocket();
     const {
         code,
@@ -27,70 +27,69 @@ const Bataille = () => {
     const [canPlay, setCanPlay] = useState(true);
     const [selectedCard, setSelectedCard] = useState('');
     const [roundOtherCardPlayed, setRoundOtherCardPlayed] = useState({});
-    const [othersCards, setOthersCards] = useState({});
+
     const [roundState, setRoundState] = useState('');
     const [numberRound, setNumberRound] = useState(1);
 
     const [selectCard, setSelectCard] = useState([]);
+    const [trash, setTrash] = useState([]);
 
-    const [looser, setLooser] = useState(false);
-    const [winner, setWinner] = useState(false);
+    const [othersCards, setOthersCards] = useState({});
+    const [othersTrashes, setOthersTrashes] = useState({});
+
+    const [leaderboard, setLeaderboard] = useState(false);
+
+    const [gameLoosers, setGameLoosers] = useState([]);
+    const [gameWinner, setGameWinner] = useState("");
 
     useEffect(() => {
 
-        socket.on('server.playerData', data => {
-            console.log('server.playerData');
-            console.log(data);
-            addHand(data.infos.hand);
+        socket.on('server.playerData', (data) => {
+            addCards(data.infos.hand)
         });
 
-        socket.on('server.canPlayAgain', () => {
-            console.log('server.canPlayAgain');
-            if (!looser) {
+        socket.on('server.canPlayAgain', (data) => {
+            if (data.loosers.includes(auth.id)) {
                 setCanPlay(true);
             }
         });
 
-        socket.on('server.roundWinners', data => {
-            console.log('server.roundWinners');
+        socket.on('server.roundWinners', (data) => {
             for (let roundWinner of data.roundWinners) {
                 if (roundWinner == auth.id) {
                     deleteAllDic(roundOtherCardPlayed);
-                    setRoundState('Tu as gagné ce tour ! ');
-                    addCards(data.cards);
+                    setRoundState('Tu as gagné au tour précédent ! ');
                     setNumberRound(prevNumberRound => prevNumberRound + 1);
                 }
             }
         });
 
-        socket.on('server.roundLoosers', data => {
-            console.log('server.roundLoosers');
+        socket.on('server.roundLoosers', (data) => {
             for (let roundLooser of data.roundLoosers) {
                 if (roundLooser == auth.id) {
                     deleteAllDic(roundOtherCardPlayed);
-                    setRoundState('Tu as perdu ce tour ! ');
+                    setRoundState('Tu as perdu au tour précédent ! ');
                     setNumberRound(prevNumberRound => prevNumberRound + 1);
                 }
             }
         });
 
-        socket.on('server.equality', data => {
+        socket.on('server.equality', (data) => {
             if (auth.id == data.user) {
-                console.log('server.equality');
-                setRoundState('Egalite à ce tour !');
-                setSelectCard(selectCard => {
-                    var newSelectCard = selectCard.filter(
-                        card => showCard(card) != showCard(data.userRandomCard),
-                    );
-                    setSelectedCard(showCard(newSelectCard[0]));
-                    return newSelectCard;
-                });
+                addCards(data.userCards)
                 setCanPlay(true);
             }
         });
 
-        socket.on('server.otherCardPlayed', data => {
-            console.log('server.otherCardPlayed');
+        socket.on("server.isEquality", (data) => {
+            let res = "Il y a une égalité entre : "
+            for (let playerEquality of data.playersEquality) {
+                res += players[playerEquality].username + ","
+            }
+            setRoundState(res)
+        })
+
+        socket.on('server.otherCardPlayed', (data) => {
             let dico = roundOtherCardPlayed;
             if (dico.hasOwnProperty(data.user)) {
                 dico[data.user].push(showCard(data.userCard));
@@ -100,58 +99,53 @@ const Bataille = () => {
             setRoundOtherCardPlayed(dico);
         });
 
-        socket.on('server.playersCards', data => {
-            console.log('server.playersCards');
+        socket.on('server.playersCards', (data) => {
             let handsList = {};
+            let trashList = {}
             for (let player in data.playersCards) {
                 handsList[player] = data.playersCards[player].hand;
+                trashList[player] = data.playersTrashes[player]
+                if (player == auth.id) {
+                    addCards(data.playersCards[player].hand)
+                    setTrash(data.playersTrashes[player]);
+                }
             }
             setOthersCards(handsList);
+            setOthersTrashes(trashList)
         });
 
-        socket.on('server.gameLoosers', data => {
+        socket.on('server.gameLoosers', (data) => {
             if (data.gameLoosers.length > 0) {
-                console.log('server.gameLoosers');
-                for (let gameLooser of data.gameLoosers) {
-                    if (gameLooser == auth.id) {
-                        setLooser(true);
-                    }
-                }
+                setGameLoosers(data.gameLoosers)
             }
         });
 
-        socket.on('server.gameWinners', data => {
-            if (data.gameWinners.length > 0) {
-                console.log('server.gameWinners');
-                for (let gameWinner of data.gameWinners) {
-                    if (gameWinner == auth.id) {
-                        setWinner(true);
-                    }
-                }
-            }
-        });
+        socket.on('server.gameLeaderboard', (data) => {
+            setLeaderboard(true)
+            setCanPlay(false)
+            setGameWinner(data.gameWinner)
+            setGameLoosers(data.gameLoosers)
+        })
 
-		return () => {
-			socket.off('server.playerData');
-			socket.off('server.canPlayAgain');
-			socket.off('server.roundWinners');
-			socket.off('server.roundLoosers');
-			socket.off('server.equality');
-			socket.off('server.otherCardPlayed');
-			socket.off('server.playersCards');
-			socket.off('server.gameLoosers');
-			socket.off('server.gameWinners');
-		}
+        return () => {
+            socket.off('server.playerData');
+            socket.off('server.canPlayAgain');
+            socket.off('server.roundWinners');
+            socket.off('server.roundLoosers');
+            socket.off('server.equality');
+            socket.off('server.otherCardPlayed');
+            socket.off('server.playersCards');
+            socket.off('server.gameLoosers');
+            socket.off('server.gameLeaderboard');
+        }
 
-    }, [socket]);
+    }, [socket, selectCard, selectedCard, trash, gameWinner, gameLoosers]);
 
-    const deleteAllDic = dico => {
+    const deleteAllDic = (dico) => {
         Object.keys(dico).forEach(key => delete dico[key]);
     };
-
-    const showCard = card => {
+    const showCard = (card) => {
         let values = {
-            1: 'As',
             2: 'Deux',
             3: 'Trois',
             4: 'Quatre',
@@ -164,54 +158,24 @@ const Bataille = () => {
             11: 'Valet',
             12: 'Dame',
             13: 'Roi',
+            14: 'As',
         };
         return values[card['value']] + ' de ' + card['color'];
     };
 
-    const addCards = cards => {
-        console.log('je suis passé par là');
-        setSelectCard(selectCard => {
-            let newCards = [];
-            if (selectCard.length === 0) {
-                newCards = cards;
-            } else {
-                console.log(cards);
-                cards.forEach(card => {
-                    let isIn = selectCard.some(
-                        c => showCard(c) === showCard(card),
-                    );
-                    if (!isIn) {
-                        newCards.push(card);
-                    }
-                });
-            }
-            const newSelectCard = [...selectCard, ...newCards];
-            console.log(newSelectCard);
-            setSelectedCard(showCard(newSelectCard[0]));
-            return newSelectCard;
-        });
-    };
-
-    const addHand = cards => {
-        if (selectCard.length > 0) {
-            setSelectCard([]);
+    const addCards = (cards) => {
+        setSelectCard(cards);
+        if (cards.length == 0) {
+            setSelectedCard("")
+        } else {
+            setSelectedCard(showCard(cards[0]));
         }
-        console.log('je suis passé ici');
-        addCards(cards);
+
     };
 
     const playCard = () => {
-        console.log('playCard');
         if (canPlay) {
-            console.log(selectedCard);
             emit('client.selectedCard', { card: selectedCard });
-            setSelectCard(selectCard => {
-                var newSelectCard = selectCard.filter(
-                    card => showCard(card) != selectedCard,
-                );
-                setSelectedCard(showCard(newSelectCard[0]));
-                return newSelectCard;
-            });
             setCanPlay(false);
         }
     };
@@ -219,7 +183,7 @@ const Bataille = () => {
     return (
         <>
             <div className="bg-white text-black">
-                {
+                {canPlay && !leaderboard &&
                     <select
                         id="selected-card"
                         onChange={event => {
@@ -237,16 +201,20 @@ const Bataille = () => {
                         })}
                     </select>
                 }
-                {canPlay && !winner && (
+                {canPlay && !leaderboard && (
                     <button id="jouer-carte" onClick={playCard}>
                         Jouer la carte
                     </button>
                 )}
                 {<p>Ceci est le tour numéro {numberRound}.</p>}
-                {!winner && !looser && <p>{roundState}</p>}
-                {winner && <p>Tu as gagné la partie !</p>}
-                {looser && <p>Tu as perdu la partie !</p>}
-                {Object.keys(roundOtherCardPlayed).map((p, j) => (
+                {!leaderboard && <p>{roundState}</p>}
+                {gameWinner != "" ? (<div>Le gagnant est : {players[gameWinner].username}.</div>) : ("")}
+                {gameLoosers.length > 0 ? (<div> Les perdants sont :
+                    {gameLoosers.map((looser, i) => {
+                        return <p key={i}>{players[looser].username}</p>
+                    })}
+                </div>) : ("")}
+                {(Object.keys(roundOtherCardPlayed).map((p, j) => (
                     <div key={j}>
                         <p>
                             <b>
@@ -260,17 +228,17 @@ const Bataille = () => {
                             ))}
                         </ul>
                     </div>
-                ))}
-                {Object.keys(othersCards).map((p, j) => (
+                )))}
+                {(Object.keys(othersCards).map((p, j) => (
                     <div key={j}>
                         <p>
                             <b>
                                 Joueur {players[p].username} a{' '}
-                                {othersCards[p].length} cartes.
+                                {othersCards[p].length + othersTrashes[p].length} cartes dont {othersTrashes[p].length} dans sa défausse.
                             </b>
                         </p>
                     </div>
-                ))}
+                )))}
             </div>
         </>
     );
