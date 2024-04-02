@@ -100,13 +100,13 @@ const MilleBornes = () => {
                     action: action,
                     targetId: targetId,
                 });
+                setSelectedCard(undefined);
+                setSelectedCardValue(undefined);
             } else {
                 //setSelectedPlayer(Object.keys(playersData)[0]);
                 setShowAttackPopup(true);
             }
         }
-        setSelectedCard(undefined);
-        setSelectedCardValue(undefined);
         setCanPlay(false);
         setCanThrow(false);
     };
@@ -132,7 +132,7 @@ const MilleBornes = () => {
 
             if (hand[selectedCardIndex].type === 'BOTTES') {
                 setCanPlay(true);
-            } else if (malus.length > 0 && !malus.includes('LIMITE_DE_VITESSE')) {
+            } else if (malus.length > 0) {
                 if (hand[selectedCardIndex].type === 'PARADES') {
                     malus.forEach(malusCard => {
                         if (hand[selectedCardIndex].value === PARADE_CLEAR[malusCard]) {
@@ -140,6 +140,8 @@ const MilleBornes = () => {
                             setCanPlay(true);
                         }
                     });
+                } else if ((hand[selectedCardIndex].type === 'BORNES' && malus.includes('LIMITE_DE_VITESSE') && malus.length == 1) || hand[selectedCardIndex].type === 'ATTAQUES') {
+                    setCanPlay(true);
                 }
             } else if (hand[selectedCardIndex].type === 'BORNES' || hand[selectedCardIndex].type === 'ATTAQUES') {
                 setCanPlay(true);
@@ -295,7 +297,7 @@ const MilleBornes = () => {
     return (
         <>
             <div className="flex flex-col h-full overflow-hidden select-none">
-                {showAttackPopup ? <PlayerAttackPopup cardValue={selectedCardValue} playersData={playersData} setShowAttackPopup={setShowAttackPopup} selectedPlayer={selectedPlayer} setSelectedPlayer={setSelectedPlayer} setCanPlay={setCanPlay} setCanThrow={setCanThrow} /> : ""}
+                {showAttackPopup ? <PlayerAttackPopup cardValue={selectedCardValue} playersData={playersData} setShowAttackPopup={setShowAttackPopup} selectedPlayer={selectedPlayer} setSelectedPlayer={setSelectedPlayer} setCanPlay={setCanPlay} setCanThrow={setCanThrow} setSelectedCard={setSelectedCard} setSelectedCardValue={setSelectedCard} /> : ""}
                 {showWinPopup ? <PlayerWinPopup winner={winner} finalScoreboard={finalScoreboard} newLevel={newLevel} /> : ""}
                 <div className="relative flex-1 flex flex-row items-center justify-center">
                     <div className="absolute left-5 flex flex-col items-start space-y-4 border-gray-400 border-4 rounded-xl p-4 scale-75">

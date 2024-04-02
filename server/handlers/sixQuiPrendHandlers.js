@@ -1,6 +1,7 @@
 const onSixQuiPrendStart = (io, socket, data, gameInstance) => {
     const code = data.headers.code;
     io.to(code).emit('server.requestHandshake');
+    gameInstance.start(io);
 };
 
 // C'est ici que l'on envoie les informations propre à chaque joueur car on répond
@@ -9,7 +10,6 @@ const onSixQuiPrendStart = (io, socket, data, gameInstance) => {
 const onSQPReceiveHandshake = (io, socket, data, gameInstance) => {
     const senderId = data.headers.senderId;
     console.log('Player ', senderId, ' has responded.');
-    gameInstance.start(io);
 };
 
 const onSQPPlayCard = (io, socket, data, gameInstance) => {

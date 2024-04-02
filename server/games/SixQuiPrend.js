@@ -1,6 +1,8 @@
 const { addVictoryTo, addLossTo } = require('../config/statsFunctions');
-const CardGame = require('./CardGame');
 const { addXpTo } = require('../config/xpFunctions');
+
+const CardGame = require('./CardGame');
+const Game = require('../models/Game');
 
 class SixQuiPrend extends CardGame {
     constructor(
@@ -40,8 +42,10 @@ class SixQuiPrend extends CardGame {
             this.players[playerId].score = 0;
         }
         this.#InitializeRound(io);
-        this.gameState = "IN_GAME";
-        //Ajouter MAJ BDD
+
+        // Mise-à-jour de la base de données
+        this.gameState = 'IN_GAME';
+        await Game.findOneAndUpdate({ code: this.code }, { gameState: "IN_GAME" });
     }
 
     /*Créer des mains vides pour chaque joueur */

@@ -4,7 +4,7 @@ import useAuth from '../../hooks/useAuth';
 import useGame from '../../hooks/useGame';
 import { FaLock } from 'react-icons/fa';
 
-const PlayerAttackPopup = ({ cardValue, playersData, setShowAttackPopup, selectedPlayer, setSelectedPlayer, setCanPlay, setCanThrow }) => {
+const PlayerAttackPopup = ({ cardValue, playersData, setShowAttackPopup, selectedPlayer, setSelectedPlayer, setCanPlay, setCanThrow, setSelectedCard, setSelectedCardValue }) => {
 
   const { auth } = useAuth();
   const { players, emit } = useGame();
@@ -30,6 +30,8 @@ const PlayerAttackPopup = ({ cardValue, playersData, setShowAttackPopup, selecte
       targetId: selectedPlayer,
     });
     setShowAttackPopup(false);
+    setSelectedCardValue(undefined);
+    setSelectedCard(undefined);
   }
 
   

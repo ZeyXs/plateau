@@ -94,8 +94,6 @@ class MilleBornes extends CardGame {
     // __________ Méthode(s) __________
 
     async start(io) {
-        //console.log("-> Starting", this.code);
-
         // Initialisation des données de la partie
         this.gameData.rounds = 0;
         this.gameData.playerPointer = -1;

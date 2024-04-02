@@ -33,6 +33,7 @@ const Cards = ({ type, width, height, disabled }) => {
 
     useEffect(() => {
         const fetchCard = async () => {
+            console.log(type);
             if (type.includes("CARD_")) {
                 const number = type.replace("CARD_", "");
                 const { default: svg } = await import(`../../assets/sixquiprend/${number}.svg`);
