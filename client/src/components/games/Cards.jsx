@@ -38,6 +38,9 @@ const Cards = ({ type, width, height, disabled }) => {
                 const number = type.replace("CARD_", "");
                 const { default: svg } = await import(`../../assets/sixquiprend/${number}.svg`);
                 setCardSrc(svg);
+            } else if (type.substring(0, 2) === "b_") {
+                const { default: svg } = await import(`../../assets/bataille/${type}.svg`);
+                setCardSrc(svg);
             } else {
                 const { default: svg } = await import(`../../assets/millebornes_min/${CARD_TO_FILENAME[type]}.svg`);
                 setCardSrc(svg);

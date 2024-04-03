@@ -111,6 +111,7 @@ class Bataille extends CardGame {
         this.players[player].hand = this.players[player].hand.concat(
             this.gameData['trash'][player],
         );
+        this.players[player].hand.sort((a, b) => a.value - b.value);
         this.gameData['trash'][player] = [];
     }
 
@@ -154,7 +155,7 @@ class Bataille extends CardGame {
                     socketId,
             );
             socket.emit('server.playerData', {
-                infos: this.players[playerId],
+                infos: this.players[playerId].hand.sort((a, b) => a.value - b.value),
             });
         }
     }

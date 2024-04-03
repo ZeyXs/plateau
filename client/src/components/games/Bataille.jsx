@@ -2,6 +2,7 @@ import useAuth from '../../hooks/useAuth';
 import useGame from '../../hooks/useGame';
 import useSocket from '../../hooks/useSocket';
 import { useState, useEffect } from 'react';
+import Cards from './Cards';
 
 const Bataille = () => {
     const { auth } = useAuth();
@@ -31,7 +32,7 @@ const Bataille = () => {
     const [roundState, setRoundState] = useState('');
     const [numberRound, setNumberRound] = useState(1);
 
-    const [selectCard, setSelectCard] = useState([]);
+    const [hand, setHand] = useState([]);
     const [trash, setTrash] = useState([]);
 
     const [othersCards, setOthersCards] = useState({});
@@ -45,7 +46,7 @@ const Bataille = () => {
     useEffect(() => {
 
         socket.on('server.playerData', (data) => {
-            addCards(data.infos.hand)
+            addCards(data.infos)
         });
 
         socket.on('server.canPlayAgain', (data) => {
@@ -139,7 +140,7 @@ const Bataille = () => {
             socket.off('server.gameLeaderboard');
         }
 
-    }, [socket, selectCard, selectedCard, trash, gameWinner, gameLoosers]);
+    }, [socket, hand, selectedCard, trash, gameWinner, gameLoosers]);
 
     const deleteAllDic = (dico) => {
         Object.keys(dico).forEach(key => delete dico[key]);
@@ -160,11 +161,11 @@ const Bataille = () => {
             13: 'Roi',
             14: 'As',
         };
-        return values[card['value']] + ' de ' + card['color'];
+        return values[card.value] + ' de ' + card.color;
     };
 
     const addCards = (cards) => {
-        setSelectCard(cards);
+        setHand(cards);
         if (cards.length == 0) {
             setSelectedCard("")
         } else {
@@ -180,9 +181,34 @@ const Bataille = () => {
         }
     };
 
+    useEffect(() => {
+        
+    }, []);
+
     return (
-        <>
-            <div className="bg-white text-black">
+        <div className="flex flex-col h-full overflow-hidden select-none">
+            <div className="relative flex-1 flex flex-row items-center justify-center">
+                coucou
+            </div>
+            <div className="flex flex-row justify-center overflow-x-auto">
+                <div className="overflow-x-auto flex scale-90 -space-x-8 items-center justify-center border-dashed border-4 p-2 rounded-lg max-w-[100vh]">
+                    <div className="flex -space-x-8 ml-80">
+                        {hand.map((card, i) => {
+                            const cardType = "b_" + showCard(card).replace(" de ", "_").replace(" ", "_").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            return ( 
+                                <div
+                                    key={i}
+                                    className={`cursor-pointer w-[8rem] h-[11rem] hover:scale-105 hover:z-40 transition ease-in-out ${selectedCard === i ? "hover:scale-110 scale-110 z-50" : ""}`}
+                                    onClick={() => setSelectedCard(showCard(card))}
+                                >
+                                    <Cards type={cardType} width="32" height="44" />
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+            {/*<div className="bg-white text-black">
                 {canPlay && !leaderboard &&
                     <select
                         id="selected-card"
@@ -190,7 +216,7 @@ const Bataille = () => {
                             setSelectedCard(event.target.value);
                         }}
                         value={selectedCard}>
-                        {selectCard.map(card => {
+                        {hand.map(card => {
                             return (
                                 <option
                                     key={showCard(card)}
@@ -239,8 +265,8 @@ const Bataille = () => {
                         </p>
                     </div>
                 )))}
-            </div>
-        </>
+                </div>*/}
+        </div>
     );
 };
 
