@@ -192,7 +192,7 @@ const Bataille = () => {
             </div>
             <div className="flex flex-row justify-center overflow-x-auto">
                 <div className="overflow-x-auto flex scale-90 -space-x-8 items-center justify-center border-dashed border-4 p-2 rounded-lg max-w-[100vh]">
-                    <div className="flex -space-x-8 ml-80">
+                    <div className="flex -space-x-8 relative left-[90vh] pr-1">
                         {hand.map((card, i) => {
                             const cardType = "b_" + showCard(card).replace(" de ", "_").replace(" ", "_").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                             return ( 
