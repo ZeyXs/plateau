@@ -72,7 +72,7 @@ const SixQuiPrend = () => {
     const updateCurrentBest = (scoreboard) => {
         const scoresAreZero = Object.values(scoreboard).every(score => score === 0);
         if (!scoresAreZero) {
-            const bestPlayer = Object.keys(scoreboard).reduce((a, b) => scoreboard[a] > scoreboard[b] ? a : b);
+            const bestPlayer = Object.keys(scoreboard).reduce((a, b) => scoreboard[a] < scoreboard[b] ? a : b);
             setCurrentBest(bestPlayer);
         }
     };

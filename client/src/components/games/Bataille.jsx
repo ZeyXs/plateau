@@ -169,12 +169,6 @@ const Bataille = () => {
 
     const addCards = (cards) => {
         setHand(cards);
-        if (cards.length == 0) {
-            setSelectedCard("")
-        } else {
-            setSelectedCard(showCard(cards[0]));
-        }
-
     };
 
     const playCard = () => {
