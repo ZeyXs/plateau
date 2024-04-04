@@ -37,7 +37,7 @@ const PlayerAttackPopup = ({ cardValue, playersData, setShowAttackPopup, selecte
   
   const handleSelect = (playerId) => {
     if (playerId !== selectedPlayer && !playersData[playerId].malus.includes(cardValue)) {
-      setSelectedPlayer(player);
+      setSelectedPlayer(playerId);
     }
   }
   
@@ -56,7 +56,7 @@ const PlayerAttackPopup = ({ cardValue, playersData, setShowAttackPopup, selecte
               <div className="flex flex-row space-x-5 items-center justify-center">
                 {Object.keys(players).map((player, index) => (
                   player !== auth.id && (
-                    <div key={index} onClick={() => handleSelect(player)} className={`relative flex flex-col items-center justify-center p-2 rounded-lg space-y-2 cursor-pointer ${selectedPlayer && !playersData[player].malus.includes(cardValue) ? "border-red-500 border-2 bg-red-500 bg-opacity-35 hover:bg-opacity-25" : "hover:bg-white hover:bg-opacity-25"} ${playersData[player].malus.includes(cardValue) && "border-gray-500 border-2 bg-gray-500 bg-opacity-35 hover:bg-opacity-25"}`}>
+                    <div key={index} onClick={() => handleSelect(player)} className={`relative flex flex-col items-center justify-center p-2 rounded-lg space-y-2 cursor-pointer ${playersData[player].malus.includes(cardValue) && "border-gray-500 border-2 bg-gray-500 bg-opacity-35 hover:bg-opacity-25"} ${(selectedPlayer === player) && !playersData[player].malus.includes(cardValue) ? "border-red-500 border-2 bg-red-500 bg-opacity-35 hover:bg-opacity-25" : "hover:bg-white hover:bg-opacity-25"}`}>
                       <img src={players[player].profilePicture} alt="avatar" className={`w-16 h-16 rounded-full object-cover`} />
                       <div className='flex flex-row space-x-1 items-center'>
                         {playersData[player].malus.includes(cardValue) && <FaLock size={18} />}

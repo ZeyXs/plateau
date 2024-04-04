@@ -235,65 +235,7 @@ const SixQuiPrend = () => {
                             </div>
                         ))}
                     </div>
-                    {/*<select
-                        id="card_select"
-                        value={selectedCard}
-                        onChange={() =>
-                            setSelectedCard(
-                                document.getElementById('card_select').value,
-                            )
-                        }>
-                        {hand.map(card => (
-                            <option value={card}>{card}</option>
-                        ))}
-                    </select>
-                    {canPlay && (
-                        <button id="jouer-carte" onClick={playCard}>
-                            Jouer la carte
-                        </button>
-                    )}
-                    {canSelectLine && (
-                        <select
-                            name="line-selected"
-                            id="select-line"
-                            onChange={() => {
-                                setSelectedLine(
-                                    document.getElementById('select-line').value,
-                                );
-                            }}
-                            value={selectedLine}>
-                            {[1, 2, 3, 4].map(i => (
-                                <option value={i - 1}>Ligne {i}</option>
-                            ))}
-                        </select>
-                    )}
-                    {canSelectLine && (
-                        <button id="confirm-selected-line" onClick={sendLine}>
-                            Sélectionner la ligne
-                        </button>
-                    )}
-                    {lines.map((line, i) => (
-                        <div key={i}>
-                            <p>
-                                <b>Ligne {i + 1}:</b>
-                            </p>
-                            <ul>
-                                {line.map((card, index) => (
-                                    <li key={index}>{card}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
-                    <div className="bg-[#45345f]">
-                        <p>Scoreboard :</p>
-                        <ul>
-                            {Object.keys(scoreboard).map(playerId => (
-                                <li>
-                                    {playerId}. {scoreboard[playerId]}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>*/}
+
                 </div>
                 <div className="flex flex-row justify-evenly lg:scale-100 md:scale-75">
                     <div className={`flex flex-row scale-90 -space-x-12 items-center justify-center border-dashed border-4 p-2 rounded-lg`}>

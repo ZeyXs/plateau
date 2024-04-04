@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -17,11 +17,7 @@ const PlayerWinPopup = ({ winner, finalScoreboard, newLevel }) => {
     const { players } = useGame();
     const { auth } = useAuth();
     const navigate = useNavigate(); 
-
-    const scoreboard = useRef({
-        "66018a96066b94c5674c505f": 3000,
-        "66018a9a066b94c5674c5062": 1500,
-    });
+    const [scoreboard, setScoreboard] = useState(finalScoreboard);
 
     const handleNavigate = () => {
         navigate('/', { replace: true });

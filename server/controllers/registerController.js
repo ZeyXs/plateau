@@ -38,6 +38,11 @@ const handleNewUser = async (req, res) => {
                     "wins":0,
                     "loses":0,
                     "avgPointsPerGame": 0
+                },
+                "millesBornes": {
+                    "gamesPlayed": 0,
+                    "wins":0,
+                    "loses":0
                 }
             }
         });

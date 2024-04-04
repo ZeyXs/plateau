@@ -43,6 +43,8 @@ const Bataille = () => {
     const [gameLoosers, setGameLoosers] = useState([]);
     const [gameWinner, setGameWinner] = useState("");
 
+    const [playButtonDisabled, setPlayButtonDisabled] = useState(true);
+
     useEffect(() => {
 
         socket.on('server.playerData', (data) => {
@@ -102,7 +104,7 @@ const Bataille = () => {
 
         socket.on('server.playersCards', (data) => {
             let handsList = {};
-            let trashList = {}
+            let trashList = {};
             for (let player in data.playersCards) {
                 handsList[player] = data.playersCards[player].hand;
                 trashList[player] = data.playersTrashes[player]
@@ -112,7 +114,7 @@ const Bataille = () => {
                 }
             }
             setOthersCards(handsList);
-            setOthersTrashes(trashList)
+            setOthersTrashes(trashList);
         });
 
         socket.on('server.gameLoosers', (data) => {
@@ -145,6 +147,7 @@ const Bataille = () => {
     const deleteAllDic = (dico) => {
         Object.keys(dico).forEach(key => delete dico[key]);
     };
+
     const showCard = (card) => {
         let values = {
             2: 'Deux',
@@ -181,31 +184,61 @@ const Bataille = () => {
         }
     };
 
+    const handleSelectedCard = (card) => {
+        if (playButtonDisabled) {
+            setSelectedCard(showCard(card))
+            setPlayButtonDisabled(false)
+        } else {
+            setSelectedCard(undefined)
+            setPlayButtonDisabled(true)
+        }
+    }
+
     useEffect(() => {
-        
-    }, []);
+        console.log(othersCards);
+    }, [othersCards]);
 
     return (
         <div className="flex flex-col h-full overflow-hidden select-none">
+
             <div className="relative flex-1 flex flex-row items-center justify-center">
-                coucou
+
+                <div className="mr-5 flex flex-row items-start space-x-8 border-gray-400 border-4 rounded-xl p-4 scale-75">
+                    {Object.keys(players).map((player, i) => (
+                        <div key={i} className={`relative flex flex-col items-center justify-center space-y-2 p-1 rounded-lg`}>
+                            {/*currentBest === player ? <span className="absolute rotate-[-37deg] bottom-[7.2rem] right-[3.8rem]" ><GiQueenCrown size={40} color="#ffca44" /></span> : ""*/} 
+                            <div className=" bg-gray-400 rounded-full flex items-center justify-center">
+                                <img src={players[player].profilePicture} className="w-[70px] h-[70px] border-gray-300 border-2 rounded-full object-cover" />
+                            </div>
+                            <div className="flex flex-col bg-[#27273c] min-w-[100px] -space-x-1 rounded-lg text-center">
+                                <span className="text-lg">{players[player].username}</span>
+                                <span className="text-lg font-bold">{leaderboard[player]}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
             </div>
-            <div className="flex flex-row justify-center overflow-x-auto">
-                <div className="overflow-x-auto flex scale-90 -space-x-8 items-center justify-center border-dashed border-4 p-2 rounded-lg max-w-[100vh]">
+
+            <div className="flex flex-row justify-evenly">
+                <div className="overflow-x-auto flex scale-90 -space-x-8 items-center justify-center border-dashed border-4 p-4 rounded-lg max-w-[100vh]">
                     <div className="flex -space-x-8 relative left-[90vh] pr-1">
                         {hand.map((card, i) => {
                             const cardType = "b_" + showCard(card).replace(" de ", "_").replace(" ", "_").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            return ( 
+                            return (
                                 <div
                                     key={i}
-                                    className={`cursor-pointer w-[8rem] h-[11rem] hover:scale-105 hover:z-40 transition ease-in-out ${selectedCard === i ? "hover:scale-110 scale-110 z-50" : ""}`}
-                                    onClick={() => setSelectedCard(showCard(card))}
+                                    className={`cursor-pointer w-[8rem] h-[11rem] hover:scale-105 hover:z-40 transition ease-in-out ${selectedCard === showCard(card) ? "hover:scale-110 scale-110 z-50" : ""}`}
+                                    onClick={() => handleSelectedCard(card)}
                                 >
                                     <Cards type={cardType} width="32" height="44" />
                                 </div>
                             );
                         })}
                     </div>
+                </div>
+                <div className="flex items-center">
+                    <button onClick={playCard} className="bg-[#7fb352] hover:bg-[#93cc60] disabled:bg-[#8e8e8e] p-2 px-3 rounded-lg text-2xl transition ease-in-out" disabled={playButtonDisabled} >Jouer</button>
                 </div>
             </div>
             {/*<div className="bg-white text-black">

@@ -302,7 +302,8 @@ class MilleBornes extends CardGame {
         // Modification du statut de la partie et mise-à-jour de la base de données
         this.gameState = "ENDED";
         this.gameData.winner = winnerId;
-        this.gameData.finalScoreboard = this.#getScoreboard();
+        const nonSortedScoreboard = this.#getScoreboard();
+        this.gameData.finalScoreboard = Object.fromEntries(Object.entries(nonSortedScoreboard).sort(([,a],[,b]) => b-a));
         await this.save();
 
         // Envoi des résultats finaux aux différents clients

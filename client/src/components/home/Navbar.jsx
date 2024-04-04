@@ -56,6 +56,9 @@ const Navbar = () => {
                     <SearchBar />
                 </div>
                 <ul className="hidden md:flex items-center h-24">
+                    <li>
+                        <a onClick={() => navigate('/leaderboard')} className="cursor-pointer">Leaderboard</a>
+                    </li>
                     <li className="p-4">
                         <a onClick={() => navigate('/shop')} className="cursor-pointer">Boutique</a>
                     </li>
