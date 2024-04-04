@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUnlockAlt } from "react-icons/fa";
-import { IoMdSend } from "react-icons/io";
+import { FaSave, FaUnlockAlt } from "react-icons/fa";
+import { IoMdDoneAll, IoMdSend } from "react-icons/io";
+import { ImExit } from "react-icons/im";
 
 import useSocket from "../hooks/useSocket";
 import useAuth from "../hooks/useAuth";
@@ -10,6 +11,8 @@ import Lobby from "./games/Lobby";
 import Bataille from "./games/Bataille";
 import MilleBornes from "./games/MilleBornes";
 import SixQuiPrend from "./games/SixQuiPrend";
+import Modal from "./utils/Modal";
+import { FaTrash } from "react-icons/fa6";
 
 const Game = () => {
     const socket = useSocket();
@@ -38,6 +41,7 @@ const Game = () => {
 
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const [modal, setModal] = useState(false);
 
     const handleSendMessage = () => {
         if (newMessage) {
@@ -62,9 +66,33 @@ const Game = () => {
         }
     };
 
+    const handleExit = () => {
+        if (gameState == "IN_GAME" && creatorId == auth.id) {
+            handleModal();
+        } else {
+            handleLeave();
+            navigate("/", { replace: true });
+        }
+    }
+
+    const handleModal = () => {
+        setModal(!modal);
+    }
+
     const handleLeave = () => {
         emit("client.leave", { code: code, username: auth.user });
     };
+
+    const handleSave = () => {
+        emit("client.save", {});
+        navigate("/", { replace: true });
+    }
+
+    const handleDelete = () => {
+        handleLeave();
+        navigate("/", { replace: true });
+    
+    }
 
     useEffect(() => {
         const cleanup = () => {
@@ -144,7 +172,10 @@ const Game = () => {
                 <p className="px-3 py-1  rounded-xl bg-slate-600">
                     {playerNumber} {playerNumber > 1 ? "joueurs" : "joueur"}
                 </p>
-                <p className="text-lg">{gameTitle}</p>
+                <div className="flex flex-row justify-between w-full h-full">
+                    <p className="text-lg flex items-center justify-center">{gameTitle}</p>
+                    <button onClick={handleExit} className="bg-[#0c0c12] hover:bg-[#11111a] transition ease-in-out px-6 flex items-center justify-center"><div><ImExit size={24} color="white" /></div></button>
+                </div>
             </div>
             <div className="flex flex-2 flex-row flex-grow">
                 <div
@@ -195,6 +226,20 @@ const Game = () => {
                     </div>
                 </div>
             </div>
+            <Modal
+                title="Vous allez quitter la partie"
+                visible={modal}
+                onClose={handleModal}>
+                <div className="flex flex-col space-y-4 justify-center items-center p-4">
+                    <div className="text-center">
+                        Voulez-vous sauvegarder la partie<br/> ou la supprimer ?
+                    </div>
+                    <div className="flex flex-row justify-center items-center space-x-4">
+                        <button onClick={handleSave} className="p-2 rounded-full bg-green-500 flex items-center justify-center space-x-1"><div><FaSave size={19} /></div><p>Sauvegarder</p></button>
+                        <button onClick={handleDelete} className="p-2 rounded-full bg-red-500 flex items-center justify-center space-x-1"><div><FaTrash size={16} /></div><p>Supprimer</p></button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
