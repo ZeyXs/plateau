@@ -251,11 +251,13 @@ class MilleBornes extends CardGame {
                     affectedPlayer = attackerId;
                     break;
                 case CARD_TYPES.ATTAQUES:
-                    let isImmuned = false;
-                    for(let botte of this.players[targetId].bonus) {
-                        if(BOTTES_PROTECTION[botte].includes(cardValue)) {
-                            isImmuned = true;
-                            break;
+                    let isImmuned = (this.players[targetId].score == 0);
+                    if(!isImmuned) {
+                        for(let botte of this.players[targetId].bonus) {
+                            if(BOTTES_PROTECTION[botte].includes(cardValue)) {
+                                isImmuned = true;
+                                break;
+                            }
                         }
                     }
                     if(!isImmuned && !this.players[targetId].malus.includes(cardValue)) {

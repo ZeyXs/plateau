@@ -39,26 +39,10 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
     // Ajout du joueur à la partie
     gameInstance.addPlayer(io, socket.id, userId);
 
-    // Récupération des données des joueurs présents dans la partie
-    let players = {};
-    for (playerId of Object.keys(gameInstance.getPlayers())) {
-        await User.findOne({ _id: playerId }).then((data) => {
-            players[playerId] = {
-                username: data.username,
-                profilePicture: data.profilePicture
-            };
-        });
-    }
-
     // Renvoi des données relatives à la partie
-    socket.emit("server.joinSuccess", {
-        gameTitle: gameInstance.getTitle(),
-        gameType: gameInstance.getGameType(),
-        gameState: gameInstance.getGameState(),
-        players: players,
-        creatorId: gameInstance.getCreatorId(),
-        chat: gameInstance.getChat(),
-    });
+    let gameContext;
+    gameContext = await gameInstance.generateGameContext();
+    socket.emit("server.joinSuccess", gameContext);
 
     // Message d'arrivée du joueur
     const joiningMessage = `👤 ${username} joined the game.`;
@@ -95,14 +79,16 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
         // Si le créateur quitte la partie, on la supprime :
         await gameInstance.destruct(); // Remarque: la méthode se chargera de la suppression dans la base de données
         delete roomToGame[code];
-        io.to(code).emit("server.leaveSuccess");
+        io.to(code).emit("server.leaveSuccess", { silentLeave: true });
         socket.broadcast.emit("server.refreshGameList");
     } else {
         // Si un joueur (outre le créateur) quitte la partie :
         gameInstance.removePlayer(userId);
-        if (gameInstance.gameState === "IN_GAME")
-            socket.emit("server.addToLocalStorage", { code: code });
-        socket.emit("server.leaveSuccess");
+        if(gameInstance.gameState === "IN_GAME") {
+            socket.emit("server.leaveSuccess", { silentLeave: false });
+        } else {
+            socket.emit("server.leaveSuccess", { silentLeave: true });
+        }
 
         // Message de départ du joueur
         const newMessage = `👤 ${username} left the game.`;
@@ -122,12 +108,11 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
 };
 
 const onSave = (io, socket, data, gameInstance) => {
-    console.log("ONSAVE CAAAAAAAAAAAAAAAAAALLED");
     const code = data.headers.code;
     const senderId = data.headers.senderId;
     if(senderId == gameInstance.getCreatorId() && gameInstance.getGameState() == "IN_GAME") {
         gameInstance.pause();
-        io.to(code).emit("server.gamePaused");
+        io.to(code).emit("server.leaveSuccess", { silentLeave: true });
     }
 }
 

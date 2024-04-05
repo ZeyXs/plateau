@@ -84,6 +84,7 @@ const Lobby = () => {
             setGameState('IN_GAME');
             emit('client.receivedHandshake', {});
         });
+
     }, [socket, size]);
 
     const handleResize = () => {

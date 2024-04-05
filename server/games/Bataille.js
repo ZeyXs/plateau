@@ -78,6 +78,44 @@ class Bataille extends CardGame {
     });*/
     }
 
+    rejoin(io, userId) {
+        // Objectif: Renvoyer au client les données relatives au joueur et à la partie
+        setTimeout(() => this.#sendAllDataTo(io, userId, true), 200);
+    }
+
+    #sendAllDataTo = (io, userId) =>{
+        //console.log(userId);
+        // Récupération du socket
+        const socketId = this.socketIds[userId];
+
+        //console.log(socketId);
+        const socket = io.sockets.sockets.get(socketId);
+
+        //console.log(socket);
+        // Récupération de la main du joueur
+        const hand = this.players[userId].hand;
+        if (userId in this.gameData.round && this.gameData.round[userId].length==0){
+          var usercanPlay = true
+        } else {
+          var usercanPlay = false;
+        }
+        const trash=this.players[userId].trash;
+
+
+        // Données des joueurs (sans leur main)
+        const playersCopy = JSON.parse(JSON.stringify(this.players));
+        for(let playerId of Object.keys(playersCopy)) delete playersCopy[playerId].hand;
+
+        // Emission des données au client
+        socket.emit("server.sendGameData", {
+            hand: hand,
+            canPlay: usercanPlay,
+            trash: trash
+        });
+
+        console.log("Data sent to", userId);
+    }
+
     initRoundGameData(listPlayers) {
         //Initialise en fonction de listPlayers l'attribut "round"
         //console.log(listPlayers);

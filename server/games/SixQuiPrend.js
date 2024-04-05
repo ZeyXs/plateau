@@ -40,8 +40,10 @@ class SixQuiPrend extends CardGame {
         for (let playerId of Object.keys(this.players)) {
             //Initialisation du score à 0.
             this.players[playerId].score = 0;
+            this.players[playerId].canSelectLine = false;
         }
         this.#InitializeRound(io);
+        console.log(this.players);
 
         // Mise-à-jour de la base de données
         this.gameState = 'IN_GAME';
@@ -385,6 +387,7 @@ class SixQuiPrend extends CardGame {
         });
         const lines = this.gameData.lines;
         const canPlay = this.players[userId].canPlay;
+        const canSelectLine = this.players[userId].canSelectLine;
         // Données des joueurs (sans leur main)
         const playersCopy = JSON.parse(JSON.stringify(this.players));
         for (let playerId of Object.keys(playersCopy))
@@ -394,6 +397,7 @@ class SixQuiPrend extends CardGame {
         socket.emit('server.sendGameData', {
             hand: hand,
             playersData: playersCopy,
+            canSelectLine: canSelectLine,
             lines: lines,
             canPlay: canPlay,
             scoreboard: this.#getScoreboard(),
@@ -454,6 +458,7 @@ class SixQuiPrend extends CardGame {
                     cards[0],
                 );
                 console.log(playerBying);
+                this.players[playerBying].canSelectLine = true;
                 const socketId = this.socketIds[playerBying];
                 const playerHand = this.players[playerBying].hand;
                 const socket = io.sockets.sockets.get(socketId);

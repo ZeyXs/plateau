@@ -134,12 +134,13 @@ const SixQuiPrend = () => {
             const sScoreboard = data.scoreboard;
             const sLines = data.lines;
             const sCanPlay = data.canPlay;
+            const sCanSelectLine= data.canSelectLine;
             setCanPlay(sCanPlay);
             setHand(sHand);
             setLines(sLines);
             setPlayersData(sPlayersData);
             setScoreboard(sScoreboard);
-
+            setCanSelectLine(sCanSelectLine);
             updateCurrentBest(sScoreboard);
         });
 

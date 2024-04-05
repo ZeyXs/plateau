@@ -44,6 +44,16 @@ const Game = () => {
     const [silentLeave, setSilentLeave] = useState(false);
     const [modal, setModal] = useState(false);
 
+    useEffect(() => {
+        console.log("----- USE EFFECT -----");
+        console.log("gameTitle", gameTitle);
+        console.log("gameState", gameState);
+        console.log("players", players);
+        console.log("creatorId", creatorId);
+    }, [gameTitle, gameState, players, creatorId]);
+
+
+
     const handleSendMessage = () => {
         if (newMessage) {
             emit("client.sendMessage", {
@@ -68,7 +78,7 @@ const Game = () => {
     };
 
     const handleExit = () => {
-        if (gameState == "IN_GAME" && creatorId == auth.id) {
+        if ((gameState == "IN_GAME") && creatorId == auth.id) {
             handleModal();
         } else {
             handleLeave();
@@ -82,6 +92,7 @@ const Game = () => {
 
     const handleLeave = () => {
         if(!silentLeave) emit("client.leave", { code: code, username: auth.user });
+        else localStorage.setItem("brutallyLeft", code);
     };
 
     const handleSave = () => {
@@ -92,8 +103,11 @@ const Game = () => {
     const handleDelete = () => {
         handleLeave();
         navigate("/", { replace: true });
-    
     }
+
+    socket.on('server.resume', () => {
+        setGameState('IN_GAME');
+    });
 
     useEffect(() => {
         const cleanup = () => {
@@ -114,6 +128,7 @@ const Game = () => {
         In params: { gameTitle, gameType, gameState, chat }
         */
         socket.on("server.joinSuccess", (data) => {
+            console.log("server.joinSuccess", data);
             setGameTitle(data.gameTitle);
             setGameType(data.gameType);
             setGameState(data.gameState);
@@ -153,6 +168,7 @@ const Game = () => {
         In params: null
         */
         socket.on("server.leaveSuccess", (data) => {
+            setSilentLeave(data.silentLeave);
             navigate("/", { replace: true });
         });
 

@@ -22,6 +22,8 @@ const onSQPPlayCard = (io, socket, data, gameInstance) => {
 
 const onBoughtALine = (io, socket, data, gameInstance) => {
     const selectedLine = data.body.lineNumber;
+    const senderId = data.headers.senderId;
+    gameInstance.players[senderId].canSelectLine = false;
     console.log('_______________Achat ligne________________________');
     console.log(selectedLine);
     console.log(data.body);

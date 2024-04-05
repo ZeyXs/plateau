@@ -164,6 +164,17 @@ const Bataille = () => {
             setTimeout(() => setDisplayCard(true), 200);
         });
 
+        socket.on('server.sendGameData', data => {
+            console.log('server.sendGameData');
+            console.log(data);
+            const sHand = data.hand;
+            const sTrash = data.trash;
+            const sCanPlay = data.canPlay;
+            setCanPlay(sCanPlay);
+            setHand(sHand);
+            setTrash(sTrash);
+        });
+
         socket.on('server.sendHiddenCard', (data) => {
             let newPlayedCards = Object.assign({}, playedCards);
             newPlayedCards[data.user].hiddenCard = data.userCard;

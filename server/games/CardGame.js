@@ -16,8 +16,6 @@ class CardGame {
     isPrivate;
     socketIds;
 
-
-
     // _____ Constructeur(s) _____
     constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate) {
         this.title = title;
@@ -31,10 +29,8 @@ class CardGame {
         this.players = players;
         this.chat = chat;
         this.isPrivate = isPrivate;
-        this.socketIds = {};  
+        this.socketIds = {};
     }
-
-
 
     // _____ Méthode(s) _____
     addPlayer(io, socketId, userId) {
@@ -65,6 +61,27 @@ class CardGame {
         throw new Error("Implementation required (ABSTRACT_METHOD_CALLED)");
     }
 
+    async generateGameContext() {
+        let players = {};
+        for(let playerId of Object.keys(this.players)) {
+            await User.findOne({ _id: playerId }).then((data) => {
+                players[playerId] = {
+                    username: data.username,
+                    profilePicture: data.profilePicture
+                };
+            });
+        }
+        return {
+            gameTitle: this.title,
+            gameType: this.gameType,
+            gameState: this.gameState,
+            players: players,
+            creatorId: this.creatorId,
+            chat: this.chat
+        }
+    }
+
+
     removePlayer(userId) {
         console.log("Removing player: " + userId)
         if (this.gameState == "IN_LOBBY") delete this.players[userId]
@@ -82,6 +99,7 @@ class CardGame {
     }
 
     pause() {
+        console.log("PAUSED GAAAAAAAAAAAAAAAAAAAAAAME");
         this.gameState = "PAUSED";
         for(let playerId of Object.keys(this.players)) {
             this.players[playerId].isActive = false;
@@ -90,6 +108,7 @@ class CardGame {
     }
 
     async #save() {
+        console.log("GAME SAAAAAAAAAAAAAAAAAAAAAVED");
         await this.destruct();
         const game = new Game({
             title: this.title,
@@ -104,6 +123,7 @@ class CardGame {
             isPrivate: this.isPrivate
         });
         await game.save();
+        console.log("cool.");
     }
 
     async updatePlayers() {
