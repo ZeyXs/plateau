@@ -3,6 +3,7 @@ const { addXpTo } = require('../config/xpFunctions');
 
 const CardGame = require('./CardGame');
 const Game = require('../models/Game');
+const User = require('../models/User');
 
 class SixQuiPrend extends CardGame {
     constructor(
@@ -372,6 +373,32 @@ class SixQuiPrend extends CardGame {
         // Objectif: Renvoyer au client les données relatives au joueur et à la partie
         console.log('AAAAAAAAAAAAAAAAAAAAAA');
         setTimeout(() => this.#sendAllDataTo(io, userId), 200);
+    }
+
+    async sendUpdateContext(io) {
+        let players = {};
+        for (playerId of Object.keys(this.players)) {
+            await User.findOne({ _id: playerId }).then((data) => {
+                players[playerId] = {
+                    username: data.username,
+                    profilePicture: data.profilePicture
+                };
+            });
+        }
+
+        console.log("server.updateContext", this.players, players);
+
+        // Renvoi des données relatives à la partie
+        io.to(this.code).emit("server.updateContext", {
+            creatorId: this.creatorId,
+        });
+    }
+
+    resume(io) {
+        for (let playerId of Object.keys(this.players)) {
+            this.#sendAllDataTo(io, playerId);
+        }
+        this.sendUpdateContext(io);
     }
 
     #sendAllDataTo(io, userId) {
