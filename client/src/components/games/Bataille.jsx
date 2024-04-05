@@ -239,7 +239,7 @@ const Bataille = () => {
             emit('client.selectedCard', { card: selectedCard });
             setCanPlay(false);
             setPlayButtonDisabled(true);
-            setHand(prevHand => prevHand.filter(card => showCard(card) !== selectedCard)); // Remove the played card from the hand
+            setHand(prevHand => prevHand.filter(card => showCard(card) !== selectedCard));
             setSelectedCard(undefined);
             setHasPlayed(true);
         }
