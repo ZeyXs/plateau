@@ -143,6 +143,7 @@ const Shop = () => {
         isLoading ? <p>Chargement en cours...</p> :
         errorWhileLoading ? <p>Failed to fetch shop data from API.</p> :
         <div className='text-white h-[100vh]'>
+            <p className='text-2xl'>WORK IN PROGRESS, À FINIR POUR LE DERNIER SPRINT</p>
             <p>Coins: {coins}</p>
             {errorMsg ? <p className="text-red-400">{errorMsg}</p> : <></>}
             <ul>
