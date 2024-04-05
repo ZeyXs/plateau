@@ -51,7 +51,8 @@ const Bataille = () => {
     const [hasPlayed, setHasPlayed] = useState(false);
     const [displayCard, setDisplayCard] = useState(false);
     const [inBataille, setInBataille] = useState(false);
-    
+    const [showWinPopup, setShowWinPopup] = useState(false);
+
 
     const updateHasPlayed = (delay) => {
         let newPlayedCards = Object.assign({}, playedCards);
@@ -234,10 +235,11 @@ const Bataille = () => {
     };
 
     const playCard = () => {
-        if (canPlay) {
+        if (canPlay && selectedCard) {
             emit('client.selectedCard', { card: selectedCard });
             setCanPlay(false);
             setPlayButtonDisabled(true);
+            setHand(prevHand => prevHand.filter(card => showCard(card) !== selectedCard)); // Remove the played card from the hand
             setSelectedCard(undefined);
             setHasPlayed(true);
         }
@@ -255,7 +257,7 @@ const Bataille = () => {
 
     return (
         <div className="flex flex-col h-full overflow-hidden select-none">
-
+            {/*showWinPopup ? <PlayerWinPopup winner={gameWinner} finalScoreboard={finalScoreboard} newLevel={false} /> : ""*/}
             <div className="relative flex-1 flex flex-row items-center justify-center">
                 <div className="absolute top-0">
                     <div className="mr-5 flex flex-row items-start space-x-8 border-gray-400 border-4 rounded-xl p-4 scale-75">
