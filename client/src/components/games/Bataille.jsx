@@ -54,7 +54,6 @@ const Bataille = () => {
     
 
     const updateHasPlayed = (delay) => {
-        console.log("cleared played cards")
         let newPlayedCards = Object.assign({}, playedCards);
         for (let playerId of Object.keys(players)) {
             newPlayedCards[playerId] = {
@@ -80,10 +79,6 @@ const Bataille = () => {
     }
 
     useEffect(() => {
-        console.log(displayCard);
-    }, [displayCard]);
-
-    useEffect(() => {
 
         socket.on('server.playerData', (data) => {
             addCards(data.infos)
@@ -95,15 +90,16 @@ const Bataille = () => {
                     hiddenCard: undefined,
                 }
             }
-            console.log(newPlayedCards);
             setPlayedCards(newPlayedCards);
             //setDisplayCard(false)
         });
 
         socket.on('server.canPlayAgain', (data) => {
             if (data.loosers.includes(auth.id)) {
-                setCanPlay(true);
-                setHasPlayed(false);
+                setTimeout(() => {
+                    setCanPlay(true);
+                    setHasPlayed(false);
+                }, 2000)
             }
         });
 
@@ -150,9 +146,7 @@ const Bataille = () => {
         })
 
         socket.on('server.otherCardPlayed', (data) => {
-            console.log("coucou quelqu'un a joué une carte et voici son dico qui devrait être reset", playedCards);
             let newPlayedCards = Object.assign({}, playedCards);
-            console.log("le dico devrait être undefined partout", newPlayedCards);
             newPlayedCards[data.user].visibleCardPlayed = data.userCard;
             newPlayedCards[data.user].hasPlayed = true;
             setPlayedCards(newPlayedCards);
@@ -170,8 +164,7 @@ const Bataille = () => {
         });
 
         socket.on('server.sendHiddenCard', (data) => {
-            console.log(playedCards[data.user])
-            let newPlayedCards = Object.assign({}, playedCards);;
+            let newPlayedCards = Object.assign({}, playedCards);
             newPlayedCards[data.user].hiddenCard = data.userCard;
             setPlayedCards(newPlayedCards);
         });
@@ -181,15 +174,16 @@ const Bataille = () => {
 
         socket.on('server.gameLoosers', (data) => {
             if (data.gameLoosers.length > 0) {
-                setGameLoosers(data.gameLoosers)
+                setGameLoosers(data.gameLoosers);
             }
         });
 
         socket.on('server.gameLeaderboard', (data) => {
-            setLeaderboard(true)
-            setCanPlay(false)
-            setGameWinner(data.gameWinner)
-            setGameLoosers(data.gameLoosers)
+            setLeaderboard(true);
+            setCanPlay(false);
+            setGameWinner(data.gameWinner);
+            setGameLoosers(data.gameLoosers);
+            setShowWinPopup(true);
         })
 
         return () => {
