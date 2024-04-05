@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
+import Navbar from "./home/Navbar";
 
 
 const GAME_TYPES = {
@@ -111,38 +112,46 @@ const Leaderboard = () => {
 
 
     return (
-        <>
-            <select id="cat_select" onChange={() => setCategory(document.getElementById("cat_select").value)}>
-                {Object.values(GAME_TYPES).map((cat) => <option>{cat}</option>)}
-            </select>
-            <select id="filter_select" onChange={() => setFilter(document.getElementById("filter_select").value)}>
-                {Object.values(FILTERS).map((filter) => <option>{filter}</option>)}
-            </select>
+        <div className="flex flex-col h-[100vh]">
+            <Navbar />
+            <div className="flex-1 flex justify-center items-center">
+                <div className="flex flex-col space-y-10">
+                    <div className="flex flex-col space-y-5 items-center justify-center">
+                        <select id="cat_select" onChange={() => setCategory(document.getElementById("cat_select").value)}>
+                            {Object.values(GAME_TYPES).map((cat) => <option>{cat}</option>)}
+                        </select>
+                        <select id="filter_select" onChange={() => setFilter(document.getElementById("filter_select").value)}>
+                            {Object.values(FILTERS).map((filter) => <option>{filter}</option>)}
+                        </select>
+                    </div>
 
-            <div className="text-white">
-                {isLoading ?
-                    <p>Chargement en cours...</p>
-                :
-                    <>
-                        <table>
-                            <tr>
-                                {TABLE_COLUMNS[filter].map(column => <th>{column}</th>)}
-                            </tr>
-                            {leaderboard.map((player, i) => <tr>
-                                <td>#{i+1}</td>
-                                <td>{player.username}</td>
-                                {TABLE_KEYS[filter].map(key =>
-                                    (key != "ratio") ?
-                                        <td>{player.stats[GAMETYPE_TO_KEY[category]][key]}</td>
-                                    :
-                                        <td>{player.stats[GAMETYPE_TO_KEY[category]][key]}%</td>
-                                )}
-                            </tr>)}
-                        </table>
-                    </>
-                }
+                    <div className="text-white">
+                        {isLoading ?
+                            <p>Chargement en cours...</p>
+                        :
+                            <>
+                                <table className="table-fixed w-[150vh] text-sm text-left rtl:text-right text-gray-500">
+                                    <tr>
+                                        {TABLE_COLUMNS[filter].map(column => <th className="text-lg text-gray-700 uppercase bg-gray-50">{column}</th>)}
+                                    </tr>
+                                    {leaderboard.map((player, i) => <tr className="bg-white border-b dark:bg-gray-800 ">
+                                        <td>#{i+1}</td>
+                                        <td className="font-bold">{player.username}</td>
+                                        {TABLE_KEYS[filter].map(key =>
+                                            (key != "ratio") ?
+                                                <td>{player.stats[GAMETYPE_TO_KEY[category]][key]}</td>
+                                            :
+                                                <td>{player.stats[GAMETYPE_TO_KEY[category]][key]}%</td>
+                                        )}
+                                    </tr>)}
+                                </table>
+                            </>
+                        }
+                    </div>
+
+                </div>
             </div>
-        </>
+        </div>
         
     );
 }
