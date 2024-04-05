@@ -28,7 +28,6 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
 
     // Ajout du client à la room
     socket.join(code);
-    console.log(`[NOTIF] ${username} joined ${code}`);
 
     // Génération d'une instance (si nécessaire)
     if (gameInstance == undefined) {
@@ -36,8 +35,11 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
         roomToGame[code] = await generateGameInstance(data);
         gameInstance = roomToGame[code];
     }
+
+    // Ajout du joueur à la partie
     gameInstance.addPlayer(io, socket.id, userId);
 
+    // Récupération des données des joueurs présents dans la partie
     let players = {};
     for (playerId of Object.keys(gameInstance.getPlayers())) {
         await User.findOne({ _id: playerId }).then((data) => {
@@ -71,6 +73,14 @@ const onClientJoin = async (io, socket, data, gameInstance, roomToGame) => {
 
     // Update de la liste des joueurs
     updatePlayers(io, code, gameInstance);
+
+    // Reprendre la partie si nécessaire
+    if(gameInstance.getGameState() == "PAUSED" && gameInstance.areAllPlayersActive()) {
+        gameInstance.setGameState("IN_GAME");
+        await Game.findOneAndUpdate({ code: code }, { gameState: "IN_GAME" });
+        io.to(code).emit("server.resume");
+        gameInstance.resume(io);
+    }
 };
 
 const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
@@ -111,6 +121,16 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
     console.log(`[NOTIF] ${username} left ${code}`);
 };
 
+const onSave = (io, socket, data, gameInstance) => {
+    console.log("ONSAVE CAAAAAAAAAAAAAAAAAALLED");
+    const code = data.headers.code;
+    const senderId = data.headers.senderId;
+    if(senderId == gameInstance.getCreatorId() && gameInstance.getGameState() == "IN_GAME") {
+        gameInstance.pause();
+        io.to(code).emit("server.gamePaused");
+    }
+}
+
 const onNewChatMessage = async (io, socket, data, gameInstance) => {
     const code = data.headers.code;
     const username = data.headers.senderUsername;
@@ -126,4 +146,4 @@ const onStartTimer = (io, data) => {
     io.to(code).emit("server.startTimer", {players: players});
 }
 
-module.exports = { onClientJoin, onPlayerLeave, onNewChatMessage, onStartTimer};
+module.exports = { onClientJoin, onPlayerLeave, onNewChatMessage, onStartTimer, onSave };

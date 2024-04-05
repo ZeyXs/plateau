@@ -2,6 +2,7 @@ const Game = require("../models/Game");
 const User = require("../models/User");
 
 class CardGame {
+    // _____ Attribut(s) _____
     title;
     size;
     code;
@@ -15,6 +16,9 @@ class CardGame {
     isPrivate;
     socketIds;
 
+
+
+    // _____ Constructeur(s) _____
     constructor(title, size, code, gameType, creatorId, creatorName, gameState, gameData, players, chat, isPrivate) {
         this.title = title;
         this.size = size;
@@ -30,8 +34,12 @@ class CardGame {
         this.socketIds = {};  
     }
 
+
+
+    // _____ Méthode(s) _____
     addPlayer(io, socketId, userId) {
         console.log("Adding player: " + userId);
+
         this.socketIds[userId] = socketId;
         if (!Object.keys(this.players).includes(userId)) {
             // Cas d'un nouveau joueur
@@ -43,14 +51,18 @@ class CardGame {
         } else {
             // Le joueur se reconnecte dans la partie
             this.players[userId].isActive = true;
-            this.rejoin(io, userId);
+            if(this.gameState != "PAUSED") this.rejoin(io, userId);
         }
         console.log(this.players)
         this.updatePlayers();
     }
 
     rejoin(io, userId) {
-        // LA METHODE SERA ECRASEE PAR LES SOUS-CLASSES
+        throw new Error("Implementation required (ABSTRACT_METHOD_CALLED)");
+    }
+
+    resume(io) {
+        throw new Error("Implementation required (ABSTRACT_METHOD_CALLED)");
     }
 
     removePlayer(userId) {
@@ -69,7 +81,15 @@ class CardGame {
         await Game.findOneAndDelete({ code: this.code }); 
     }
 
-    async save() {
+    pause() {
+        this.gameState = "PAUSED";
+        for(let playerId of Object.keys(this.players)) {
+            this.players[playerId].isActive = false;
+        }
+        this.#save();
+    }
+
+    async #save() {
         await this.destruct();
         const game = new Game({
             title: this.title,
@@ -88,6 +108,33 @@ class CardGame {
 
     async updatePlayers() {
         await Game.updateOne({ code: this.code }, { $set: { ['players']: this.players }});
+    }
+
+    areAllPlayersActive() {
+        let result = true;
+        for(let player of Object.keys(this.players)) {
+            if(!this.players[player].isActive) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    generateConxtext() {
+        return {
+            gameTitle: this.title,
+            gameType: this.gameType,
+            gameState: this.gameState,
+            players: this.players,
+            creatorId: this.creatorId,
+            chat: this.chat,
+        };
+    }
+
+    // _____ Accesseur(s) _____
+    setGameState(newGameState) {
+        this.gameState = newGameState;
     }
 
     getTitle() {

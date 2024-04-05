@@ -252,7 +252,7 @@ class Bataille extends CardGame {
                 this.getCardsWinnerGameData().concat(randomCard),
             );
             this.deleteCard(player, randomCard);
-            io.to(this.code).emit('server.otherCardPlayed', {
+            io.to(this.code).emit('server.sendHiddenCard', {
                 user: player,
                 userCard: randomCard,
             });

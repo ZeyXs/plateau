@@ -2,6 +2,7 @@ const Game = require('../models/Game');
 const CardGame = require('./CardGame');
 const { addXpTo } = require('../config/xpFunctions');
 const { addVictoryTo, addLossTo } = require('../config/statsFunctions');
+const User = require('../models/User');
 
 const CARD_TYPES = {
     BOTTES: "BOTTES",
@@ -323,8 +324,10 @@ class MilleBornes extends CardGame {
     }
 
     #drawCard(playerId) {
+        console.log(`Cartes restantes au paquet: ${this.gameData.deck.length}`);
         if(this.gameData.deck.length == 0) {
             this.gameData.deck = this.gameData.trash;
+            this.gameData.trash = [];
             this.#shuffleDeck();
         }
         const card = this.gameData.deck.pop();
@@ -364,22 +367,43 @@ class MilleBornes extends CardGame {
 
     rejoin(io, userId) {
         // Objectif: Renvoyer au client les données relatives au joueur et à la partie
-        console.log("AAAAAAAAAAAAAAAAAAAAAA");
-        setTimeout(() => this.#sendAllDataTo(io, userId, true), 200);
+        setTimeout(() => {
+            this.#sendAllDataTo(io, userId, true)
+        }, 200);
+    }
+
+    async sendUpdateContext(io) {
+        let players = {};
+        for (playerId of Object.keys(this.players)) {
+            await User.findOne({ _id: playerId }).then((data) => {
+                players[playerId] = {
+                    username: data.username,
+                    profilePicture: data.profilePicture
+                };
+            });
+        }
+
+        console.log("server.updateContext", this.players, players);
+
+        // Renvoi des données relatives à la partie
+        io.to(this.code).emit("server.updateContext", {
+            creatorId: this.creatorId,
+        });
+    }
+
+    resume(io) {
+        for (let playerId of Object.keys(this.players)) {
+            this.#sendAllDataTo(io, playerId, true);
+        }
+        this.sendUpdateContext(io);
     }
 
     #sendAllDataTo(io, userId, recallPlayer) {
 
-        //console.log(userId);
-
         // Récupération du socket
         const socketId = this.socketIds[userId];
 
-        //console.log(socketId);
-
         const socket = io.sockets.sockets.get(socketId);
-
-        //console.log(socket);
 
         // Récupération de la main du joueur
         const hand = this.players[userId].hand;
@@ -401,8 +425,6 @@ class MilleBornes extends CardGame {
         console.log("Data sent to", userId);
     }
 
-
-
     #sendHandToPlayer(io, playerId) {
         //console.log("Sent hand to", playerId);
         const socketId = this.socketIds[playerId];
@@ -416,9 +438,6 @@ class MilleBornes extends CardGame {
     getPlayerHand(playerId) {
         return this.players[playerId].hand;
     }
-
-
-
 
 }
 

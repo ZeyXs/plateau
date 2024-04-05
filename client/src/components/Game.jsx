@@ -41,6 +41,7 @@ const Game = () => {
 
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const [silentLeave, setSilentLeave] = useState(false);
     const [modal, setModal] = useState(false);
 
     const handleSendMessage = () => {
@@ -80,7 +81,7 @@ const Game = () => {
     }
 
     const handleLeave = () => {
-        emit("client.leave", { code: code, username: auth.user });
+        if(!silentLeave) emit("client.leave", { code: code, username: auth.user });
     };
 
     const handleSave = () => {
@@ -153,6 +154,16 @@ const Game = () => {
         */
         socket.on("server.leaveSuccess", (data) => {
             navigate("/", { replace: true });
+        });
+
+        socket.on("server.gamePaused", (data) => {
+            setSilentLeave(true);
+            navigate("/", { replace: true });
+        });
+
+        socket.on("server.updateContext", (data) => {
+            console.log("Recieved server.updateContext");
+            setCreatorId(data.creatorId);
         });
 
         emit("client.join", { code: code, username: auth.user });

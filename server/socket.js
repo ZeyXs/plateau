@@ -4,6 +4,7 @@ const {
     onNewChatMessage,
     onPlayerLeave,
     onStartTimer,
+    onSave,
 } = require("./handlers/basicHandlers");
 const {
     onBatailleStart,
@@ -55,6 +56,8 @@ const basicSocketHandler = (io, socket, data) => {
             break;
         case "client.startTimer":
             onStartTimer(io, data);
+        case "client.save":
+            onSave(io, socket, data, gameInstance);
         default:
             handled = false;
             break;

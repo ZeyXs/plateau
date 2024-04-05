@@ -33,7 +33,7 @@ const GameValidity = () => {
                 // Partie terminée
                 if(gameData?.gameState == "ENDED") errorFlags.push("GAE_FLAG");
                 // Partie commencée
-                else if(gameData?.gameState == "IN_GAME") errorFlags.push("GAS_FLAG");
+                else if(gameData?.gameState == "IN_GAME" || gameData?.gameData == "PAUSED") errorFlags.push("GAS_FLAG");
                 // Partie pleine
                 else if(!errorFlags.includes("GNF_FLAG") && gameData?.size == Object.keys(gameData?.players).length) {
                     errorFlags.push("GIF_FLAG");
@@ -50,7 +50,7 @@ const GameValidity = () => {
                     
                 } finally {
 
-                    const playerTryingToReconnect = gameData?.gameState == "IN_GAME" && playerData && !playerData.isActive;
+                    const playerTryingToReconnect = (gameData?.gameState == "IN_GAME" || gameData?.gameState == "PAUSED") && playerData && !playerData.isActive;
                     //if(playerTryingToReconnect) errorFlags.push("!PAC_FLAG");
 
                     if(!errorFlags.includes("!PAC_FLAG")) errorFlags.unshift("PAC_FLAG");

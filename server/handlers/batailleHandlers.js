@@ -78,6 +78,7 @@ const playerBatailleSelectedCard = async (io, socket, data, gameInstance) => {
         }
       }
 
+      console.log("j'envoie une fois isEquality, enfin normalement")
       io.to(code).emit("server.isEquality", {
         playersEquality: listPlayersToReplay,
       });
