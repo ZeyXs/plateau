@@ -130,12 +130,6 @@ class MilleBornes extends CardGame {
         await Game.findOneAndUpdate({ code: this.code }, { gameState: "IN_GAME" });
     }
 
-    #sendAllHands(io) { // UNUSED
-        for(playerId of Object.keys(this.players)) {
-            this.#sendHandToPlayer(io, playerId);
-        }
-    }
-
     #shuffleDeck() {
         for(let i = this.gameData.deck.length - 1; i > 0; i--) { 
             let j = Math.floor(Math.random() * (i + 1)); 
@@ -215,13 +209,6 @@ class MilleBornes extends CardGame {
         const cardType = VALUES_TO_CAT[cardValue];
         const card = { type: cardType, value: cardValue };
 
-        /*
-        console.log("--------------");
-        console.log(cardValue);
-        console.log(cardType);
-        console.log(card);
-        console.log(attackerId, action, card, "(target:", targetId, ")");*/
-
         // Suppression de la carte du joueur dans sa main
         let playerHand = this.players[attackerId].hand;
         for(let i in playerHand) {
@@ -278,7 +265,10 @@ class MilleBornes extends CardGame {
                 case CARD_TYPES.BORNES:
                     if(!(this.players[attackerId].score + BORNES_TO_VALUE[cardValue] > MilleBornes.SCORE_TO_WIN)) {
                         if(this.players[attackerId].malus.length > 0) {
-                            if(this.players[attackerId].malus.includes(CARD_VALUES.LIMITE_DE_VITESSE)) if(BORNES_TO_VALUE[cardValue] > 50) this.players[attackerId].score += 50;
+                            if(this.players[attackerId].malus.includes(CARD_VALUES.LIMITE_DE_VITESSE)) {
+                                if (BORNES_TO_VALUE[cardValue] > 50) this.players[attackerId].score += 50;
+                                else this.players[attackerId].score += BORNES_TO_VALUE[cardValue];
+                            }
                         }
                         else this.players[attackerId].score += BORNES_TO_VALUE[cardValue];
                         if(this.players[attackerId].score == MilleBornes.SCORE_TO_WIN) {
@@ -301,7 +291,6 @@ class MilleBornes extends CardGame {
 
 
     async #win(io, winnerId) {
-        console.log("WWWWWWWWWWWWWWWWWWWWWWWWIIIIIIIIIIIIIINNNNNNNNNNNNNNN");
         // Modification du statut de la partie et mise-à-jour de la base de données
         this.gameState = "ENDED";
         this.gameData.winner = winnerId;

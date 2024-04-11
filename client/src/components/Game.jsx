@@ -53,7 +53,6 @@ const Game = () => {
     }, [gameTitle, gameState, players, creatorId]);
 
 
-
     const handleSendMessage = () => {
         if (newMessage) {
             emit("client.sendMessage", {
