@@ -24,7 +24,9 @@ jobs:
       id: client-filter
       uses: dorny/paths-filter@v3
       with:
-        filters: client/**
+        filters: |
+          client/**
+          !client/**
 
     - name: Build and push frontend image
       if: ${{ steps.client-filter.outputs.matched == 'true' }}
@@ -38,7 +40,9 @@ jobs:
       id: server-filter
       uses: dorny/paths-filter@v3
       with:
-        filters: server/**
+        filters: |
+          server/**
+          !server/**
 
     - name: Build and push backend image
       if: ${{ steps.server-filter.outputs.matched == 'true' }}
