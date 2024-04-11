@@ -104,10 +104,10 @@ class CardGame {
         for(let playerId of Object.keys(this.players)) {
             this.players[playerId].isActive = false;
         }
-        this.#save();
+        this.save();
     }
 
-    async #save() {
+    async save() {
         console.log("GAME SAAAAAAAAAAAAAAAAAAAAAVED");
         await this.destruct();
         const game = new Game({
