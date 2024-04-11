@@ -161,7 +161,7 @@ class Bataille extends CardGame {
     }
 
     noHandButTrash(io) {
-        for (player in this.players) {
+        for (let player in this.players) {
             //on regarder si un joueur à une défausse vide
             if (
                 this.players[player].hand.length == 0 &&
