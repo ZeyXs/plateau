@@ -4,7 +4,7 @@ FROM node:alpine AS build
 WORKDIR /app
 
 # Set the NODE_ENV to production
-ENV NODE_ENV production
+ENV VITE_PROD true
 
 # Copy package.json and package-lock.json if applicable
 COPY package*.json ./
@@ -13,7 +13,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application
-COPY . .
+COPY . ./
 
 # Build the React app
 RUN npm run build

@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.PROD ? "https://plateau-api.zeyx.dev" : 'http://localhost:4000';
+const BASE_URL = import.meta.env.VITE_API_ENDPOINT;
 
 export default axios.create({
     baseURL: BASE_URL,

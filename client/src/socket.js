@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
 
-const URL = import.meta.env.PROD ? "https://plateau-api.zeyx.dev" : 'http://localhost:4000';
+const URL = import.meta.env.VITE_API_ENDPOINT;
 
 export const socket = io(URL);
