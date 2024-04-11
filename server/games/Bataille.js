@@ -178,6 +178,11 @@ class Bataille extends CardGame {
         );
         this.players[player].hand.sort((a, b) => a.value - b.value);
         this.gameData['trash'][player] = [];
+        io.to(this.code).emit("server.playersCards", {
+            //On envoie les cartes de tout le monde à tout le monde
+            playersCards: this.getPlayers(),
+            playersTrashes: this.getTrashGameData(),
+          });
     }
 
     deal(io) {
