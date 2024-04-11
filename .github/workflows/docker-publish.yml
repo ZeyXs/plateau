@@ -20,16 +20,28 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.TOKEN }}
       
+    - name: Filter client changes
+      id: client-filter
+      uses: dorny/paths-filter@v3
+      with:
+        filters: client/**
+
     - name: Build and push frontend image
-      if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'client/') }}
+      if: ${{ steps.client-filter.outputs.matched == 'true' }}
       run: |
         cd client/
         docker build -t plateau-frontend:latest .
         docker tag plateau-frontend:latest ghcr.io/zeyxs/plateau-frontend:latest
         docker push ghcr.io/zeyxs/plateau-frontend:latest
 
+    - name: Filter server changes
+      id: server-filter
+      uses: dorny/paths-filter@v3
+      with:
+        filters: server/**
+
     - name: Build and push backend image
-      if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'server/') }}
+      if: ${{ steps.server-filter.outputs.matched == 'true' }}
       run: |
         cd server/
         docker build -t plateau-backend:latest .
