@@ -31,16 +31,22 @@ jobs:
 
     - name: Build and push frontend image
       if: steps.changes.outputs.client == 'true'
+      env:
+        VITE_API_ENDPOINT: ${{ secrets.VITE_API_ENDPOINT }}
       run: |
         cd client/
-        docker build -t plateau-frontend:latest .
+        docker build --build-arg VITE_API_ENDPOINT=$VITE_API_ENDPOINT -t plateau-frontend:latest .
         docker tag plateau-frontend:latest ghcr.io/zeyxs/plateau-frontend:latest
         docker push ghcr.io/zeyxs/plateau-frontend:latest
 
     - name: Build and push backend image
       if: steps.changes.outputs.server == 'true'
+      env:
+        DATABASE_URI: ${{ secrets.DATABASE_URI }}
+        ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+        REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
       run: |
         cd server/
-        docker build -t plateau-backend:latest .
+        docker build --build-arg DATABASE_URI=$DATABASE_URI --build-arg ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET --build-arg REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET -t plateau-backend:latest .
         docker tag plateau-backend:latest ghcr.io/zeyxs/plateau-backend:latest
         docker push ghcr.io/zeyxs/plateau-backend:latest

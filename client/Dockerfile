@@ -4,7 +4,10 @@ FROM node:alpine AS build
 WORKDIR /app
 
 # Set the NODE_ENV to production
-ENV VITE_PROD true
+ARG VITE_API_ENDPOINT
+
+ENV VITE_API_ENDPOINT=$VITE_API_ENDPOINT
+
 
 # Copy package.json and package-lock.json if applicable
 COPY package*.json ./
