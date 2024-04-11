@@ -30,15 +30,15 @@ jobs:
             - 'server/**'
 
     - name: Build and push frontend image
-      if: steps.changes.outputs.src == 'true'
+      if: steps.changes.outputs.client == 'true'
       run: |
         cd client/
         docker build -t plateau-frontend:latest .
         docker tag plateau-frontend:latest ghcr.io/zeyxs/plateau-frontend:latest
         docker push ghcr.io/zeyxs/plateau-frontend:latest
-        
+
     - name: Build and push backend image
-      if: steps.changes.outputs.src == 'true'
+      if: steps.changes.outputs.server == 'true'
       run: |
         cd server/
         docker build -t plateau-backend:latest .
