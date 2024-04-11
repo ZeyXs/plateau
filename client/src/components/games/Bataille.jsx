@@ -108,7 +108,7 @@ const Bataille = () => {
             for (let roundWinner of data.roundWinners) {
                 if (roundWinner == auth.id) {
                     deleteAllDic(roundOtherCardPlayed);
-                    setLogs(prev => [...prev, `Tu as gagné au tour N°${numberRound} !`]);
+                    setLogs(prev => gapListToFourElements([...prev, `Tu as gagné au tour N°${numberRound} !`]));
                     setNumberRound(prevNumberRound => prevNumberRound + 1);
                 }
             }
@@ -119,7 +119,7 @@ const Bataille = () => {
             for (let roundLooser of data.roundLoosers) {
                 if (roundLooser == auth.id) {
                     deleteAllDic(roundOtherCardPlayed);
-                    setLogs(prev => [...prev, `Tu as perdu au tour N°${numberRound} !`]);
+                    setLogs(prev => gapListToFourElements([...prev, `Tu as perdu au tour N°${numberRound} !`]));
                     setNumberRound(prevNumberRound => prevNumberRound + 1);
                 }
             }
@@ -142,7 +142,7 @@ const Bataille = () => {
                 playersEquality.push(players[playerEquality].username);
             }
             const res = "Il y a une bataille entre " + playersEquality.join(" et ");
-            setLogs(prev => [...prev, res]);
+            setLogs(prev => gapListToFourElements([...prev, res]));
             setHasPlayed(false);
         })
 
@@ -244,6 +244,17 @@ const Bataille = () => {
     const addCards = (cards) => {
         setHand(cards);
     };
+
+    const gapListToFourElements = (inputList) => {
+        const maxLength = 4;
+        const newList = [...inputList];
+    
+        while (newList.length < maxLength) {
+            newList.push(null);
+        }
+    
+        return newList.slice(0, maxLength);
+    }
 
     const playCard = () => {
         if (canPlay && selectedCard) {
