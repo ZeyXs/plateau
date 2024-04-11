@@ -460,9 +460,9 @@ class SixQuiPrend extends CardGame {
         });
     }*/
         // Modification des stats du joueur
-        await addVictoryTo(winnerId, 'SixQuiPrend');
+        await addVictoryTo(winnerId, 'sixQuiPrend');
         for (let playerId of Object.keys(this.players)) {
-            if (playerId != winnerId) addLossTo(playerId, 'SixQuiPrend');
+            if (playerId != winnerId) addLossTo(playerId, 'sixQuiPrend');
         }
     }
 
