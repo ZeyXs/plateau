@@ -42,7 +42,7 @@ const playerBatailleSelectedCard = async (io, socket, data, gameInstance) => {
     userCard: card,
   });
 
-  gameInstance.noHandButTrash();
+  gameInstance.noHandButTrash(io);
 
   if (!gameInstance.emptyListExists(gameInstance.getRoundGameData())) {
     //On attend que tous les joueurs aient envoyé leur carte
@@ -121,7 +121,7 @@ const playerBatailleSelectedCard = async (io, socket, data, gameInstance) => {
         winner,
         gameInstance.getCardsWinnerGameData()
       );
-      gameInstance.noHandButTrash();
+      gameInstance.noHandButTrash(io);
       gameInstance.setCardsWinnerGameData([]);
 
       io.to(code).emit("server.roundWinners", {

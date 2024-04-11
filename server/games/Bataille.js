@@ -160,19 +160,19 @@ class Bataille extends CardGame {
         }
     }
 
-    noHandButTrash(player) {
+    noHandButTrash(io) {
         for (player in this.players) {
             //on regarder si un joueur à une défausse vide
             if (
                 this.players[player].hand.length == 0 &&
                 this.getTrashGameData()[player].length > 0
             ) {
-                this.trashToHand(player);
+                this.trashToHand(player, io);
             }
         }
     }
 
-    trashToHand(player) {
+    trashToHand(player, io) {
         this.players[player].hand = this.players[player].hand.concat(
             this.gameData['trash'][player],
         );
@@ -182,7 +182,7 @@ class Bataille extends CardGame {
             //On envoie les cartes de tout le monde à tout le monde
             playersCards: this.getPlayers(),
             playersTrashes: this.getTrashGameData(),
-          });
+        });
     }
 
     deal(io) {
