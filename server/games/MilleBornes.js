@@ -108,6 +108,7 @@ class MilleBornes extends CardGame {
                 bonus: [],
                 malus: [CARD_VALUES.FEU_ROUGE],
                 score: 0,
+                needsGreenLight: true
             };
         }
         this.gameState = "IN_GAME";
@@ -230,30 +231,45 @@ class MilleBornes extends CardGame {
                 case CARD_TYPES.BOTTES:
                     this.players[attackerId].bonus.push(cardValue);
                     playerMalus = this.players[attackerId].malus;
-                    for(let attaqueToRemove of BOTTES_PROTECTION[cardValue]) {
+
+                    if(this.players[attackerId].needsGreenLight) {
+                        if(selectedCard == CARD_VALUES.VEHICULE_PRIORITAIRE) {
+                            this.players[attackerId].needsGreenLight = false;
+                        }
+                    }
+
+                    for (let attaqueToRemove of BOTTES_PROTECTION[cardValue]) {
                         let indAttaque = playerMalus.indexOf(attaqueToRemove);
-                        if(indAttaque != -1) playerMalus = playerMalus.splice(indAttaque, 1);
+                        if (indAttaque != -1) playerMalus = playerMalus.splice(indAttaque, 1);  
                     }
                     willReplay = true;
                     affectedPlayer = attackerId;
                     break;
+
                 case CARD_TYPES.ATTAQUES:
-                    let isImmuned = (this.players[targetId].score == 0);
+                    let isImmuned = (this.players[targetId].needsGreenLight);
                     if(!isImmuned) {
-                        for(let botte of this.players[targetId].bonus) {
+                        for (let botte of this.players[targetId].bonus) {
                             if(BOTTES_PROTECTION[botte].includes(cardValue)) {
                                 isImmuned = true;
                                 break;
                             }
                         }
                     }
-                    if(!isImmuned && !this.players[targetId].malus.includes(cardValue)) {
+                    if (!isImmuned && !this.players[targetId].malus.includes(cardValue)) {
                         this.players[targetId].malus.push(cardValue);
                         affectedPlayer = targetId;
                     }
                     break;
                 case CARD_TYPES.PARADES:
                     playerMalus = this.players[attackerId].malus;
+
+                    if(this.players[attackerId].needsGreenLight) {
+                        if(selectedCard == CARD_VALUES.FEU_VERT) {
+                            this.players[attackerId].needsGreenLight = false;
+                        }
+                    }
+
                     for(let i in playerMalus) {
                         if(playerMalus[i] === PARADE_CLEAR[cardValue]) {
                             playerMalus = playerMalus.splice(i, 1);
@@ -374,8 +390,6 @@ class MilleBornes extends CardGame {
             });
         }
 
-        console.log("server.updateContext", this.players, players);
-
         // Renvoi des données relatives à la partie
         io.to(this.code).emit("server.updateContext", {
             creatorId: this.creatorId,
@@ -421,7 +435,6 @@ class MilleBornes extends CardGame {
         const socketId = this.socketIds[playerId];
         const playerHand = this.players[playerId].hand;
         const socket = io.sockets.sockets.get(socketId);
-        console.log('server.sendHand', playerHand);
         socket.emit('server.sendHand', playerHand);
     }
 

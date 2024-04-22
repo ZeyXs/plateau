@@ -72,23 +72,17 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
     const userId = data.headers.senderId;
     const username = data.headers.senderUsername;
     if (gameInstance == undefined) {
-        console.log("Partie fantôme bien ouej frérot 👻👻👻👻👻👻👻");
         return;
     }
     if (gameInstance.getCreatorId() == userId) {
         // Si le créateur quitte la partie, on la supprime :
-        await gameInstance.destruct(); // Remarque: la méthode se chargera de la suppression dans la base de données
+        await gameInstance.destruct();
         delete roomToGame[code];
-        io.to(code).emit("server.leaveSuccess", { silentLeave: true });
+        io.to(code).emit("server.leave");
         socket.broadcast.emit("server.refreshGameList");
     } else {
         // Si un joueur (outre le créateur) quitte la partie :
         gameInstance.removePlayer(userId);
-        if(gameInstance.gameState === "IN_GAME") {
-            socket.emit("server.leaveSuccess", { silentLeave: false });
-        } else {
-            socket.emit("server.leaveSuccess", { silentLeave: true });
-        }
 
         // Message de départ du joueur
         const newMessage = `👤 ${username} left the game.`;
@@ -110,9 +104,14 @@ const onPlayerLeave = async (io, socket, data, gameInstance, roomToGame) => {
 const onSave = (io, socket, data, gameInstance) => {
     const code = data.headers.code;
     const senderId = data.headers.senderId;
+
+    console.log("_____ Demande de Save: _____");
+    console.log("creatorId =", gameInstance.getCreatorId());
+    console.log("senderId =", senderId);
+
     if(senderId == gameInstance.getCreatorId() && gameInstance.getGameState() == "IN_GAME") {
         gameInstance.pause();
-        io.to(code).emit("server.leaveSuccess", { silentLeave: true });
+        io.to(code).emit("server.leave");
     }
 }
 

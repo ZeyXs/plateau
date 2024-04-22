@@ -41,7 +41,6 @@ const Game = () => {
 
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
-    const [silentLeave, setSilentLeave] = useState(false);
     const [modal, setModal] = useState(false);
 
     useEffect(() => {
@@ -80,7 +79,7 @@ const Game = () => {
         if ((gameState == "IN_GAME") && creatorId == auth.id) {
             handleModal();
         } else {
-            handleLeave();
+            emit("client.leave", { code: code, username: auth.user });
             navigate("/", { replace: true });
         }
     }
@@ -90,8 +89,8 @@ const Game = () => {
     }
 
     const handleLeave = () => {
-        if(!silentLeave) emit("client.leave", { code: code, username: auth.user });
-        else localStorage.setItem("brutallyLeft", code);
+        emit("client.leave", { code: code, username: auth.user });
+        localStorage.setItem("brutallyLeft", code);
     };
 
     const handleSave = () => {
@@ -100,7 +99,7 @@ const Game = () => {
     }
 
     const handleDelete = () => {
-        handleLeave();
+        emit("client.leave", { code: code, username: auth.user });
         navigate("/", { replace: true });
     }
 
@@ -155,32 +154,34 @@ const Game = () => {
         });
 
         /*
-        _____ Message: 'server.addToLocalStorage' _____
-        In params: { code }
-        */
-        socket.on("server.addToLocalStorage", (data) => {
-            localStorage.setItem("brutallyLeft", data.code);
-        });
-
-        /*
         _____ Message: 'server.leaveSuccess' _____
         In params: null
         */
-        socket.on("server.leaveSuccess", (data) => {
-            setSilentLeave(data.silentLeave);
+        socket.on("server.leave", () => {
             navigate("/", { replace: true });
         });
 
-        socket.on("server.gamePaused", (data) => {
+        /*socket.on("server.gamePaused", (data) => {
             setSilentLeave(true);
             navigate("/", { replace: true });
-        });
+        });*/
 
         socket.on("server.updateContext", (data) => {
             console.log("Recieved server.updateContext");
             setCreatorId(data.creatorId);
         });
 
+        return () => {
+            socket.off('server.joinSuccess');
+            socket.off('server.updateChat');
+            socket.off('server.updatePlayerNumber');
+            socket.off('server.leave');
+            socket.off('server.updateContext');
+        };
+
+    }, [socket]);
+
+    useEffect(() => {
         emit("client.join", { code: code, username: auth.user });
     }, []);
 

@@ -56,8 +56,10 @@ const basicSocketHandler = (io, socket, data) => {
             break;
         case "client.startTimer":
             onStartTimer(io, data);
+            break;
         case "client.save":
             onSave(io, socket, data, gameInstance);
+            break;
         default:
             handled = false;
             break;
